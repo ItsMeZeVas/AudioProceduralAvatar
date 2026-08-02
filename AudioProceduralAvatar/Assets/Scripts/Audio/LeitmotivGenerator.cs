@@ -8,37 +8,54 @@ namespace AudioProceduralAvatar.Audio
     /// Motor de decisión musical. Recibe AvatarAttributes, entrega LeitmotivData.
     /// No reproduce audio — eso lo hace un IMusicRenderer.
     ///
-    /// TODO (Diseño + Desarrollo, semana 1-2): cerrar las reglas reales de mapeo.
-    /// Las de abajo son un punto de partida deliberadamente simple para tener
-    /// el pipeline vertical funcionando cuanto antes; se refinan después.
+    /// Las reglas de mapeo (Trait->Escala, Accesorio->Tempo, Ropa->Instrumento)
+    /// NO están aquí — viven en un asset LeitmotivMappingConfig editable desde
+    /// el Inspector de Unity, para que Diseño pueda ajustarlas sin tocar código.
+    /// Si no se asigna un config, se usan valores por defecto razonables
+    /// (para que el pipeline nunca se rompa por falta de configuración).
     /// </summary>
     public class LeitmotivGenerator : MonoBehaviour
     {
-        [Header("Rango de tonalidad permitido (evita que suene 'random')")]
-        [SerializeField] private int minRootMidi = 48; // C3
-        [SerializeField] private int maxRootMidi = 60; // C4
+        [Tooltip("Si se deja vacío, se usan valores por defecto internos.")]
+        [SerializeField] private LeitmotivMappingConfig mappingConfig;
 
-        [Header("Longitud del motivo")]
+        [Header("Longitud del motivo (independiente del config, es del algoritmo)")]
         [SerializeField] private int noteCount = 6;
 
         public LeitmotivData Generate(AvatarAttributes attrs)
         {
+            int minRoot = mappingConfig != null ? mappingConfig.MinRootMidi : 48;
+            int maxRoot = mappingConfig != null ? mappingConfig.MaxRootMidi : 60;
+
             var data = new LeitmotivData
             {
                 OwnerAvatarName = attrs.AvatarName,
-                Scale = MapTraitToScale(attrs.Trait),
-                RootNoteMidi = MapColorToRoot(attrs.AccentColor),
-                TempoBpm = MapAccessoryToTempo(attrs.Accessory),
-                InstrumentHint = MapClothingToInstrument(attrs.Clothing),
+                Scale = mappingConfig != null
+                    ? mappingConfig.GetScale(attrs.Trait)
+                    : DefaultScaleFallback(attrs.Trait),
+                RootNoteMidi = MapColorToRoot(attrs.AccentColor, minRoot, maxRoot),
+                TempoBpm = mappingConfig != null
+                    ? mappingConfig.GetTempo(attrs.Accessory)
+                    : 100f,
+                InstrumentHint = mappingConfig != null
+                    ? mappingConfig.GetInstrumentPresetId(attrs.Clothing)
+                    : "pluck",
                 Notes = GenerateNotes(attrs)
             };
             return data;
         }
 
-        // TODO: regla real pendiente de definir con Diseño.
-        // Idea de partida: trait "Alegre"/"Energico" -> escalas mayores/pentatónica,
-        // "Serio"/"Misterioso" -> escalas menores/dórico.
-        private MusicalScale MapTraitToScale(CharacterTrait trait)
+        // El color sí se queda como cálculo continuo (hue -> tónica) en vez de
+        // lista editable: son infinitos colores posibles, no categorías discretas.
+        private int MapColorToRoot(Color color, int minRoot, int maxRoot)
+        {
+            Color.RGBToHSV(color, out float hue, out _, out _);
+            int range = maxRoot - minRoot;
+            return minRoot + Mathf.RoundToInt(hue * range);
+        }
+
+        // Solo se usa si no hay LeitmotivMappingConfig asignado (fallback de emergencia).
+        private MusicalScale DefaultScaleFallback(CharacterTrait trait)
         {
             switch (trait)
             {
@@ -47,42 +64,6 @@ namespace AudioProceduralAvatar.Audio
                 case CharacterTrait.Serio: return MusicalScale.MenorNatural;
                 case CharacterTrait.Misterioso: return MusicalScale.Dorico;
                 default: return MusicalScale.Mayor;
-            }
-        }
-
-        // TODO: mapear el color (hue) a tónica dentro del rango permitido,
-        // en vez de hash directo — así colores "cercanos" dan tónicas cercanas.
-        private int MapColorToRoot(Color color)
-        {
-            Color.RGBToHSV(color, out float hue, out _, out _);
-            int range = maxRootMidi - minRootMidi;
-            return minRootMidi + Mathf.RoundToInt(hue * range);
-        }
-
-        // TODO: definir tempos concretos por accesorio con Diseño.
-        private float MapAccessoryToTempo(AccessoryType accessory)
-        {
-            switch (accessory)
-            {
-                case AccessoryType.Sombrero: return 100f;
-                case AccessoryType.Lentes: return 110f;
-                case AccessoryType.Collar: return 90f;
-                case AccessoryType.Mochila: return 120f;
-                default: return 100f;
-            }
-        }
-
-        // TODO: el string debe corresponder a un preset real una vez exista
-        // el SimpleSynthRenderer (o un evento de FMOD, en el futuro).
-        private string MapClothingToInstrument(ClothingType clothing)
-        {
-            switch (clothing)
-            {
-                case ClothingType.Casual: return "pluck";
-                case ClothingType.Formal: return "pad";
-                case ClothingType.Deportivo: return "bass";
-                case ClothingType.Fantasia: return "bell";
-                default: return "pluck";
             }
         }
 
