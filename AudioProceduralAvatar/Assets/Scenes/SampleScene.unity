@@ -1959,7 +1959,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivGenerator
   mappingConfig: {fileID: 11400000, guid: baebe2b582bc7ed478d14fc5cd017061, type: 2}
   rootNoteStrategy: {fileID: 0}
-  noteCount: 10
+  noteCount: 20
 --- !u!114 &1560219774
 MonoBehaviour:
   m_ObjectHideFlags: 0
