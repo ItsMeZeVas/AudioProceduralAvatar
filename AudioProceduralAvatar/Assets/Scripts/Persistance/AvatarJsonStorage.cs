@@ -72,6 +72,25 @@ namespace AudioProceduralAvatar.Persistence
             return ids;
         }
 
+        /// <summary>
+        /// True si algún avatar ya guardado tiene este código estudiantil
+        /// (comparación sin distinguir mayúsculas ni espacios extra).
+        /// </summary>
+        public static bool StudentCodeExists(string code, string excludeId = null)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return false;
+            string normalized = code.Trim().ToLowerInvariant();
+
+            foreach (var id in GetAllAvatarIds())
+            {
+                if (id == excludeId) continue;
+                var profile = Load(id);
+                if (profile == null || string.IsNullOrWhiteSpace(profile.StudentCode)) continue;
+                if (profile.StudentCode.Trim().ToLowerInvariant() == normalized) return true;
+            }
+            return false;
+        }
+
         private static string GetJsonPath(string id) => Path.Combine(FolderPath, $"{id}.json");
         private static string GetImagePath(string id) => Path.Combine(FolderPath, $"{id}.png");
     }
