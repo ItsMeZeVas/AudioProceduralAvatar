@@ -16,8 +16,8 @@ namespace AudioProceduralAvatar.World
     {
         public AvatarInstance Data { get; private set; }
 
-        /// <summary>Se dispara cuando el jugador hace clic/toca este avatar.</summary>
-        public event Action<AvatarInstance> Selected;
+        /// <summary>Se dispara cuando el jugador hace clic/toca este avatar. Manda el propio AvatarDisplay (trae Data + posición en el mundo).</summary>
+        public event Action<AvatarDisplay> Selected;
 
         [Tooltip("Se usa si el avatar todavía no tiene imagen capturada (ej. AvatarCapture no está armado aún).")]
         [SerializeField] private Sprite fallbackSprite;
@@ -40,7 +40,7 @@ namespace AudioProceduralAvatar.World
         // Raycaster, o simplemente clic del mouse sobre el collider 3D.
         private void OnMouseDown()
         {
-            Selected?.Invoke(Data);
+            Selected?.Invoke(this);
         }
     }
 }

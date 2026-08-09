@@ -34,7 +34,7 @@ namespace AudioProceduralAvatar.World
         [Header("Audio (opcional, para pruebas — la selección real se conecta en la siguiente iteración)")]
         [SerializeField] private SimpleSynthRenderer sharedRenderer;
 
-        public event Action<AvatarInstance> AvatarSelected;
+        public event Action<AvatarDisplay> AvatarSelected;
         public event Action<GalleryPlane> PlaneCreated;
 
         private readonly List<AvatarInstance> _createdAvatars = new();
@@ -139,8 +139,9 @@ namespace AudioProceduralAvatar.World
             return (originX - margin, originX + maxOccupied + margin);
         }
 
-        private void HandleAvatarSelected(AvatarInstance instance)
+        private void HandleAvatarSelected(AvatarDisplay display)
         {
+            var instance = display.Data;
             Debug.Log($"[AvatarGalleryManager] Avatar seleccionado: {instance.Profile.AvatarName}");
 
             // Prueba rápida de audio mientras no existe el sistema de selección
@@ -149,7 +150,7 @@ namespace AudioProceduralAvatar.World
             if (sharedRenderer != null)
                 sharedRenderer.PlayLeitmotiv(instance.Leitmotiv);
 
-            AvatarSelected?.Invoke(instance);
+            AvatarSelected?.Invoke(display);
         }
     }
 }
