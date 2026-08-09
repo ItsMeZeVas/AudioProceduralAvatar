@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using AudioProceduralAvatar.Avatar;
 using AudioProceduralAvatar.Audio;
-
 namespace AudioProceduralAvatar.World
 {
     /// <summary>
@@ -79,9 +78,9 @@ namespace AudioProceduralAvatar.World
         /// espacio disponible. Si ninguno tiene espacio, crea un plano nuevo
         /// automáticamente después del último.
         /// </summary>
-        public AvatarInstance CreateAndSpawn(AvatarAttributes attrs, LeitmotivData leitmotiv)
+        public AvatarInstance CreateAndSpawn(AvatarProfile profile, LeitmotivData leitmotiv, Sprite capturedImage = null)
         {
-            var instance = new AvatarInstance(attrs, leitmotiv);
+            var instance = new AvatarInstance(profile, leitmotiv, capturedImage);
             _createdAvatars.Add(instance);
 
             var plane = GetOrCreatePlaneWithRoom();
@@ -142,7 +141,7 @@ namespace AudioProceduralAvatar.World
 
         private void HandleAvatarSelected(AvatarInstance instance)
         {
-            Debug.Log($"[AvatarGalleryManager] Avatar seleccionado: {instance.Attributes.AvatarName}");
+            Debug.Log($"[AvatarGalleryManager] Avatar seleccionado: {instance.Profile.AvatarName}");
 
             // Prueba rápida de audio mientras no existe el sistema de selección
             // + ficha definitivo. La siguiente iteración reemplaza esto por el

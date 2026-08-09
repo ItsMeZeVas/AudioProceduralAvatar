@@ -6,74 +6,82 @@ using AudioProceduralAvatar.Avatar;
 namespace AudioProceduralAvatar.Audio
 {
     [Serializable]
-    public struct TraitScaleMapping
+    public struct LayerScaleRule
     {
-        public CharacterTrait Trait;
+        public string LayerName;
+        public int SpriteIndex;
         public MusicalScale Scale;
     }
 
     [Serializable]
-    public struct AccessoryTempoMapping
+    public struct LayerTempoRule
     {
-        public AccessoryType Accessory;
+        public string LayerName;
+        public int SpriteIndex;
         [Range(60f, 180f)] public float TempoBpm;
     }
 
     [Serializable]
-    public struct ClothingInstrumentMapping
+    public struct LayerInstrumentRule
     {
-        public ClothingType Clothing;
+        public string LayerName;
+        public int SpriteIndex;
         [Tooltip("Debe coincidir con el PresetId de un InstrumentPreset existente.")]
         public string InstrumentPresetId;
     }
 
     /// <summary>
-    /// Todas las reglas "atributo -> decisión musical" en un solo asset editable.
-    /// Diseño puede crear este asset (Create -> AudioProceduralAvatar ->
-    /// Leitmotiv Mapping Config), llenar las listas en el Inspector, y
-    /// LeitmotivGenerator las usa directamente. Sin recompilar nada.
-    ///
-    /// Si un atributo no está en la lista, se usa el valor Default
-    /// correspondiente (para que nunca falte un mapeo y explote en runtime).
+    /// Reglas "capa + índice de sprite -> decisión musical", editables por
+    /// Diseño en el Inspector. No asume cuáles capas existen (hoy: Body,
+    /// Head, Hair) — cada regla dice explícitamente a qué capa e índice
+    /// aplica, así que agregar/quitar capas después no rompe nada aquí.
+    /// Si ninguna regla matchea ninguna capa del avatar, se usa el Default.
     /// </summary>
     [CreateAssetMenu(fileName = "LeitmotivMappingConfig", menuName = "AudioProceduralAvatar/Leitmotiv Mapping Config")]
     public class LeitmotivMappingConfig : ScriptableObject
     {
-        [Header("Trait -> Escala")]
-        public List<TraitScaleMapping> TraitScaleMappings = new();
+        [Header("Reglas de escala (capa + índice -> escala)")]
+        public List<LayerScaleRule> ScaleRules = new();
         public MusicalScale DefaultScale = MusicalScale.Mayor;
 
-        [Header("Accesorio -> Tempo")]
-        public List<AccessoryTempoMapping> AccessoryTempoMappings = new();
+        [Header("Reglas de tempo (capa + índice -> tempo)")]
+        public List<LayerTempoRule> TempoRules = new();
         public float DefaultTempoBpm = 100f;
 
-        [Header("Ropa -> Instrumento")]
-        public List<ClothingInstrumentMapping> ClothingInstrumentMappings = new();
+        [Header("Reglas de instrumento (capa + índice -> preset)")]
+        public List<LayerInstrumentRule> InstrumentRules = new();
         public string DefaultInstrumentPresetId = "pluck";
 
-        [Header("Rango de tónica permitido (evita que suene fuera de rango)")]
-        public int MinRootMidi = 48; // C3
-        public int MaxRootMidi = 60; // C4
+        [Header("Rango de tónica permitido (lo usa RootNoteStrategy)")]
+        public int MinRootMidi = 48;
+        public int MaxRootMidi = 60;
 
-        public MusicalScale GetScale(CharacterTrait trait)
+        public MusicalScale GetScale(AvatarProfile profile)
         {
-            foreach (var m in TraitScaleMappings)
-                if (m.Trait == trait) return m.Scale;
+            foreach (var rule in ScaleRules)
+                if (Matches(profile, rule.LayerName, rule.SpriteIndex)) return rule.Scale;
             return DefaultScale;
         }
 
-        public float GetTempo(AccessoryType accessory)
+        public float GetTempo(AvatarProfile profile)
         {
-            foreach (var m in AccessoryTempoMappings)
-                if (m.Accessory == accessory) return m.TempoBpm;
+            foreach (var rule in TempoRules)
+                if (Matches(profile, rule.LayerName, rule.SpriteIndex)) return rule.TempoBpm;
             return DefaultTempoBpm;
         }
 
-        public string GetInstrumentPresetId(ClothingType clothing)
+        public string GetInstrumentPresetId(AvatarProfile profile)
         {
-            foreach (var m in ClothingInstrumentMappings)
-                if (m.Clothing == clothing) return m.InstrumentPresetId;
+            foreach (var rule in InstrumentRules)
+                if (Matches(profile, rule.LayerName, rule.SpriteIndex)) return rule.InstrumentPresetId;
             return DefaultInstrumentPresetId;
+        }
+
+        private static bool Matches(AvatarProfile profile, string layerName, int spriteIndex)
+        {
+            foreach (var l in profile.Layers)
+                if (l.LayerName == layerName && l.SpriteIndex == spriteIndex) return true;
+            return false;
         }
     }
 }

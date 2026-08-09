@@ -5,76 +5,59 @@ using AudioProceduralAvatar.Avatar;
 namespace AudioProceduralAvatar.Audio
 {
     /// <summary>
-    /// Motor de decisión musical. Recibe AvatarAttributes, entrega LeitmotivData.
-    /// No reproduce audio — eso lo hace un IMusicRenderer.
+    /// Motor de decisión musical. Recibe un AvatarProfile real (capas +
+    /// nombre + código), entrega LeitmotivData. No reproduce audio — eso lo
+    /// hace un IMusicRenderer.
     ///
-    /// Las reglas de mapeo (Trait->Escala, Accesorio->Tempo, Ropa->Instrumento)
-    /// NO están aquí — viven en un asset LeitmotivMappingConfig editable desde
-    /// el Inspector de Unity, para que Diseño pueda ajustarlas sin tocar código.
-    /// Si no se asigna un config, se usan valores por defecto razonables
-    /// (para que el pipeline nunca se rompa por falta de configuración).
+    /// Todas las reglas de mapeo viven fuera de esta clase: escala/tempo/
+    /// instrumento en LeitmotivMappingConfig (editable por Diseño), y la
+    /// tónica en un RootNoteStrategy intercambiable (sin decidir aún).
     /// </summary>
     public class LeitmotivGenerator : MonoBehaviour
     {
-        [Tooltip("Si se deja vacío, se usan valores por defecto internos.")]
         [SerializeField] private LeitmotivMappingConfig mappingConfig;
+
+        [Tooltip("Fuente de la tónica. Si se deja vacío, se usa un hash determinista interno (ver FallbackHashRoot).")]
+        [SerializeField] private RootNoteStrategy rootNoteStrategy;
 
         [Header("Longitud del motivo (independiente del config, es del algoritmo)")]
         [SerializeField] private int noteCount = 6;
 
-        public LeitmotivData Generate(AvatarAttributes attrs)
+        public LeitmotivData Generate(AvatarProfile profile)
         {
             int minRoot = mappingConfig != null ? mappingConfig.MinRootMidi : 48;
             int maxRoot = mappingConfig != null ? mappingConfig.MaxRootMidi : 60;
 
             var data = new LeitmotivData
             {
-                OwnerAvatarName = attrs.AvatarName,
-                Scale = mappingConfig != null
-                    ? mappingConfig.GetScale(attrs.Trait)
-                    : DefaultScaleFallback(attrs.Trait),
-                RootNoteMidi = MapColorToRoot(attrs.AccentColor, minRoot, maxRoot),
-                TempoBpm = mappingConfig != null
-                    ? mappingConfig.GetTempo(attrs.Accessory)
-                    : 100f,
-                InstrumentHint = mappingConfig != null
-                    ? mappingConfig.GetInstrumentPresetId(attrs.Clothing)
-                    : "pluck",
-                Notes = GenerateNotes(attrs)
+                OwnerAvatarName = profile.AvatarName,
+                Scale = mappingConfig != null ? mappingConfig.GetScale(profile) : MusicalScale.Mayor,
+                RootNoteMidi = rootNoteStrategy != null
+                    ? rootNoteStrategy.GetRootMidi(profile, minRoot, maxRoot)
+                    : FallbackHashRoot(profile, minRoot, maxRoot),
+                TempoBpm = mappingConfig != null ? mappingConfig.GetTempo(profile) : 100f,
+                InstrumentHint = mappingConfig != null ? mappingConfig.GetInstrumentPresetId(profile) : "pluck",
+                Notes = GenerateNotes(profile)
             };
             return data;
         }
 
-        // El color sí se queda como cálculo continuo (hue -> tónica) en vez de
-        // lista editable: son infinitos colores posibles, no categorías discretas.
-        private int MapColorToRoot(Color color, int minRoot, int maxRoot)
+        // Solo se usa si no hay RootNoteStrategy asignado (fallback de emergencia).
+        private int FallbackHashRoot(AvatarProfile profile, int minRoot, int maxRoot)
         {
-            Color.RGBToHSV(color, out float hue, out _, out _);
-            int range = maxRoot - minRoot;
-            return minRoot + Mathf.RoundToInt(hue * range);
-        }
-
-        // Solo se usa si no hay LeitmotivMappingConfig asignado (fallback de emergencia).
-        private MusicalScale DefaultScaleFallback(CharacterTrait trait)
-        {
-            switch (trait)
-            {
-                case CharacterTrait.Alegre: return MusicalScale.Mayor;
-                case CharacterTrait.Energico: return MusicalScale.Pentatonica;
-                case CharacterTrait.Serio: return MusicalScale.MenorNatural;
-                case CharacterTrait.Misterioso: return MusicalScale.Dorico;
-                default: return MusicalScale.Mayor;
-            }
+            int hash = !string.IsNullOrEmpty(profile.Id) ? profile.Id.GetHashCode() : profile.AvatarName.GetHashCode();
+            int range = Mathf.Max(1, maxRoot - minRoot);
+            return minRoot + Mathf.Abs(hash) % (range + 1);
         }
 
         // TODO: sustituir por una generación con reglas melódicas reales
         // (evitar saltos grandes repetidos, resolver hacia la tónica, etc.)
         // Por ahora: patrón determinista simple para poder probar el pipeline.
-        private List<NoteEvent> GenerateNotes(AvatarAttributes attrs)
+        private List<NoteEvent> GenerateNotes(AvatarProfile profile)
         {
             var notes = new List<NoteEvent>();
-            int seed = attrs.AvatarName.GetHashCode();
-            var rnd = new System.Random(seed);
+            string seedSource = !string.IsNullOrEmpty(profile.Id) ? profile.Id : profile.AvatarName;
+            var rnd = new System.Random(seedSource.GetHashCode());
 
             float beat = 0f;
             for (int i = 0; i < noteCount; i++)

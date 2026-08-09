@@ -7,23 +7,23 @@ namespace AudioProceduralAvatar.World
 {
     /// <summary>
     /// Representa un avatar ya creado, con su leitmotiv ya generado, listo
-    /// para vivir en la galería. Es el "expediente completo" de un personaje:
-    /// junta lo que eligió el participante (Attributes) con lo que decidió
-    /// el motor musical (Leitmotiv). No tiene lógica, solo datos + identidad.
+    /// para vivir en la galería. Junta el perfil real (Profile) con lo que
+    /// decidió el motor musical (Leitmotiv) y, si existe, la imagen
+    /// capturada del avatar armado (CapturedImage).
     /// </summary>
     [Serializable]
     public class AvatarInstance
     {
-        public string Id; // GUID, para no depender del nombre (puede repetirse)
-        public AvatarAttributes Attributes;
+        public AvatarProfile Profile;
         public LeitmotivData Leitmotiv;
+        public Sprite CapturedImage;
         public DateTime CreatedAt;
 
-        public AvatarInstance(AvatarAttributes attrs, LeitmotivData leitmotiv)
+        public AvatarInstance(AvatarProfile profile, LeitmotivData leitmotiv, Sprite capturedImage = null)
         {
-            Id = Guid.NewGuid().ToString();
-            Attributes = attrs;
+            Profile = profile;
             Leitmotiv = leitmotiv;
+            CapturedImage = capturedImage;
             CreatedAt = DateTime.UtcNow;
         }
     }

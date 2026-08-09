@@ -489,13 +489,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.World.GalleryPlayerController
   moveSpeed: 4
   galleryManager: {fileID: 1560219774}
-  planeTransitionDuration: 0.45
+  planeTransitionSpeed: 10
   cameraTransform: {fileID: 330585546}
   cameraOffset: {x: 0, y: 3, z: 5}
   cameraSmoothTime: 0.15
-  cameraRotationSpeed: 6
-  initialCameraPosition: {x: 0, y: 1, z: 6}
-  useCustomInitialCameraPosition: 1
 --- !u!4 &322157713
 Transform:
   m_ObjectHideFlags: 0
@@ -1034,6 +1031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivGenerator
   mappingConfig: {fileID: 11400000, guid: baebe2b582bc7ed478d14fc5cd017061, type: 2}
+  rootNoteStrategy: {fileID: 0}
   noteCount: 1
 --- !u!4 &613896182
 Transform:
@@ -1062,6 +1060,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03211977ddf70e49988af77777f377c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivDemo
+  layerNames:
+  - Body
+  - Head
+  - Hair
+  spritesPerLayer: 3
 --- !u!1 &753206335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1389,6 +1392,7 @@ GameObject:
   - component: {fileID: 1560219772}
   - component: {fileID: 1560219771}
   - component: {fileID: 1560219770}
+  - component: {fileID: 1560219776}
   m_Layer: 0
   m_Name: GalleryManager
   m_TagString: Untagged
@@ -1403,13 +1407,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1560219769}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba3b6c575b56b1a4cb04e0206a8688d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.World.GalleryDemo
   generator: {fileID: 1560219773}
   avatarsToCreate: 18
+  layerNames:
+  - Body
+  - Head
+  - Hair
+  spritesPerLayer: 3
 --- !u!114 &1560219771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1535,6 +1544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivGenerator
   mappingConfig: {fileID: 11400000, guid: baebe2b582bc7ed478d14fc5cd017061, type: 2}
+  rootNoteStrategy: {fileID: 0}
   noteCount: 10
 --- !u!114 &1560219774
 MonoBehaviour:
@@ -1548,7 +1558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3bf74ffebe97b47ba71a48f183dd6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.World.AvatarGalleryManager
-  avatarPrefab: {fileID: 6642576557200058397, guid: 7bc75e31bfa83c947a108a81a7223a6f, type: 3}
+  avatarPrefab: {fileID: 5407535336804513822, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
   authoredPlaneMarkers:
   - {fileID: 138257667}
   - {fileID: 753206336}
@@ -1573,6 +1583,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1560219776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560219769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0faf525508c614c4a99bc2d694de7885, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.World.AvatarGalleryLoader
+  generator: {fileID: 1560219773}
 --- !u!1 &1686493913
 GameObject:
   m_ObjectHideFlags: 0
@@ -1686,6 +1709,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1499239743}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
+--- !u!1001 &3298359933543402571
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.32456
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.03265
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 529420965641239332, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037621189965058850, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
+      propertyPath: m_Name
+      value: AvatarCustom
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1552ff98f76a36049bd4451c6942a567, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1696,3 +1776,4 @@ SceneRoots:
   - {fileID: 613896182}
   - {fileID: 1560219775}
   - {fileID: 1499239743}
+  - {fileID: 3298359933543402571}
