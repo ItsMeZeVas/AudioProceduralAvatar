@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AudioProceduralAvatar.Audio
 {
@@ -27,5 +28,8 @@ namespace AudioProceduralAvatar.Audio
         public float TempoBpm;
         public string InstrumentHint; // ej: "pluck", "pad", "bass" — el renderer decide el timbre real
         public List<NoteEvent> Notes;
+
+        [Tooltip("0-1, determinista a partir de las capas/atributos del avatar. Ajusta ligeramente el timbre (desafine, brillo) para que avatares con el mismo instrumento no suenen idénticos.")]
+        public float TimbreVariation;
     }
 }

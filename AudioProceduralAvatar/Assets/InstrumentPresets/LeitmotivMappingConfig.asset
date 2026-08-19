@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42481a93961d7e9498b5e9804160797f, type: 3}
   m_Name: LeitmotivMappingConfig
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivMappingConfig
-  TraitScaleMappings: []
+  ScaleRules: []
   DefaultScale: 0
-  AccessoryTempoMappings: []
+  TempoRules: []
   DefaultTempoBpm: 100
-  ClothingInstrumentMappings: []
+  InstrumentRules: []
   DefaultInstrumentPresetId: pluck
   MinRootMidi: 48
   MaxRootMidi: 60

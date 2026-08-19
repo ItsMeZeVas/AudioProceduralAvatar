@@ -6,12 +6,12 @@ namespace AudioProceduralAvatar.Audio
 {
     /// <summary>
     /// Motor de decisión musical. Recibe un AvatarProfile real (capas +
-    /// nombre + código), entrega LeitmotivData. No reproduce audio — eso lo
-    /// hace un IMusicRenderer.
+    /// atributos continuos + nombre + código), entrega LeitmotivData. No
+    /// reproduce audio — eso lo hace un IMusicRenderer.
     ///
     /// Todas las reglas de mapeo viven fuera de esta clase: escala/tempo/
     /// instrumento en LeitmotivMappingConfig (editable por Diseño), y la
-    /// tónica en un RootNoteStrategy intercambiable (sin decidir aún).
+    /// tónica en un RootNoteStrategy intercambiable.
     /// </summary>
     public class LeitmotivGenerator : MonoBehaviour
     {
@@ -37,7 +37,8 @@ namespace AudioProceduralAvatar.Audio
                     : FallbackHashRoot(profile, minRoot, maxRoot),
                 TempoBpm = mappingConfig != null ? mappingConfig.GetTempo(profile) : 100f,
                 InstrumentHint = mappingConfig != null ? mappingConfig.GetInstrumentPresetId(profile) : "pluck",
-                Notes = GenerateNotes(profile)
+                Notes = GenerateNotes(profile),
+                TimbreVariation = ComputeTimbreVariation(profile)
             };
             return data;
         }
@@ -48,6 +49,28 @@ namespace AudioProceduralAvatar.Audio
             int hash = !string.IsNullOrEmpty(profile.Id) ? profile.Id.GetHashCode() : profile.AvatarName.GetHashCode();
             int range = Mathf.Max(1, maxRoot - minRoot);
             return minRoot + Mathf.Abs(hash) % (range + 1);
+        }
+
+        // Determinista y distinto del hash de la tónica (usa otros
+        // multiplicadores) para que no varíen siempre "juntas". Incluye
+        // tanto capas discretas como atributos continuos (ej. tono de piel),
+        // así cualquier elección del avatar contribuye a su personalidad
+        // sonora, no solo la que decida la tónica.
+        private float ComputeTimbreVariation(AvatarProfile profile)
+        {
+            int hash = 7;
+
+            foreach (var layer in profile.Layers)
+                hash = hash * 13 + layer.LayerName.GetHashCode() * 7 + layer.SpriteIndex * 31;
+
+            foreach (var attr in profile.ContinuousAttributes)
+                hash = hash * 19 + attr.Name.GetHashCode() * 3 + Mathf.RoundToInt(attr.Value * 1000);
+
+            if (!string.IsNullOrEmpty(profile.Id))
+                hash = hash * 17 + profile.Id.GetHashCode();
+
+            uint u = unchecked((uint)hash);
+            return (u % 1000) / 1000f;
         }
 
         // Contorno melódico con reglas reales: caminata acotada en vez de

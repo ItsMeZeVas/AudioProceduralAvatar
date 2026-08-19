@@ -16,12 +16,10 @@ namespace AudioProceduralAvatar.Avatar
     /// 2. Asigna: Avatar Creator, Avatar Data, Avatar Capture (opcional).
     /// 3. Asigna un Leitmotiv Generator (agrégalo a este mismo GameObject si
     ///    no existe ya en la escena).
-    /// 4. (Opcional pero recomendado) Crea un Profanity Filter
-    ///    (Create -> AudioProceduralAvatar -> Profanity Filter), llena la
-    ///    lista de palabras prohibidas, y asígnalo aquí.
-    /// 5. (Opcional) Asigna un Feedback Text (TMP_Text) para mostrarle al
-    ///    participante por qué no se pudo crear el avatar.
-    /// 6. En el botón "Crear avatar" de la UI, en su OnClick() arrastra este
+    /// 4. (Opcional) Asigna un Skin Tone Selector si ya armaste ese control.
+    /// 5. (Opcional pero recomendado) Asigna un Profanity Filter.
+    /// 6. (Opcional) Asigna un Feedback Text (TMP_Text).
+    /// 7. En el botón "Crear avatar" de la UI, en su OnClick() arrastra este
     ///    GameObject y selecciona CreateAvatar().
     /// </summary>
     public class AvatarCreationController : MonoBehaviour
@@ -31,6 +29,10 @@ namespace AudioProceduralAvatar.Avatar
         [SerializeField] private global::AvatarData avatarData;
         [Tooltip("Opcional. Si no está asignado, el avatar se guarda sin imagen.")]
         [SerializeField] private global::AvatarCapture avatarCapture;
+
+        [Header("Atributos continuos (opcional)")]
+        [Tooltip("Si está asignado, su valor actual se guarda en el AvatarProfile y puede afectar el leitmotiv (ver ContinuousAttributeRootNoteStrategy).")]
+        [SerializeField] private SkinToneSelector skinToneSelector;
 
         [Header("Nuestro pipeline")]
         [SerializeField] private LeitmotivGenerator leitmotivGenerator;
@@ -95,6 +97,21 @@ namespace AudioProceduralAvatar.Avatar
                 return false;
             }
 
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                bool allDigits = true;
+                foreach (char c in code)
+                {
+                    if (!char.IsDigit(c)) { allDigits = false; break; }
+                }
+
+                if (!allDigits || code.Length < 6 || code.Length > 10)
+                {
+                    error = "El código debe tener entre 6 y 10 dígitos numéricos.";
+                    return false;
+                }
+            }
+
             if (requireUniqueStudentCode)
             {
                 if (string.IsNullOrWhiteSpace(code))
@@ -103,40 +120,11 @@ namespace AudioProceduralAvatar.Avatar
                     return false;
                 }
 
-                if (!string.IsNullOrWhiteSpace(code))
-                {
-                    bool allDigits = true;
-                    foreach (char c in code)
-                    {
-                        if (!char.IsDigit(c)) { allDigits = false; break; }
-                    }
-
-                    if (!allDigits || code.Length < 6 || code.Length > 10)
-                    {
-                        error = "El código debe tener entre 6 y 10 dígitos numéricos.";
-                        return false;
-                    }
-                }
-
                 if (AvatarJsonStorage.StudentCodeExists(code))
                 {
                     error = "Ese código estudiantil ya fue usado por otro avatar.";
                     return false;
                 }
-                if (!string.IsNullOrWhiteSpace(code))
-{
-    bool allDigits = true;
-    foreach (char c in code)
-    {
-        if (!char.IsDigit(c)) { allDigits = false; break; }
-    }
-
-    if (!allDigits || code.Length < 6 || code.Length > 10)
-    {
-        error = "El código debe tener entre 6 y 10 dígitos numéricos.";
-        return false;
-    }
-}
             }
 
             error = null;
@@ -156,6 +144,15 @@ namespace AudioProceduralAvatar.Avatar
             {
                 int index = GetCurrentIndex(layerName);
                 profile.Layers.Add(new LayerSelection { LayerName = layerName, SpriteIndex = index });
+            }
+
+            if (skinToneSelector != null)
+            {
+                profile.ContinuousAttributes.Add(new ContinuousAttribute
+                {
+                    Name = skinToneSelector.AttributeName,
+                    Value = skinToneSelector.CurrentValue
+                });
             }
 
             return profile;

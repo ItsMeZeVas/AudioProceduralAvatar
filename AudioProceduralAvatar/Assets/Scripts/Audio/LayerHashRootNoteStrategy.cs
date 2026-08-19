@@ -4,11 +4,9 @@ using AudioProceduralAvatar.Avatar;
 namespace AudioProceduralAvatar.Audio
 {
     /// <summary>
-    /// Estrategia por defecto mientras no se decida la fuente real de la
-    /// tónica: deriva un hash determinista de todas las selecciones de capa
-    /// del avatar. Mismo avatar (mismas capas) -> siempre la misma tónica.
-    /// Reemplazable en cualquier momento por otra estrategia sin tocar
-    /// LeitmotivGenerator ni el resto del pipeline.
+    /// Estrategia basada en las capas discretas (Body/Head/Hair...): deriva
+    /// un hash determinista de todas las selecciones de capa del avatar.
+    /// Mismo avatar (mismas capas) -> siempre la misma tónica.
     /// </summary>
     [CreateAssetMenu(fileName = "LayerHashRootNoteStrategy", menuName = "AudioProceduralAvatar/Root Note Strategy/Layer Hash")]
     public class LayerHashRootNoteStrategy : RootNoteStrategy

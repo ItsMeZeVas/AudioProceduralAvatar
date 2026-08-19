@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9313e60b2a892004d8377b4acbca27f3, type: 3}
-  m_Name: ProfanityFilter
-  m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.ProfanityFilter
-  BannedWords:
-  - puta
-  - mierda
-  - pito
+  m_Script: {fileID: 11500000, guid: 480763d5bbbb3ba4e92650d253ef1c4c, type: 3}
+  m_Name: SkinTone
+  m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.ContinuousAttributeRootNoteStrategy
+  AttributeName: SkinTone
+  Invert: 0
+  FallbackValue: 0.5
