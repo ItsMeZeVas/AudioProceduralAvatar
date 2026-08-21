@@ -3448,6 +3448,34 @@ MonoBehaviour:
     - {fileID: 21300000, guid: b560a1d22fbcc744a8c573a0454ff019, type: 3}
     - {fileID: 21300000, guid: d50c7d4d85d3d3c4aaf07998f65047d3, type: 3}
     currentIndex: 0
+  - layerName: UpperBody
+    image: {fileID: 1174229701}
+    sprites:
+    - {fileID: 21300000, guid: 7bd666e302dd2bc4f92345aa02d5e763, type: 3}
+    - {fileID: 21300000, guid: b560a1d22fbcc744a8c573a0454ff019, type: 3}
+    - {fileID: 21300000, guid: d50c7d4d85d3d3c4aaf07998f65047d3, type: 3}
+    currentIndex: 0
+  - layerName: LowerBody
+    image: {fileID: 1174229701}
+    sprites:
+    - {fileID: 21300000, guid: 7bd666e302dd2bc4f92345aa02d5e763, type: 3}
+    - {fileID: 21300000, guid: b560a1d22fbcc744a8c573a0454ff019, type: 3}
+    - {fileID: 21300000, guid: d50c7d4d85d3d3c4aaf07998f65047d3, type: 3}
+    currentIndex: 0
+  - layerName: SkinTone
+    image: {fileID: 1174229701}
+    sprites:
+    - {fileID: 21300000, guid: 7bd666e302dd2bc4f92345aa02d5e763, type: 3}
+    - {fileID: 21300000, guid: b560a1d22fbcc744a8c573a0454ff019, type: 3}
+    - {fileID: 21300000, guid: d50c7d4d85d3d3c4aaf07998f65047d3, type: 3}
+    currentIndex: 0
+  - layerName: Accessories
+    image: {fileID: 1174229701}
+    sprites:
+    - {fileID: 21300000, guid: 7bd666e302dd2bc4f92345aa02d5e763, type: 3}
+    - {fileID: 21300000, guid: b560a1d22fbcc744a8c573a0454ff019, type: 3}
+    - {fileID: 21300000, guid: d50c7d4d85d3d3c4aaf07998f65047d3, type: 3}
+    currentIndex: 0
 --- !u!1 &1040238842
 GameObject:
   m_ObjectHideFlags: 0
