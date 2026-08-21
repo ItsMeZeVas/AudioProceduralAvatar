@@ -5,125 +5,398 @@ using AudioProceduralAvatar.Avatar;
 namespace AudioProceduralAvatar.Audio
 {
     /// <summary>
-    /// Motor de decisión musical. Recibe un AvatarProfile real (capas +
-    /// atributos continuos + nombre + código), entrega LeitmotivData. No
-    /// reproduce audio — eso lo hace un IMusicRenderer.
+    /// Genera el leitmotiv a partir del perfil del avatar.
     ///
-    /// Todas las reglas de mapeo viven fuera de esta clase: escala/tempo/
-    /// instrumento en LeitmotivMappingConfig (editable por Diseño), y la
-    /// tónica en un RootNoteStrategy intercambiable.
+    /// Las decisiones musicales se obtienen de LeitmotivMappingConfig:
+    ///
+    /// Hair       -> Scale
+    /// SkinTone   -> Tempo
+    /// Eyes       -> Instrument
+    /// UpperBody  -> ADSR
+    /// LowerBody  -> Rhythm
+    /// Accessories-> Dynamics
     /// </summary>
     public class LeitmotivGenerator : MonoBehaviour
     {
-        [SerializeField] private LeitmotivMappingConfig mappingConfig;
+        [SerializeField]
+        private LeitmotivMappingConfig mappingConfig;
 
-        [Tooltip("Fuente de la tónica. Si se deja vacío, se usa un hash determinista interno (ver FallbackHashRoot).")]
-        [SerializeField] private RootNoteStrategy rootNoteStrategy;
+        [Tooltip(
+            "Determina la tónica. Si está vacío se utiliza el fallback."
+        )]
+        [SerializeField]
+        private RootNoteStrategy rootNoteStrategy;
 
-        [Header("Longitud del motivo (independiente del config, es del algoritmo)")]
-        [SerializeField] private int noteCount = 6;
+        [Header("Longitud del motivo")]
+        [SerializeField]
+        private int noteCount = 6;
+
 
         public LeitmotivData Generate(AvatarProfile profile)
         {
-            int minRoot = mappingConfig != null ? mappingConfig.MinRootMidi : 48;
-            int maxRoot = mappingConfig != null ? mappingConfig.MaxRootMidi : 60;
+            int minRoot = mappingConfig != null
+                ? mappingConfig.MinRootMidi
+                : 48;
+
+            int maxRoot = mappingConfig != null
+                ? mappingConfig.MaxRootMidi
+                : 60;
+
+
+            // ----------------------------------------------------
+            // DECISIONES MUSICALES
+            // ----------------------------------------------------
+
+            MusicalScale scale = mappingConfig != null
+                ? mappingConfig.GetScale(profile)
+                : MusicalScale.Mayor;
+
+
+            float tempo = mappingConfig != null
+                ? mappingConfig.GetTempo(profile)
+                : 100f;
+
+
+            string instrument = mappingConfig != null
+                ? mappingConfig.GetInstrumentPresetId(profile)
+                : "pluck";
+
+
+            RhythmPattern rhythm = mappingConfig != null
+                ? mappingConfig.GetRhythm(profile)
+                : RhythmPattern.Balanced;
+
+
+            float dynamics = mappingConfig != null
+                ? mappingConfig.GetDynamicMultiplier(profile)
+                : 1f;
+
+
+            // ----------------------------------------------------
+            // ADSR
+            // ----------------------------------------------------
+
+            float attack = 0.01f;
+            float decay = 0.1f;
+            float sustain = 0.7f;
+            float release = 0.15f;
+
+            bool hasMappedEnvelope = false;
+
+            if (mappingConfig != null)
+            {
+                hasMappedEnvelope =
+                    mappingConfig.GetEnvelope(
+                        profile,
+                        out attack,
+                        out decay,
+                        out sustain,
+                        out release
+                    );
+            }
+
+
+            // ----------------------------------------------------
+            // TÓNICA
+            // ----------------------------------------------------
+
+            int rootNote =
+                rootNoteStrategy != null
+                    ? rootNoteStrategy.GetRootMidi(
+                        profile,
+                        minRoot,
+                        maxRoot
+                    )
+                    : FallbackHashRoot(
+                        profile,
+                        minRoot,
+                        maxRoot
+                    );
+
+
+            // ----------------------------------------------------
+            // DATA
+            // ----------------------------------------------------
 
             var data = new LeitmotivData
             {
                 OwnerAvatarName = profile.AvatarName,
-                Scale = mappingConfig != null ? mappingConfig.GetScale(profile) : MusicalScale.Mayor,
-                RootNoteMidi = rootNoteStrategy != null
-                    ? rootNoteStrategy.GetRootMidi(profile, minRoot, maxRoot)
-                    : FallbackHashRoot(profile, minRoot, maxRoot),
-                TempoBpm = mappingConfig != null ? mappingConfig.GetTempo(profile) : 100f,
-                InstrumentHint = mappingConfig != null ? mappingConfig.GetInstrumentPresetId(profile) : "pluck",
-                Notes = GenerateNotes(profile),
-                TimbreVariation = ComputeTimbreVariation(profile)
+
+                Scale = scale,
+
+                RootNoteMidi = rootNote,
+
+                TempoBpm = tempo,
+
+                InstrumentHint = instrument,
+
+                TimbreVariation = ComputeTimbreVariation(profile),
+
+                HasMappedEnvelope = hasMappedEnvelope,
+
+                Attack = attack,
+                Decay = decay,
+                Sustain = sustain,
+                Release = release,
+
+                Rhythm = rhythm,
+
+                DynamicMultiplier = dynamics,
+
+                Notes = GenerateNotes(
+                    profile,
+                    rhythm,
+                    dynamics
+                )
             };
+
             return data;
         }
 
-        // Solo se usa si no hay RootNoteStrategy asignado (fallback de emergencia).
-        private int FallbackHashRoot(AvatarProfile profile, int minRoot, int maxRoot)
+
+        // ========================================================
+        // TÓNICA FALLBACK
+        // ========================================================
+
+        private int FallbackHashRoot(
+            AvatarProfile profile,
+            int minRoot,
+            int maxRoot)
         {
-            int hash = !string.IsNullOrEmpty(profile.Id) ? profile.Id.GetHashCode() : profile.AvatarName.GetHashCode();
-            int range = Mathf.Max(1, maxRoot - minRoot);
-            return minRoot + Mathf.Abs(hash) % (range + 1);
+            int hash =
+                !string.IsNullOrEmpty(profile.Id)
+                    ? profile.Id.GetHashCode()
+                    : profile.AvatarName.GetHashCode();
+
+            int range = Mathf.Max(
+                1,
+                maxRoot - minRoot
+            );
+
+            return minRoot +
+                   Mathf.Abs(hash) %
+                   (range + 1);
         }
 
-        // Determinista y distinto del hash de la tónica (usa otros
-        // multiplicadores) para que no varíen siempre "juntas". Incluye
-        // tanto capas discretas como atributos continuos (ej. tono de piel),
-        // así cualquier elección del avatar contribuye a su personalidad
-        // sonora, no solo la que decida la tónica.
-        private float ComputeTimbreVariation(AvatarProfile profile)
+
+        // ========================================================
+        // VARIACIÓN DE TIMBRE
+        // ========================================================
+
+        private float ComputeTimbreVariation(
+            AvatarProfile profile)
         {
             int hash = 7;
 
             foreach (var layer in profile.Layers)
-                hash = hash * 13 + layer.LayerName.GetHashCode() * 7 + layer.SpriteIndex * 31;
+            {
+                hash =
+                    hash * 13 +
+                    layer.LayerName.GetHashCode() * 7 +
+                    layer.SpriteIndex * 31;
+            }
 
             foreach (var attr in profile.ContinuousAttributes)
-                hash = hash * 19 + attr.Name.GetHashCode() * 3 + Mathf.RoundToInt(attr.Value * 1000);
+            {
+                hash =
+                    hash * 19 +
+                    attr.Name.GetHashCode() * 3 +
+                    Mathf.RoundToInt(attr.Value * 1000);
+            }
 
             if (!string.IsNullOrEmpty(profile.Id))
-                hash = hash * 17 + profile.Id.GetHashCode();
+            {
+                hash =
+                    hash * 17 +
+                    profile.Id.GetHashCode();
+            }
 
             uint u = unchecked((uint)hash);
+
             return (u % 1000) / 1000f;
         }
 
-        // Contorno melódico con reglas reales: caminata acotada en vez de
-        // saltos totalmente al azar (así suena como una frase, no como
-        // ruido), termina siempre en la tónica (grado 0) para dar sensación
-        // de resolución/cierre, y varía ritmo + acento por nota.
-        private List<NoteEvent> GenerateNotes(AvatarProfile profile)
+
+        // ========================================================
+        // GENERACIÓN DE NOTAS
+        // ========================================================
+
+        private List<NoteEvent> GenerateNotes(
+            AvatarProfile profile,
+            RhythmPattern rhythm,
+            float dynamics)
         {
             var notes = new List<NoteEvent>();
-            string seedSource = !string.IsNullOrEmpty(profile.Id) ? profile.Id : profile.AvatarName;
-            var rnd = new System.Random(seedSource.GetHashCode());
 
-            int[] stepChoices = { -2, -1, -1, 0, 1, 1, 2 };
+            string seedSource =
+                !string.IsNullOrEmpty(profile.Id)
+                    ? profile.Id
+                    : profile.AvatarName;
+
+            var rnd =
+                new System.Random(
+                    seedSource.GetHashCode()
+                );
+
+
+            int[] stepChoices =
+            {
+                -2,
+                -1,
+                -1,
+                0,
+                1,
+                1,
+                2
+            };
+
+
             int currentDegree = 0;
+
             float beat = 0f;
+
 
             for (int i = 0; i < noteCount; i++)
             {
-                bool isLastNote = i == noteCount - 1;
-                int degree = isLastNote ? 0 : currentDegree; // resolución final a la tónica
+                bool isLastNote =
+                    i == noteCount - 1;
 
-                float duration = PickDuration(rnd);
-                float velocity = (i % 2 == 0) ? 0.85f : 0.65f; // acento simple en notas pares
+                int degree =
+                    isLastNote
+                        ? 0
+                        : currentDegree;
 
-                notes.Add(new NoteEvent
-                {
-                    ScaleDegree = degree,
-                    StartBeat = beat,
-                    DurationBeats = duration,
-                    Velocity = velocity
-                });
+
+                float duration =
+                    PickDuration(
+                        rnd,
+                        rhythm
+                    );
+
+
+                // Acento básico
+                float baseVelocity =
+                    (i % 2 == 0)
+                        ? 0.85f
+                        : 0.65f;
+
+
+                // Aplicamos la dinámica de accesorios
+                float velocity =
+                    Mathf.Clamp01(
+                        baseVelocity *
+                        dynamics
+                    );
+
+
+                notes.Add(
+                    new NoteEvent
+                    {
+                        ScaleDegree = degree,
+
+                        StartBeat = beat,
+
+                        DurationBeats = duration,
+
+                        Velocity = velocity
+                    }
+                );
+
 
                 beat += duration;
 
+
                 if (!isLastNote)
                 {
-                    int step = stepChoices[rnd.Next(stepChoices.Length)];
-                    currentDegree = Mathf.Clamp(currentDegree + step, -1, 7); // evita saltos de registro extremos
+                    int step =
+                        stepChoices[
+                            rnd.Next(
+                                stepChoices.Length
+                            )
+                        ];
+
+                    currentDegree =
+                        Mathf.Clamp(
+                            currentDegree + step,
+                            -1,
+                            7
+                        );
                 }
             }
 
             return notes;
         }
 
-        // Duraciones ponderadas: más corcheas/negras que redondas, para que
-        // un motivo tan corto no se sienta arrastrado.
-        private static float PickDuration(System.Random rnd)
+
+        // ========================================================
+        // RITMO
+        // ========================================================
+
+        private static float PickDuration(
+            System.Random rnd,
+            RhythmPattern rhythm)
         {
-            int roll = rnd.Next(100);
-            if (roll < 45) return 0.5f;   // negra
-            if (roll < 70) return 0.25f;  // corchea
-            if (roll < 90) return 0.75f;  // negra con puntillo
-            return 1f;                    // redonda corta (poco frecuente)
+            switch (rhythm)
+            {
+                case RhythmPattern.Short:
+
+                    // Mayor cantidad de notas cortas
+                    int shortRoll = rnd.Next(100);
+
+                    if (shortRoll < 60)
+                        return 0.25f;
+
+                    if (shortRoll < 90)
+                        return 0.5f;
+
+                    return 0.75f;
+
+
+                case RhythmPattern.Long:
+
+                    // Motivo más pausado
+                    int longRoll = rnd.Next(100);
+
+                    if (longRoll < 45)
+                        return 0.5f;
+
+                    if (longRoll < 80)
+                        return 0.75f;
+
+                    return 1f;
+
+
+                case RhythmPattern.Syncopated:
+
+                    // Alternancia de duraciones
+                    int syncRoll = rnd.Next(100);
+
+                    if (syncRoll < 30)
+                        return 0.25f;
+
+                    if (syncRoll < 70)
+                        return 0.75f;
+
+                    return 0.5f;
+
+
+                case RhythmPattern.Balanced:
+
+                default:
+
+                    int roll = rnd.Next(100);
+
+                    if (roll < 45)
+                        return 0.5f;
+
+                    if (roll < 70)
+                        return 0.25f;
+
+                    if (roll < 90)
+                        return 0.75f;
+
+                    return 1f;
+            }
         }
     }
 }
