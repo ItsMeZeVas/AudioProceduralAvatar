@@ -795,7 +795,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -509, y: 281, z: 588}
+  m_LocalPosition: {x: -509, y: 281, z: 0}
   m_LocalScale: {x: 1, y: 1, z: -0.94192}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2590,7 +2590,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AvatarCreator
   layers:
   - layerName: Hair
-    image: {fileID: 419508715}
+    image: {fileID: 1174229701}
     sprites:
     - {fileID: 21300000, guid: 9e82329f2731f0c41875674365561407, type: 3}
     - {fileID: 21300000, guid: 8d8dc40a5bdea3e4283f5cb4048d4953, type: 3}
@@ -2606,7 +2606,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 7cfa2e389a5ed7346b93b3856c44c536, type: 3}
     currentIndex: 0
   - layerName: Upper Body
-    image: {fileID: 461031690}
+    image: {fileID: 419508715}
     sprites:
     - {fileID: 21300000, guid: 87c7c981e94652441996b882baefebde, type: 3}
     - {fileID: 21300000, guid: 09e2e2a890160174b84face7b71c8b2e, type: 3}
@@ -2614,7 +2614,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 347dbff276309764cb99e39179fd04f7, type: 3}
     currentIndex: 0
   - layerName: Lower Body
-    image: {fileID: 1174229701}
+    image: {fileID: 461031690}
     sprites:
     - {fileID: 21300000, guid: 1f20dea2e22daff43a3aa7ec05ae6ea8, type: 3}
     - {fileID: 21300000, guid: ff7d279f40e2d6f4fbb70a892c0f6ed4, type: 3}
@@ -4405,7 +4405,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1729904204}
   m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3.35, y: 4.09, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
