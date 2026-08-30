@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -19,8 +20,10 @@ namespace AudioProceduralAvatar.World
         [SerializeField] private float moveSpeed = 4f;
         [SerializeField] private AvatarGalleryManager galleryManager;
 
-        [Header("Salto entre planos (Z)")]
+        [Header("Salto entre planos (Z)")]   
         [SerializeField] private float planeTransitionSpeed = 10f;
+        //para cambio automatico en segundos
+        [SerializeField] private float autoSwitchTime = 10f;
 
         [Header("Cámara")]
         [SerializeField] private Transform cameraTransform;
@@ -32,6 +35,9 @@ namespace AudioProceduralAvatar.World
         private Vector3 _cameraVelocity;
         private bool _switchPlaneKeyHeld;
 
+        private float currentTime = 0f;
+        private bool autoDir = true; //true 1, false -1
+
         private void Start()
         {
             _currentPlaneIndex = 0;
@@ -39,10 +45,12 @@ namespace AudioProceduralAvatar.World
             var pos = transform.position;
             pos.z = _targetZ;
             transform.position = pos;
+            currentTime = 0f;
         }
 
         private void Update()
         {
+            updateTimer();
             HandleHorizontalMovement();
             HandlePlaneSwitch();
             HandleZTransition();
@@ -82,6 +90,7 @@ namespace AudioProceduralAvatar.World
 
             if (forwardPressed) TryChangePlane(+1);
             else if (backwardPressed) TryChangePlane(-1);
+            else if (currentTime >= autoSwitchTime) autoSwitchPlane();
         }
 
         private void TryChangePlane(int direction)
@@ -94,6 +103,7 @@ namespace AudioProceduralAvatar.World
 
             _currentPlaneIndex = targetIndex;
             _targetZ = GetPlaneZ(_currentPlaneIndex);
+            currentTime = 0;
         }
 
         private void HandleZTransition()
@@ -138,6 +148,24 @@ namespace AudioProceduralAvatar.World
                 ? Input.GetKeyDown(KeyCode.UpArrow)
                 : Input.GetKeyDown(KeyCode.DownArrow);
 #endif
+        }
+
+        //Cambio automatico entre planos z
+
+        private void updateTimer()
+        {
+            currentTime += Time.deltaTime;
+        }
+        private void autoSwitchPlane()
+        {
+            if (_currentPlaneIndex == 0 || _currentPlaneIndex == galleryManager.Planes.Count-1)
+            {
+                if(_currentPlaneIndex == 0) autoDir = true;
+                else autoDir = false;
+            }
+
+            TryChangePlane(autoDir == true ? 1 : -1);
+            
         }
     }
 }
