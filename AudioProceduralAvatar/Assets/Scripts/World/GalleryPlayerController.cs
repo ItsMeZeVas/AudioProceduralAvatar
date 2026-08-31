@@ -24,6 +24,7 @@ namespace AudioProceduralAvatar.World
         [SerializeField] private float planeTransitionSpeed = 10f;
         //para cambio automatico en segundos
         [SerializeField] private float autoSwitchTime = 10f;
+        [SerializeField] private float autoDelayTime = 5f;
 
         [Header("Cámara")]
         [SerializeField] private Transform cameraTransform;
@@ -36,7 +37,9 @@ namespace AudioProceduralAvatar.World
         private bool _switchPlaneKeyHeld;
 
         private float currentTime = 0f;
+        private float delayTime = 0f;
         private bool autoDir = true; //true 1, false -1
+        private bool autoMode = true;
 
         private void Start()
         {
@@ -50,7 +53,11 @@ namespace AudioProceduralAvatar.World
 
         private void Update()
         {
-            updateTimer();
+            if (autoMode)
+                UpdateTimer();
+            else
+                UpdateDelay();
+
             HandleHorizontalMovement();
             HandlePlaneSwitch();
             HandleZTransition();
@@ -71,6 +78,7 @@ namespace AudioProceduralAvatar.World
             float horizontal = ReadAxis(negativeLeft: true);
             if (Mathf.Approximately(horizontal, 0f)) return;
 
+            TurnOffAuto();
             Vector3 pos = transform.position;
             pos.x += horizontal * moveSpeed * Time.deltaTime;
 
@@ -88,9 +96,17 @@ namespace AudioProceduralAvatar.World
             bool forwardPressed = KeyDownThisFrame(forward: true);
             bool backwardPressed = KeyDownThisFrame(forward: false);
 
-            if (forwardPressed) TryChangePlane(+1);
-            else if (backwardPressed) TryChangePlane(-1);
-            else if (currentTime >= autoSwitchTime) autoSwitchPlane();
+            if (forwardPressed)
+            {
+                TurnOffAuto();
+                TryChangePlane(+1);
+            }
+            else if (backwardPressed)
+            {
+                TurnOffAuto();
+                TryChangePlane(-1);
+            }
+            else if (autoMode && currentTime >= autoSwitchTime) AutoSwitchPlane();
         }
 
         private void TryChangePlane(int direction)
@@ -103,7 +119,7 @@ namespace AudioProceduralAvatar.World
 
             _currentPlaneIndex = targetIndex;
             _targetZ = GetPlaneZ(_currentPlaneIndex);
-            currentTime = 0;
+            currentTime = 0; 
         }
 
         private void HandleZTransition()
@@ -152,11 +168,11 @@ namespace AudioProceduralAvatar.World
 
         //Cambio automatico entre planos z
 
-        private void updateTimer()
+        private void UpdateTimer()
         {
             currentTime += Time.deltaTime;
         }
-        private void autoSwitchPlane()
+        private void AutoSwitchPlane()
         {
             if (_currentPlaneIndex == 0 || _currentPlaneIndex == galleryManager.Planes.Count-1)
             {
@@ -167,5 +183,20 @@ namespace AudioProceduralAvatar.World
             TryChangePlane(autoDir == true ? 1 : -1);
             
         }
+
+        private void TurnOffAuto()
+        {
+            autoMode = false;
+            delayTime = 0;
+        }
+        private void UpdateDelay()
+        {
+            delayTime += Time.deltaTime;
+            if (delayTime >= autoDelayTime)
+            {
+                autoMode = true;
+            }
+        }
+
     }
 }

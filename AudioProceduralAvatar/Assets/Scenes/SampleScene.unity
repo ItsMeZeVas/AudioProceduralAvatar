@@ -490,6 +490,7 @@ MonoBehaviour:
   moveSpeed: 4
   galleryManager: {fileID: 1560219774}
   planeTransitionSpeed: 10
+  autoSwitchTime: 10
   cameraTransform: {fileID: 330585546}
   cameraOffset: {x: 0, y: 3, z: 5}
   cameraSmoothTime: 0.15
@@ -903,7 +904,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &587386955
 RectTransform:
   m_ObjectHideFlags: 0
