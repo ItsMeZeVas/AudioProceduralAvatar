@@ -1,8 +1,10 @@
+using AudioProceduralAvatar.Audio;
+using AudioProceduralAvatar.Avatar;
 using System;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
-using AudioProceduralAvatar.Avatar;
-using AudioProceduralAvatar.Audio;
+using static UnityEngine.GraphicsBuffer;
 namespace AudioProceduralAvatar.World
 {
     /// <summary>
@@ -63,13 +65,13 @@ namespace AudioProceduralAvatar.World
                 for (int i = 0; i < authoredPlaneMarkers.Count; i++)
                 {
                     float z = authoredPlaneMarkers[i] != null ? authoredPlaneMarkers[i].position.z : i * planeSpacingZ;
-                    _planes.Add(new GalleryPlane(i, z, avatarsPerPlane));
+                    _planes.Add(new GalleryPlane(i, z, avatarsPerPlane, transform));
                 }
             }
             else
             {
                 // Sin planos autorados: arrancamos con uno solo en Z=0.
-                _planes.Add(new GalleryPlane(0, 0f, avatarsPerPlane));
+                _planes.Add(new GalleryPlane(0, 0f, avatarsPerPlane, transform));
             }
         }
 
@@ -97,7 +99,8 @@ namespace AudioProceduralAvatar.World
             }
 
             var last = _planes[_planes.Count - 1];
-            var newPlane = new GalleryPlane(_planes.Count, last.ZPosition + planeSpacingZ, avatarsPerPlane);
+
+            var newPlane = new GalleryPlane(_planes.Count, last.ZPosition + planeSpacingZ, avatarsPerPlane, transform);
             _planes.Add(newPlane);
             PlaneCreated?.Invoke(newPlane);
             return newPlane;
@@ -118,11 +121,12 @@ namespace AudioProceduralAvatar.World
                 origin.y,
                 plane.ZPosition);
 
-            var display = Instantiate(avatarPrefab, position, Quaternion.identity, transform);
+            var display = Instantiate(avatarPrefab, position, Quaternion.identity, plane.Transform);
             display.Initialize(instance);
             display.Selected += HandleAvatarSelected;
 
             plane.Occupants.Add(display);
+
 
             // TODO (rendimiento, riesgo ya identificado en la propuesta):
             // si la galería acumula cientos de avatares durante horas de evento,
@@ -152,5 +156,12 @@ namespace AudioProceduralAvatar.World
 
             AvatarSelected?.Invoke(display);
         }
+
+        //Para manejo de cambio de planos
+        public void UpdatePlaneList()
+        {
+            _planes.Sort ((planeA, planeB) => planeA.Index.CompareTo(planeB.Index));
+        }
+
     }
 }

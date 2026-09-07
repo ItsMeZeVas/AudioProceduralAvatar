@@ -1,9 +1,8 @@
 using NUnit.Framework.Constraints;
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
 #endif
 
 namespace AudioProceduralAvatar.World
@@ -11,12 +10,12 @@ namespace AudioProceduralAvatar.World
     /// <summary>
     /// Movimiento del visitante dentro del diorama multiplano:
     /// - Eje X: side-scroller libre dentro del plano actual (A/D o flechas izq/der),
-    ///   acotado a los avatares presentesp en ese plano.
+    ///   acotado a los avatares presentes en ese plano.
     /// - Eje Z: salto discreto entre planos con tecla dedicada (flechas arriba/abajo),
     ///   con una transición corta (no instantánea, no continua).
     /// La cámara sigue al jugador en ambos ejes.
     /// </summary>
-    public class GalleryPlayerController : MonoBehaviour
+    public class GalleryPlayerController1 : MonoBehaviour
     {
         [Header("Movimiento dentro del plano (X)")]
         [SerializeField] private float moveSpeed = 4f;
@@ -42,7 +41,6 @@ namespace AudioProceduralAvatar.World
         private float delayTime = 0f;
         private bool autoDir = true; //true 1, false -1
         private bool autoMode = true;
-        private bool switchPlane = false;
 
         private void Start()
         {
@@ -53,7 +51,7 @@ namespace AudioProceduralAvatar.World
             transform.position = pos;
             currentTime = 0f;
         }
-          
+
         private void Update()
         {
             if (autoMode)
@@ -63,43 +61,7 @@ namespace AudioProceduralAvatar.World
 
             HandleHorizontalMovement();
             HandlePlaneSwitch();
-
-            if(switchPlane)
-            {
-                bool edgeTransition = false;
-                bool transitionFinished = false;
-                int aux = galleryManager.Planes.Count;
-                foreach (var plane in galleryManager.Planes)
-                {
-                    if (plane.Index == 0 && plane.TargetIndex == (galleryManager.Planes.Count - 1) && edgeTransition == false)
-                    {
-                        plane.HandleZInstant();
-                        aux--;
-                        edgeTransition = true;
-                    }
-                    else if (plane.Index == (galleryManager.Planes.Count - 1) && plane.TargetIndex == 0 && edgeTransition == false)
-                    {
-                        plane.HandleZInstant();
-                        aux--;
-                        edgeTransition = true;
-                    }
-                    else
-                    {
-                        transitionFinished = plane.HandleZTransition(planeTransitionSpeed);
-                        if (transitionFinished)
-                            aux--;
-                    }
-                }
-
-                if (aux == 0)
-                {
-                    galleryManager.UpdatePlaneList();
-                    switchPlane = false;
-                }
-            }
-           
-
-            //HandleZTransition();
+            HandleZTransition();
         }
 
         private void LateUpdate()
@@ -138,14 +100,14 @@ namespace AudioProceduralAvatar.World
             if (forwardPressed)
             {
                 TurnOffAuto();
-                TryChangePlanes(-1);
+                TryChangePlane(+1);
             }
             else if (backwardPressed)
             {
                 TurnOffAuto();
-                TryChangePlanes(1);
+                TryChangePlane(-1);
             }
-            else if (autoMode && currentTime >= autoSwitchTime) AutoSwitchPlanes();
+            else if (autoMode && currentTime >= autoSwitchTime) AutoSwitchPlane();
         }
 
         private void TryChangePlane(int direction)
@@ -161,36 +123,8 @@ namespace AudioProceduralAvatar.World
             currentTime = 0; 
         }
 
-        private void TryChangePlanes(int direction)
-        {
-            if (galleryManager == null) return;
-
-            foreach (var plane in galleryManager.Planes)
-            {
-                int targetIndex = plane.Index + direction;
-
-                if (plane.Index == 0 && galleryManager.Planes.Count > 1 && direction == -1)
-                {
-                    targetIndex = galleryManager.Planes.Count - 1;
-                }
-                else if (plane.Index == (galleryManager.Planes.Count-1) && galleryManager.Planes.Count > 1 && direction == 1)
-                {
-                    targetIndex = 0;
-                }
-
-                Debug.Log(targetIndex);
-                plane.TargetZ = GetPlaneZ(targetIndex);
-                plane.TargetIndex = targetIndex;
-            }
-
-            currentTime = 0;
-            switchPlane = true;
-        }
-
-
         private void HandleZTransition()
         {
-            currentTime = 0;
             Vector3 pos = transform.position;
             if (Mathf.Approximately(pos.z, _targetZ)) return;
 
@@ -247,12 +181,8 @@ namespace AudioProceduralAvatar.World
                 else autoDir = false;
             }
 
-            TryChangePlanes(autoDir == true ? 1 : -1);
+            TryChangePlane(autoDir == true ? 1 : -1);
             
-        }
-        private void AutoSwitchPlanes()
-        {
-            TryChangePlanes(-1);
         }
 
         private void TurnOffAuto()
@@ -268,6 +198,8 @@ namespace AudioProceduralAvatar.World
                 autoMode = true;
             }
         }
+
+
 
     }
 }
