@@ -25,6 +25,22 @@ public class AvatarCreator : MonoBehaviour
         }
     }
 
+    public void SetIndex(string layerName, int index)
+    {
+        foreach (AvatarLayer layer in layers)
+        {
+            if (layer.layerName == layerName)
+            {
+                if (layer.sprites == null || index < 0 || index >= layer.sprites.Length)
+                    return;
+
+                layer.currentIndex = index;
+                layer.UpdateSprite();
+                return;
+            }
+        }
+    }
+
     public void Previous(string layerName)
     {
         foreach (AvatarLayer layer in layers)
