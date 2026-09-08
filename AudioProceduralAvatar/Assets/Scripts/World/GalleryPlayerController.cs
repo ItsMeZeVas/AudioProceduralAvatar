@@ -44,6 +44,10 @@ namespace AudioProceduralAvatar.World
         private bool autoMode = true;
         private bool switchPlane = false;
 
+        bool edgeTransition = false;
+        bool transitionFinished = false;
+        float planeSpacingZ = 2.5f;
+
         private void Start()
         {
             _currentPlaneIndex = 0;
@@ -66,22 +70,16 @@ namespace AudioProceduralAvatar.World
 
             if(switchPlane)
             {
-                bool edgeTransition = false;
-                bool transitionFinished = false;
                 int aux = galleryManager.Planes.Count;
                 foreach (var plane in galleryManager.Planes)
                 {
                     if (plane.Index == 0 && plane.TargetIndex == (galleryManager.Planes.Count - 1) && edgeTransition == false)
                     {
-                        plane.HandleZInstant();
-                        aux--;
-                        edgeTransition = true;
+                        edgeTransition = plane.HandleZExit(planeSpacingZ, planeTransitionSpeed);
                     }
                     else if (plane.Index == (galleryManager.Planes.Count - 1) && plane.TargetIndex == 0 && edgeTransition == false)
                     {
-                        plane.HandleZInstant();
-                        aux--;
-                        edgeTransition = true;
+                        edgeTransition = plane.HandleZExit(-planeSpacingZ, planeTransitionSpeed);
                     }
                     else
                     {
@@ -95,6 +93,8 @@ namespace AudioProceduralAvatar.World
                 {
                     galleryManager.UpdatePlaneList();
                     switchPlane = false;
+                    edgeTransition = false;
+                    transitionFinished = false;
                 }
             }
            
@@ -178,7 +178,6 @@ namespace AudioProceduralAvatar.World
                     targetIndex = 0;
                 }
 
-                Debug.Log(targetIndex);
                 plane.TargetZ = GetPlaneZ(targetIndex);
                 plane.TargetIndex = targetIndex;
             }

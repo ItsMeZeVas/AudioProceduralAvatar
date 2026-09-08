@@ -19,8 +19,10 @@ namespace AudioProceduralAvatar.World
         public int TargetIndex = 0;
         public List<AvatarDisplay> Occupants = new();
         public Transform Transform;
-
         public bool HasRoom => Occupants.Count < Capacity;
+
+        private bool exitStarted = false;
+        private float ExitZ = 0f;
 
         public GalleryPlane(int index, float zPosition, int capacity, Transform parent)
         {
@@ -64,13 +66,37 @@ namespace AudioProceduralAvatar.World
             return false;
         }
 
-        public void HandleZInstant()
+
+        public bool HandleZExit(float planeSpacingZ, float planeTransitionSpeed)
         {
             Vector3 pos = Transform.position;
-            pos.z = TargetZ;
+            if(exitStarted == false)
+            {
+                ExitZ = pos.z + planeSpacingZ;
+                Debug.Log(pos.z + planeSpacingZ);
+                Debug.Log(pos.z);
+                exitStarted = true;
+            }
+
+            if (Mathf.Approximately(pos.z, ExitZ))
+            {
+                pos.z = ExitZ;
+                Transform.position = pos;
+                HandleZInstant(planeSpacingZ);
+                exitStarted = false;
+                return true;
+            }
+
+            pos.z = Mathf.MoveTowards(pos.z, ExitZ, planeTransitionSpeed * Time.deltaTime);
+
             Transform.position = pos;
-            Index = TargetIndex;
-            ZPosition = TargetZ;
+            return false;
+        }
+        public void HandleZInstant(float planeSpacingZ)
+        {
+            Vector3 pos = Transform.position;
+            pos.z = TargetZ - planeSpacingZ;
+            Transform.position = pos;
             return;
         }
 
