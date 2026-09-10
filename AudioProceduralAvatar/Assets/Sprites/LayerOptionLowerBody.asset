@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be210f4d7f515a3479fd15c55cc657ed, type: 3}
+  m_Name: LayerOptionLowerBody
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarLayerOptionSet
+  layerName: LowerBody
+  options:
+  - {fileID: 11400000, guid: d4ec3c7f0368d3b499781fe3ef7497e1, type: 2}
+  - {fileID: 11400000, guid: 92406ad7932035c40a16db91c541a35e, type: 2}
+  - {fileID: 11400000, guid: 596152863e100574d85102c4cad6ebf6, type: 2}

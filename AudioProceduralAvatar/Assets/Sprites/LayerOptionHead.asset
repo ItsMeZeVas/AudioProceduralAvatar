@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be210f4d7f515a3479fd15c55cc657ed, type: 3}
+  m_Name: LayerOptionHead
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarLayerOptionSet
+  layerName: Head
+  options:
+  - {fileID: 11400000, guid: 2f29dce3e47afc44fac50412016d135e, type: 2}
+  - {fileID: 11400000, guid: a880797f76da99d47a9bab039da3e80a, type: 2}
+  - {fileID: 11400000, guid: cbab80ba0c96ac54e93530f646be9949, type: 2}
+  - {fileID: 11400000, guid: 8a71ba44b52f09040b97d2fe92ec75ea, type: 2}
+  - {fileID: 11400000, guid: 6cafbb63413660b48a0c4bebbcb63eb8, type: 2}
+  - {fileID: 11400000, guid: af4cd53749cd9fd4eac3d504441a55de, type: 2}
+  - {fileID: 11400000, guid: b6751c6a46b86f042b28dd81ab8d21c1, type: 2}
+  - {fileID: 11400000, guid: 12ab97e179116614dbdf6a21ac1201d0, type: 2}
+  - {fileID: 11400000, guid: 84d525e36fd9bb24db387e233fca3f0e, type: 2}
+  - {fileID: 11400000, guid: 6a00c544eb7f0304a8877079d0300128, type: 2}

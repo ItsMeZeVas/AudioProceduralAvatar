@@ -491,6 +491,7 @@ MonoBehaviour:
   galleryManager: {fileID: 1560219774}
   planeTransitionSpeed: 10
   autoSwitchTime: 10
+  autoDelayTime: 5
   cameraTransform: {fileID: 330585546}
   cameraOffset: {x: 0, y: 3, z: 5}
   cameraSmoothTime: 0.15
@@ -1755,6 +1756,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1499239743}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
+--- !u!1 &1497986870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1497986872}
+  - component: {fileID: 1497986871}
+  m_Layer: 0
+  m_Name: TestSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1497986871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497986870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8080021bafe7f142a56d57c9dfec080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarWorldTestSpawner
+  rigPrefab: {fileID: 1138537022068430574, guid: db351b6aaeb2fbe43bbb043a307ddf64, type: 3}
+  database: {fileID: 11400000, guid: cc9d4f4e9e862994bb507c6ac1a08a8b, type: 2}
+  testSelections:
+  - layerName: Hair
+    spriteIndex: 0
+  - layerName: Head
+    spriteIndex: 1
+--- !u!4 &1497986872
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497986870}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 687.2189, y: 178.52077, z: 1001.71326}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1499239742
 GameObject:
   m_ObjectHideFlags: 0
@@ -2195,3 +2247,4 @@ SceneRoots:
   - {fileID: 3298359933543402571}
   - {fileID: 1019174305}
   - {fileID: 1122865821}
+  - {fileID: 1497986872}

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be210f4d7f515a3479fd15c55cc657ed, type: 3}
+  m_Name: LayerOptionAccesories
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarLayerOptionSet
+  layerName: Accesories
+  options:
+  - {fileID: 11400000, guid: ee65f27a231962e45a5e3714793ad9c5, type: 2}
+  - {fileID: 11400000, guid: 44d3e478ae38ba64ba735d12ee7c9b27, type: 2}
+  - {fileID: 11400000, guid: a7fdc5567e448064f805a6f8bbba253b, type: 2}
+  - {fileID: 11400000, guid: c84fe1bc30dd0a443a18bdee7737252f, type: 2}
+  - {fileID: 11400000, guid: 7e625ef26822151448a6ad88b8a6ebe5, type: 2}
+  - {fileID: 11400000, guid: 4738c5249031a174a841b6b482724be2, type: 2}
+  - {fileID: 11400000, guid: 550a1f751e6e56a41a9628bb2c89ace4, type: 2}
+  - {fileID: 11400000, guid: 959942c9876249a488e5e48917b57088, type: 2}

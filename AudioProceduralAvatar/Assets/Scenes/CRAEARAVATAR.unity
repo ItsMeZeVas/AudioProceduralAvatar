@@ -6304,6 +6304,7 @@ MonoBehaviour:
   - layerName: Accessories
     image: {fileID: 1589243342}
     sprites:
+    - {fileID: 21300000, guid: 4694b3c326ac94f4287c7adbc9cd0354, type: 3}
     - {fileID: 21300000, guid: 693b6296994e6bb43ac2245b99e6fece, type: 3}
     - {fileID: 21300000, guid: d36cc42df9d28414691e5cc082cfdacd, type: 3}
     - {fileID: 21300000, guid: 3e4d70740f825fb48853c7846b22c744, type: 3}
@@ -6311,7 +6312,6 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 3813e3c75b63f5d40b5a00a7d593500b, type: 3}
     - {fileID: 21300000, guid: 3f34bc4b8d461e646ba2cd2eabcfabb9, type: 3}
     - {fileID: 21300000, guid: 6f18b2a82b440324f9488bddafe463e6, type: 3}
-    - {fileID: 21300000, guid: 4694b3c326ac94f4287c7adbc9cd0354, type: 3}
     currentIndex: 0
 --- !u!1 &1040238842
 GameObject:
