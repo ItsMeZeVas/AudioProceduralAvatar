@@ -1789,9 +1789,11 @@ MonoBehaviour:
   database: {fileID: 11400000, guid: cc9d4f4e9e862994bb507c6ac1a08a8b, type: 2}
   testSelections:
   - layerName: Hair
-    spriteIndex: 0
+    spriteIndex: 10
   - layerName: Head
-    spriteIndex: 1
+    spriteIndex: 4
+  - layerName: Body
+    spriteIndex: 4
 --- !u!4 &1497986872
 Transform:
   m_ObjectHideFlags: 0

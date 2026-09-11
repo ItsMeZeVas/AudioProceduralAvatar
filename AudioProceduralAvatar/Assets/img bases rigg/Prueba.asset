@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948e29a483acc8645bc59d33ae4c9870, type: 3}
+  m_Name: Prueba
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarPieceSet
+  head: {fileID: 7769904924924907556, guid: 365bfab83ebae0b4bb618ae20b036d0f, type: 3}
+  torso: {fileID: -7934189199332672486, guid: 56f62f670d255db49b4e4b27f26bc25c, type: 3}
+  lArm: {fileID: 6438034618110374800, guid: 56f62f670d255db49b4e4b27f26bc25c, type: 3}
+  rArm: {fileID: -9079295682295196616, guid: 56f62f670d255db49b4e4b27f26bc25c, type: 3}
+  lLeg: {fileID: 6994401068514390155, guid: eab209501619ea644862f60d7fdfe17b, type: 3}
+  rLeg: {fileID: 4730876203780073076, guid: eab209501619ea644862f60d7fdfe17b, type: 3}
+  eyes: {fileID: -4880009056402712795, guid: 3b400e01730b3bc4da19d9dcd3728032, type: 3}
+  hair: {fileID: 1601044096191660473, guid: 229f70dce9cb374489d3b9d11f2e47c7, type: 3}
+  subBoca: {fileID: 8634371922866129019, guid: d076cbe3a2b2ad446baf7c925e5535b0, type: 3}
+  subBarba: {fileID: 0}
+  accessory: {fileID: 1251079118975058508, guid: 168259dc90cfa0f49adc447f6f486698, type: 3}
