@@ -33,7 +33,7 @@ public class AvatarWorldTestSpawner : MonoBehaviour
         foreach (var selection in testSelections)
         {
             AvatarPieceSet piece = database.Resolve(selection.layerName, selection.spriteIndex);
-            builder.Apply(piece); // solo llena los campos no nulos, no borra lo anterior
+            builder.Apply(selection.layerName, piece);
         }
     }
 }

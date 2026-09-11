@@ -9,6 +9,7 @@ using UnityEngine;
 public class AvatarSkeletonBuilderTester : MonoBehaviour
 {
     public AvatarPieceSet pieceSetDePrueba;
+    public string layerNameDePrueba = "UpperBody";
 
     [ContextMenu("Apply Test")]
     public void ApplyTest()
@@ -27,7 +28,7 @@ public class AvatarSkeletonBuilderTester : MonoBehaviour
             return;
         }
 
-        builder.Apply(pieceSetDePrueba);
+        builder.Apply(layerNameDePrueba, pieceSetDePrueba);
         Debug.Log("AvatarSkeletonBuilderTester: Apply ejecutado.");
     }
 }

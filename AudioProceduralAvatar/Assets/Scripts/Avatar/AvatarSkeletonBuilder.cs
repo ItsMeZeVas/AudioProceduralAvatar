@@ -2,13 +2,20 @@ using UnityEngine;
 
 public class AvatarSkeletonBuilder : MonoBehaviour
 {
-    [Header("Renderers del rig (arrastrar desde el Prefab instanciado)")]
-    public SpriteRenderer headRenderer;
-    public SpriteRenderer torsoRenderer;
-    public SpriteRenderer lArmRenderer;
-    public SpriteRenderer rArmRenderer;
-    public SpriteRenderer lLegRenderer;
-    public SpriteRenderer rLegRenderer;
+    [Header("Piel (Body) - se ve donde la ropa no cubre")]
+    public SpriteRenderer skinHeadRenderer;
+    public SpriteRenderer skinTorsoRenderer;
+    public SpriteRenderer skinLArmRenderer;
+    public SpriteRenderer skinRArmRenderer;
+    public SpriteRenderer skinLLegRenderer;
+    public SpriteRenderer skinRLegRenderer;
+
+    [Header("Ropa (UpperBody / LowerBody) - ranuras existentes en el rig, ej. OS7/OI2")]
+    public SpriteRenderer upperBodyTorsoRenderer;
+    public SpriteRenderer upperBodyLArmRenderer;
+    public SpriteRenderer upperBodyRArmRenderer;
+    public SpriteRenderer lowerBodyLLegRenderer;
+    public SpriteRenderer lowerBodyRLegRenderer;
 
     [Header("Piezas rígidas (cuelgan de la cabeza)")]
     public SpriteRenderer eyesRenderer;
@@ -17,25 +24,66 @@ public class AvatarSkeletonBuilder : MonoBehaviour
     public SpriteRenderer subBarbaRenderer;
     public SpriteRenderer accessoryRenderer;
 
-    public void Apply(AvatarPieceSet pieces)
+    // layerName debe coincidir EXACTO con AvatarLayer.layerName de la
+    // personalización (ej. "Body", "UpperBody", "LowerBody", "Hair", ...)
+    public void Apply(string layerName, AvatarPieceSet pieces)
     {
         if (pieces == null)
         {
-            Debug.LogWarning("AvatarSkeletonBuilder: no se recibió ningún AvatarPieceSet.");
+            Debug.LogWarning($"AvatarSkeletonBuilder: no se recibió AvatarPieceSet para la capa '{layerName}'.");
             return;
         }
 
-        SetIfNotNull(headRenderer, pieces.head);
-        SetIfNotNull(torsoRenderer, pieces.torso);
-        SetIfNotNull(lArmRenderer, pieces.lArm);
-        SetIfNotNull(rArmRenderer, pieces.rArm);
-        SetIfNotNull(lLegRenderer, pieces.lLeg);
-        SetIfNotNull(rLegRenderer, pieces.rLeg);
-        SetIfNotNull(eyesRenderer, pieces.eyes);
-        SetIfNotNull(hairRenderer, pieces.hair);
-        SetIfNotNull(subBocaRenderer, pieces.subBoca);
-        SetIfNotNull(subBarbaRenderer, pieces.subBarba);
-        SetIfNotNull(accessoryRenderer, pieces.accessory);
+        switch (layerName)
+        {
+            case "Body":
+                SetIfNotNull(skinHeadRenderer, pieces.head);
+                SetIfNotNull(skinTorsoRenderer, pieces.torso);
+                SetIfNotNull(skinLArmRenderer, pieces.lArm);
+                SetIfNotNull(skinRArmRenderer, pieces.rArm);
+                SetIfNotNull(skinLLegRenderer, pieces.lLeg);
+                SetIfNotNull(skinRLegRenderer, pieces.rLeg);
+                break;
+
+            case "UpperBody":
+                SetIfNotNull(upperBodyTorsoRenderer, pieces.torso);
+                SetIfNotNull(upperBodyLArmRenderer, pieces.lArm);
+                SetIfNotNull(upperBodyRArmRenderer, pieces.rArm);
+                break;
+
+            case "LowerBody":
+                SetIfNotNull(lowerBodyLLegRenderer, pieces.lLeg);
+                SetIfNotNull(lowerBodyRLegRenderer, pieces.rLeg);
+                break;
+
+            case "Head":
+                SetIfNotNull(skinHeadRenderer, pieces.head);
+                break;
+
+            case "Hair":
+                SetIfNotNull(hairRenderer, pieces.hair);
+                break;
+
+            case "Eyes":
+                SetIfNotNull(eyesRenderer, pieces.eyes);
+                break;
+
+            case "SubBoca":
+                SetIfNotNull(subBocaRenderer, pieces.subBoca);
+                break;
+
+            case "SubBarba":
+                SetIfNotNull(subBarbaRenderer, pieces.subBarba);
+                break;
+
+            case "Accessories":
+                SetIfNotNull(accessoryRenderer, pieces.accessory);
+                break;
+
+            default:
+                Debug.LogWarning($"AvatarSkeletonBuilder: layerName '{layerName}' no reconocido.");
+                break;
+        }
     }
 
     private void SetIfNotNull(SpriteRenderer renderer, Sprite sprite)
@@ -45,9 +93,7 @@ public class AvatarSkeletonBuilder : MonoBehaviour
 
         renderer.sprite = sprite;
 
-        // Sprite Skin a veces no refresca la deformación al cambiar el sprite
-        // por código en tiempo de ejecución. Forzamos un refresco apagando y
-        // prendiendo el componente para que recalcule la malla correctamente.
+        // Forzar refresco de Sprite Skin tras el cambio de sprite en runtime.
         var spriteSkin = renderer.GetComponent<UnityEngine.U2D.Animation.SpriteSkin>();
         if (spriteSkin != null)
         {
