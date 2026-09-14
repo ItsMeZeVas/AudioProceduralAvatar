@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334016228ef9c6541bd0e0019e1f38f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AvatarSkeletonBuilderTester
-  pieceSetDePrueba: {fileID: 11400000, guid: bf0da6ab8c7bce54cbce0c93a8d28a54, type: 2}
+  pieceSetDePrueba: {fileID: 11400000, guid: f7cce218711898446b78636327dded56, type: 2}
   layerNameDePrueba: UpperBody
 --- !u!4 &208762395 stripped
 Transform:
