@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Prueba 1
   m_EditorClassIdentifier: Assembly-CSharp::AvatarPieceSet
   head: {fileID: 7769904924924907556, guid: 365bfab83ebae0b4bb618ae20b036d0f, type: 3}
-  torso: {fileID: -6854255881952759964, guid: c14dc3da0f5fd2541b44cae04e3ec0e6, type: 3}
-  lArm: {fileID: -1242496308567018430, guid: c14dc3da0f5fd2541b44cae04e3ec0e6, type: 3}
-  rArm: {fileID: -1219691211229057368, guid: c14dc3da0f5fd2541b44cae04e3ec0e6, type: 3}
+  torso: {fileID: -7934189199332672486, guid: 56f62f670d255db49b4e4b27f26bc25c, type: 3}
+  lArm: {fileID: 6438034618110374800, guid: 56f62f670d255db49b4e4b27f26bc25c, type: 3}
+  rArm: {fileID: -9079295682295196616, guid: 56f62f670d255db49b4e4b27f26bc25c, type: 3}
   lLeg: {fileID: 6994401068514390155, guid: eab209501619ea644862f60d7fdfe17b, type: 3}
   rLeg: {fileID: 4730876203780073076, guid: eab209501619ea644862f60d7fdfe17b, type: 3}
   eyes: {fileID: -4880009056402712795, guid: 3b400e01730b3bc4da19d9dcd3728032, type: 3}

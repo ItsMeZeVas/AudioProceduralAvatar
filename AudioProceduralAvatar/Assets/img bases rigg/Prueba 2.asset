@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 948e29a483acc8645bc59d33ae4c9870, type: 3}
-  m_Name: Prueba
+  m_Name: Prueba 2
   m_EditorClassIdentifier: Assembly-CSharp::AvatarPieceSet
   head: {fileID: 7769904924924907556, guid: 365bfab83ebae0b4bb618ae20b036d0f, type: 3}
   torso: {fileID: -6854255881952759964, guid: c14dc3da0f5fd2541b44cae04e3ec0e6, type: 3}
