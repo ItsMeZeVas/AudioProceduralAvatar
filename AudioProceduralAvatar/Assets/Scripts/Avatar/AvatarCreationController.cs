@@ -36,6 +36,13 @@ namespace AudioProceduralAvatar.Avatar
         private LeitmotivGenerator leitmotivGenerator;
 
 
+        [Header("=== CÓDIGOS SECRETOS ===")]
+
+        [Tooltip("Si el código ingresado coincide con uno de esta base de datos, se carga ese avatar ya armado en vez de usar las capas seleccionadas en pantalla.")]
+        [SerializeField]
+        private SecretPresetDatabase secretPresetDatabase;
+
+
         [Tooltip(
             "Todas las capas que deben guardarse en el perfil."
         )]
@@ -90,6 +97,17 @@ namespace AudioProceduralAvatar.Avatar
                 avatarData.GetStudentCode();
 
 
+            // Si el código coincide con un preset secreto, se usa ese
+            // avatar ya armado en vez de las capas elegidas en pantalla.
+            // El código sigue pasando por la MISMA validación de abajo
+            // (incluida la unicidad), así que un código secreto solo
+            // se puede usar una vez.
+            SecretAvatarPreset matchedPreset =
+                secretPresetDatabase != null
+                    ? secretPresetDatabase.Find(code)
+                    : null;
+
+
             if (
                 !Validate(
                     name,
@@ -114,10 +132,9 @@ namespace AudioProceduralAvatar.Avatar
 
 
             AvatarProfile profile =
-                BuildProfile(
-                    name,
-                    code
-                );
+                matchedPreset != null
+                    ? matchedPreset.BuildProfile(name, code)
+                    : BuildProfile(name, code);
 
 
             LeitmotivData leitmotiv =
@@ -149,7 +166,8 @@ namespace AudioProceduralAvatar.Avatar
 
             Debug.Log(
                 $"[AvatarCreationController] " +
-                $"'{profile.AvatarName}' guardado. " +
+                $"'{profile.AvatarName}' guardado " +
+                (matchedPreset != null ? "(preset secreto). " : ". ") +
 
                 $"Scale={leitmotiv.Scale} | " +
 

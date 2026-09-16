@@ -11090,6 +11090,7 @@ MonoBehaviour:
   avatarCapture: {fileID: 0}
   skinToneSelector: {fileID: 71233572}
   leitmotivGenerator: {fileID: 40972089}
+  secretPresetDatabase: {fileID: 11400000, guid: 4483bc3946b27f14d8a1bf0d98759966, type: 2}
   layerNames:
   - Body
   - Head
