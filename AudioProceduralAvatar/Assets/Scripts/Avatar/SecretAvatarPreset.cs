@@ -11,6 +11,9 @@ namespace AudioProceduralAvatar.Avatar
         [Tooltip("Debe coincidir EXACTO con AvatarLayer.layerName")]
         public string layerName;
 
+        [Tooltip("Marca esto si este personaje secreto NO debe tener nada en esta capa (ej. sin pelo). Si está marcado, se ignoran spriteIndex y previewSprite y la capa queda oculta.")]
+        public bool noPiece;
+
         [Tooltip("Índice que se guarda en el JSON del avatar. Usa un índice NEGATIVO (-1, -2, ...) para una prenda secreta (agregada en secretOptions de AvatarLayerOptionSet). Usa un índice normal (0, 1, 2...) si para esta capa quieres usar una prenda que SÍ es pública.")]
         public int spriteIndex;
 
@@ -57,6 +60,9 @@ namespace AudioProceduralAvatar.Avatar
 
             foreach (var layer in layers)
             {
+                if (layer.noPiece)
+                    continue;
+
                 profile.Layers.Add(new LayerSelection
                 {
                     LayerName = layer.layerName,

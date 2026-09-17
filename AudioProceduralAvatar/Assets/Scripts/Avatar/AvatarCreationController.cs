@@ -76,9 +76,17 @@ namespace AudioProceduralAvatar.Avatar
         // ESTADO DEL PREVIEW EN VIVO
         // ========================================================
 
+        private struct LayerSnapshot
+        {
+            public string LayerName;
+            public int SpriteIndex;
+            public bool Enabled;
+        }
+
+
         private bool secretPreviewActive = false;
         private SecretAvatarPreset activeSecretPreset = null;
-        private readonly List<LayerSelection> preSecretSnapshot = new();
+        private readonly List<LayerSnapshot> preSecretSnapshot = new();
         private float preSecretSkinTone = 0.5f;
 
 
@@ -150,10 +158,11 @@ namespace AudioProceduralAvatar.Avatar
 
             foreach (var layer in avatarCreator.layers)
             {
-                preSecretSnapshot.Add(new LayerSelection
+                preSecretSnapshot.Add(new LayerSnapshot
                 {
                     LayerName = layer.layerName,
-                    SpriteIndex = layer.currentIndex
+                    SpriteIndex = layer.currentIndex,
+                    Enabled = layer.image != null && layer.image.enabled
                 });
             }
 
@@ -168,10 +177,17 @@ namespace AudioProceduralAvatar.Avatar
         {
             foreach (var layerSelection in preset.layers)
             {
-                if (layerSelection.spriteIndex < 0)
+                if (layerSelection.noPiece)
+                {
+                    // Explícitamente sin prenda en esta capa: se oculta,
+                    // no se deja lo que hubiera antes.
+                    SetLayerVisible(layerSelection.layerName, false);
+                }
+                else if (layerSelection.spriteIndex < 0)
                 {
                     // Prenda secreta: no vive en AvatarLayer.sprites[], así
                     // que se pone el sprite directo, sin pasar por índices.
+                    SetLayerVisible(layerSelection.layerName, true);
                     SetLayerSpriteDirect(
                         layerSelection.layerName,
                         layerSelection.previewSprite
@@ -180,6 +196,7 @@ namespace AudioProceduralAvatar.Avatar
                 else
                 {
                     // Prenda pública normal: sí puede pedirse por índice.
+                    SetLayerVisible(layerSelection.layerName, true);
                     avatarCreator.SetIndex(
                         layerSelection.layerName,
                         layerSelection.spriteIndex
@@ -217,10 +234,25 @@ namespace AudioProceduralAvatar.Avatar
         }
 
 
+        private void SetLayerVisible(string layerName, bool visible)
+        {
+            foreach (var layer in avatarCreator.layers)
+            {
+                if (layer.layerName == layerName && layer.image != null)
+                {
+                    layer.image.enabled = visible;
+                    return;
+                }
+            }
+        }
+
+
         private void RestoreSnapshot()
         {
             foreach (var selection in preSecretSnapshot)
             {
+                SetLayerVisible(selection.LayerName, selection.Enabled);
+
                 avatarCreator.SetIndex(
                     selection.LayerName,
                     selection.SpriteIndex
