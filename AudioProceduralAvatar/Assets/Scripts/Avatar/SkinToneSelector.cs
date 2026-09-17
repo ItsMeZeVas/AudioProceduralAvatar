@@ -67,6 +67,26 @@ namespace AudioProceduralAvatar.Avatar
         }
 
 
+        /// <summary>
+        /// Fija el valor programáticamente (ej. para el preview en vivo de
+        /// un preset secreto). Si hay slider, actualizarlo dispara
+        /// OnSliderChanged solo; si no hay slider, actualiza directo.
+        /// </summary>
+        public void SetValue(float value)
+        {
+            float clamped = Mathf.Clamp01(value);
+
+            if (slider != null)
+            {
+                slider.value = clamped; // dispara OnSliderChanged vía el listener
+            }
+            else
+            {
+                OnSliderChanged(clamped);
+            }
+        }
+
+
         private void OnSliderChanged(
             float value)
         {

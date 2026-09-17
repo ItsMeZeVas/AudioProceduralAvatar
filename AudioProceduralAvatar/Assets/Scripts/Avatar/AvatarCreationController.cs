@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using AudioProceduralAvatar.Audio;
@@ -38,7 +39,7 @@ namespace AudioProceduralAvatar.Avatar
 
         [Header("=== CÓDIGOS SECRETOS ===")]
 
-        [Tooltip("Si el código ingresado coincide con uno de esta base de datos, se carga ese avatar ya armado en vez de usar las capas seleccionadas en pantalla.")]
+        [Tooltip("Si el código ingresado coincide con uno de esta base de datos, se carga ese avatar ya armado en vez de usar las capas seleccionadas en pantalla. También activa un preview en vivo mientras la persona escribe.")]
         [SerializeField]
         private SecretPresetDatabase secretPresetDatabase;
 
@@ -69,6 +70,166 @@ namespace AudioProceduralAvatar.Avatar
 
         [SerializeField]
         private TMP_Text feedbackText;
+
+
+        // ========================================================
+        // ESTADO DEL PREVIEW EN VIVO
+        // ========================================================
+
+        private bool secretPreviewActive = false;
+        private SecretAvatarPreset activeSecretPreset = null;
+        private readonly List<LayerSelection> preSecretSnapshot = new();
+        private float preSecretSkinTone = 0.5f;
+
+
+        // ========================================================
+        // CICLO DE VIDA
+        // ========================================================
+
+        private void Start()
+        {
+            if (avatarData != null && avatarData.studentCodeInput != null)
+            {
+                avatarData.studentCodeInput.onValueChanged.AddListener(
+                    OnCodeInputChanged
+                );
+            }
+        }
+
+
+        private void OnDestroy()
+        {
+            if (avatarData != null && avatarData.studentCodeInput != null)
+            {
+                avatarData.studentCodeInput.onValueChanged.RemoveListener(
+                    OnCodeInputChanged
+                );
+            }
+        }
+
+
+        // ========================================================
+        // PREVIEW EN VIVO AL ESCRIBIR EL CÓDIGO
+        // ========================================================
+
+        private void OnCodeInputChanged(string typedCode)
+        {
+            if (secretPresetDatabase == null || avatarCreator == null)
+                return;
+
+            SecretAvatarPreset preset =
+                secretPresetDatabase.Find(typedCode);
+
+            if (preset != null)
+            {
+                // Nuevo match: guarda lo que había antes SOLO si todavía no
+                // hay un preview activo, para no pisar el snapshot original
+                // con capas ya "contaminadas" por un preset anterior.
+                if (!secretPreviewActive)
+                    SnapshotCurrentSelection();
+
+                ApplyPresetPreview(preset);
+
+                secretPreviewActive = true;
+                activeSecretPreset = preset;
+            }
+            else if (secretPreviewActive)
+            {
+                // Ya no coincide con ningún código secreto: revertir.
+                RestoreSnapshot();
+
+                secretPreviewActive = false;
+                activeSecretPreset = null;
+            }
+        }
+
+
+        private void SnapshotCurrentSelection()
+        {
+            preSecretSnapshot.Clear();
+
+            foreach (var layer in avatarCreator.layers)
+            {
+                preSecretSnapshot.Add(new LayerSelection
+                {
+                    LayerName = layer.layerName,
+                    SpriteIndex = layer.currentIndex
+                });
+            }
+
+            preSecretSkinTone =
+                skinToneSelector != null
+                    ? skinToneSelector.CurrentValue
+                    : 0.5f;
+        }
+
+
+        private void ApplyPresetPreview(SecretAvatarPreset preset)
+        {
+            foreach (var layerSelection in preset.layers)
+            {
+                if (layerSelection.spriteIndex < 0)
+                {
+                    // Prenda secreta: no vive en AvatarLayer.sprites[], así
+                    // que se pone el sprite directo, sin pasar por índices.
+                    SetLayerSpriteDirect(
+                        layerSelection.layerName,
+                        layerSelection.previewSprite
+                    );
+                }
+                else
+                {
+                    // Prenda pública normal: sí puede pedirse por índice.
+                    avatarCreator.SetIndex(
+                        layerSelection.layerName,
+                        layerSelection.spriteIndex
+                    );
+                }
+            }
+
+            if (skinToneSelector != null)
+            {
+                foreach (var attribute in preset.continuousAttributes)
+                {
+                    if (attribute.Name == skinToneSelector.AttributeName)
+                    {
+                        skinToneSelector.SetValue(attribute.Value);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        private void SetLayerSpriteDirect(string layerName, Sprite sprite)
+        {
+            if (sprite == null)
+                return;
+
+            foreach (var layer in avatarCreator.layers)
+            {
+                if (layer.layerName == layerName)
+                {
+                    layer.image.sprite = sprite;
+                    return;
+                }
+            }
+        }
+
+
+        private void RestoreSnapshot()
+        {
+            foreach (var selection in preSecretSnapshot)
+            {
+                avatarCreator.SetIndex(
+                    selection.LayerName,
+                    selection.SpriteIndex
+                );
+            }
+
+            if (skinToneSelector != null)
+                skinToneSelector.SetValue(preSecretSkinTone);
+        }
 
 
         // ========================================================
@@ -162,6 +323,12 @@ namespace AudioProceduralAvatar.Avatar
                 profile,
                 capturedTexture
             );
+
+
+            // Una vez guardado, el preview ya no debe revertirse si la
+            // persona vuelve a tocar el campo de código.
+            secretPreviewActive = false;
+            activeSecretPreset = null;
 
 
             Debug.Log(

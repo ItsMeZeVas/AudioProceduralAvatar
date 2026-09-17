@@ -1,17 +1,28 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 using AudioProceduralAvatar.Avatar;
 
 namespace AudioProceduralAvatar.Avatar
 {
+    [Serializable]
+    public struct SecretLayerSelection
+    {
+        [Tooltip("Debe coincidir EXACTO con AvatarLayer.layerName")]
+        public string layerName;
+
+        [Tooltip("Índice que se guarda en el JSON del avatar. Usa un índice NEGATIVO (-1, -2, ...) para una prenda secreta (agregada en secretOptions de AvatarLayerOptionSet). Usa un índice normal (0, 1, 2...) si para esta capa quieres usar una prenda que SÍ es pública.")]
+        public int spriteIndex;
+
+        [Tooltip("Solo si spriteIndex es NEGATIVO: el sprite a mostrar en vivo en la escena de personalización (esa prenda no vive en AvatarLayer.sprites[], así que no se puede pedir por índice ahí). Debe ser el mismo sprite que corresponde a esta capa dentro del AvatarPieceSet puesto en secretOptions, en la misma posición.")]
+        public Sprite previewSprite;
+    }
+
+
     /// <summary>
     /// Un avatar ya armado que se carga automáticamente cuando alguien
     /// ingresa un código secreto (en vez de un código estudiantil normal)
     /// en la pantalla de guardado.
-    ///
-    /// Las capas se definen con los MISMOS layerName y los MISMOS índices
-    /// que usa AvatarLayerOptionSet / AvatarCreator, para que el resultado
-    /// se pueda reconstruir igual que un avatar armado a mano.
     /// </summary>
     [CreateAssetMenu(fileName = "NewSecretAvatarPreset", menuName = "Avatar/Secret Avatar Preset")]
     public class SecretAvatarPreset : ScriptableObject
@@ -22,15 +33,16 @@ namespace AudioProceduralAvatar.Avatar
         [Tooltip("Nombre fijo para este avatar. Si se deja vacío, se usa el nombre que la persona escriba en pantalla.")]
         public string fixedAvatarName = "";
 
-        [Tooltip("Mismos layerName y SpriteIndex que usaría AvatarCreationController al construir el perfil normal.")]
-        public List<LayerSelection> layers = new();
+        [Tooltip("Una entrada por cada capa del avatar.")]
+        public List<SecretLayerSelection> layers = new();
 
         [Tooltip("Opcional: atributos continuos del preset (ej. tono de piel).")]
         public List<ContinuousAttribute> continuousAttributes = new();
 
         /// <summary>
-        /// Construye un AvatarProfile a partir de este preset. El nombre
-        /// que escribió la persona se usa solo si el preset no trae uno fijo.
+        /// Construye un AvatarProfile a partir de este preset (para guardar
+        /// en el JSON). El nombre que escribió la persona se usa solo si el
+        /// preset no trae uno fijo.
         /// </summary>
         public AvatarProfile BuildProfile(string enteredName, string enteredCode)
         {
@@ -44,7 +56,13 @@ namespace AudioProceduralAvatar.Avatar
             };
 
             foreach (var layer in layers)
-                profile.Layers.Add(layer);
+            {
+                profile.Layers.Add(new LayerSelection
+                {
+                    LayerName = layer.layerName,
+                    SpriteIndex = layer.spriteIndex
+                });
+            }
 
             foreach (var attr in continuousAttributes)
                 profile.ContinuousAttributes.Add(attr);

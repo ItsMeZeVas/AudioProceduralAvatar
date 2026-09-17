@@ -15,22 +15,30 @@ MonoBehaviour:
   secretCode: 1030520693
   fixedAvatarName: Juan Sebastian Vera Legro
   layers:
-  - LayerName: Hair
-    SpriteIndex: 8
-  - LayerName: Head
-    SpriteIndex: 6
-  - LayerName: Body
-    SpriteIndex: 7
-  - LayerName: UpperBody
-    SpriteIndex: 7
-  - LayerName: LowerBody
-    SpriteIndex: 2
-  - LayerName: SubBoca
-    SpriteIndex: 3
-  - LayerName: SubBarba
-    SpriteIndex: 0
-  - LayerName: Accesories
-    SpriteIndex: 1
+  - layerName: Hair
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
+  - layerName: Head
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
+  - layerName: Body
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
+  - layerName: UpperBody
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
+  - layerName: LowerBody
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
+  - layerName: SubBoca
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
+  - layerName: SubBarba
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
+  - layerName: Accesories
+    spriteIndex: 0
+    previewSprite: {fileID: 0}
   continuousAttributes:
   - Name: SkinTone
     Value: 0.742
