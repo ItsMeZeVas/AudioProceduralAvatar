@@ -281,6 +281,11 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7553988552451783309, guid: db351b6aaeb2fbe43bbb043a307ddf64, type: 3}
   m_PrefabInstance: {fileID: 4291936167715360928}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &884730422 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1132480830304555487, guid: db351b6aaeb2fbe43bbb043a307ddf64, type: 3}
+  m_PrefabInstance: {fileID: 4291936167715360928}
+  m_PrefabAsset: {fileID: 0}
 --- !u!212 &899578571 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 1673100936838652715, guid: db351b6aaeb2fbe43bbb043a307ddf64, type: 3}
@@ -475,7 +480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334016228ef9c6541bd0e0019e1f38f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AvatarSkeletonBuilderTester
-  pieceSetDePrueba: {fileID: 11400000, guid: bf0da6ab8c7bce54cbce0c93a8d28a54, type: 2}
+  pieceSetDePrueba: {fileID: 11400000, guid: f7cce218711898446b78636327dded56, type: 2}
   layerNameDePrueba: UpperBody
 --- !u!212 &2064757537 stripped
 SpriteRenderer:
@@ -606,6 +611,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.8978088
       objectReference: {fileID: 0}
+    - target: {fileID: 4365785355757283856, guid: db351b6aaeb2fbe43bbb043a307ddf64, type: 3}
+      propertyPath: m_AutoRebind
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4365785355757283856, guid: db351b6aaeb2fbe43bbb043a307ddf64, type: 3}
+      propertyPath: 'm_BoneTransforms.Array.data[1]'
+      value: 
+      objectReference: {fileID: 884730422}
     - target: {fileID: 4564210342107641036, guid: db351b6aaeb2fbe43bbb043a307ddf64, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.2279663

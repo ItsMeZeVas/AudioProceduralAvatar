@@ -11,6 +11,7 @@ public class AvatarPieceSet : ScriptableObject
     public Sprite torso;
     public Sprite lArm;
     public Sprite rArm;
+    public Sprite cadera;
     public Sprite lLeg;
     public Sprite rLeg;
 

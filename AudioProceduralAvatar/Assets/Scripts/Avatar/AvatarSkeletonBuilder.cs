@@ -1,4 +1,6 @@
+
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 
 public class AvatarSkeletonBuilder : MonoBehaviour
 {
@@ -24,13 +26,14 @@ public class AvatarSkeletonBuilder : MonoBehaviour
     public SpriteRenderer subBarbaRenderer;
     public SpriteRenderer accessoryRenderer;
 
-    // layerName debe coincidir EXACTO con AvatarLayer.layerName de la
-    // personalización (ej. "Body", "UpperBody", "LowerBody", "Hair", ...)
+    // layerName debe coincidir EXACTO con AvatarLayer.layerName
     public void Apply(string layerName, AvatarPieceSet pieces)
     {
         if (pieces == null)
         {
-            Debug.LogWarning($"AvatarSkeletonBuilder: no se recibió AvatarPieceSet para la capa '{layerName}'.");
+            Debug.LogWarning(
+                $"AvatarSkeletonBuilder: no se recibió AvatarPieceSet para la capa '{layerName}'."
+            );
             return;
         }
 
@@ -81,7 +84,9 @@ public class AvatarSkeletonBuilder : MonoBehaviour
                 break;
 
             default:
-                Debug.LogWarning($"AvatarSkeletonBuilder: layerName '{layerName}' no reconocido.");
+                Debug.LogWarning(
+                    $"AvatarSkeletonBuilder: layerName '{layerName}' no reconocido."
+                );
                 break;
         }
     }
@@ -89,14 +94,19 @@ public class AvatarSkeletonBuilder : MonoBehaviour
     private void SetIfNotNull(SpriteRenderer renderer, Sprite sprite)
     {
         if (renderer == null) return;
-        if (sprite == null) return; // campo vacío en el PieceSet: no tocar lo que ya había puesto
+        if (sprite == null) return;
 
         renderer.sprite = sprite;
 
-        // Forzar refresco de Sprite Skin tras el cambio de sprite en runtime.
-        var spriteSkin = renderer.GetComponent<UnityEngine.U2D.Animation.SpriteSkin>();
+        // Buscar Sprite Skin en el mismo objeto.
+        SpriteSkin spriteSkin = renderer.GetComponent<SpriteSkin>();
+
         if (spriteSkin != null)
         {
+            // Activar Auto Rebind.
+            spriteSkin.autoRebind = true;
+
+            // Activar el Sprite Skin.
             spriteSkin.enabled = false;
             spriteSkin.enabled = true;
         }
