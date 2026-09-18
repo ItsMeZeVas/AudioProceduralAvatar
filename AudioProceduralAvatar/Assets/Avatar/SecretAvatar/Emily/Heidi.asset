@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 558f3db23d573c34aba8bec210a8d6de, type: 3}
-  m_Name: Astrid
+  m_Name: Heidi
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
-  secretCode: 
-  fixedAvatarName: Emily
+  secretCode: 1
+  fixedAvatarName: Heidi
   layers:
   - layerName: Hair
     noPiece: 1
@@ -22,19 +22,19 @@ MonoBehaviour:
   - layerName: Head
     noPiece: 0
     spriteIndex: -5
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: e37ed3ff90016a34a97654a320deff42, type: 3}
   - layerName: Body
-    noPiece: 0
+    noPiece: 1
     spriteIndex: -5
     previewSprite: {fileID: 0}
   - layerName: UpperBody
     noPiece: 0
     spriteIndex: -5
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 7ce9340d1b230614798d21d3bb4f3cd4, type: 3}
   - layerName: LowerBody
     noPiece: 0
     spriteIndex: -5
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 2663612172f111b408b8d05ba41e6a42, type: 3}
   - layerName: SubBoca
     noPiece: 0
     spriteIndex: -5

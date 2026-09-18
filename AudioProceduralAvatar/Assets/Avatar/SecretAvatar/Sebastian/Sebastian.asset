@@ -12,29 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558f3db23d573c34aba8bec210a8d6de, type: 3}
   m_Name: Sebastian
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
-  secretCode: 
+  secretCode: 1202577
   fixedAvatarName: Sebastian
   layers:
   - layerName: Hair
+    noPiece: 0
+    spriteIndex: -9
+    previewSprite: {fileID: 21300000, guid: ca52b05d665232440b8322e73424b07c, type: 3}
+  - layerName: Head
     noPiece: 1
     spriteIndex: -9
     previewSprite: {fileID: 0}
-  - layerName: Head
-    noPiece: 0
-    spriteIndex: -9
-    previewSprite: {fileID: 0}
   - layerName: Body
-    noPiece: 0
+    noPiece: 1
     spriteIndex: -9
     previewSprite: {fileID: 0}
   - layerName: UpperBody
     noPiece: 0
     spriteIndex: -9
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 4f0c66c377c4ad442a523ad6ae987c42, type: 3}
   - layerName: LowerBody
     noPiece: 0
     spriteIndex: -9
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 35ff47c753e4a374f846411e163d8700, type: 3}
   - layerName: SubBoca
     noPiece: 1
     spriteIndex: -9
@@ -49,4 +49,4 @@ MonoBehaviour:
     previewSprite: {fileID: 0}
   continuousAttributes:
   - Name: SkinTone
-    Value: 0.03
+    Value: 0.5

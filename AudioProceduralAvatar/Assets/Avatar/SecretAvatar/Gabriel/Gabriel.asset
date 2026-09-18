@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558f3db23d573c34aba8bec210a8d6de, type: 3}
   m_Name: Gabriel
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
-  secretCode: 1030520693
+  secretCode: 3002263501
   fixedAvatarName: Gabriel
   layers:
   - layerName: Hair
@@ -44,7 +44,7 @@ MonoBehaviour:
     spriteIndex: 0
     previewSprite: {fileID: 0}
   - layerName: Accessories
-    noPiece: 1
+    noPiece: 0
     spriteIndex: 0
     previewSprite: {fileID: 0}
   continuousAttributes:

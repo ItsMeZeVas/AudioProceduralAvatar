@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558f3db23d573c34aba8bec210a8d6de, type: 3}
   m_Name: Astrid
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
-  secretCode: 
+  secretCode: 3
   fixedAvatarName: Astrid
   layers:
   - layerName: Hair
@@ -22,19 +22,19 @@ MonoBehaviour:
   - layerName: Head
     noPiece: 0
     spriteIndex: -2
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 0b0610679d90f48428767dac72906c51, type: 3}
   - layerName: Body
-    noPiece: 0
+    noPiece: 1
     spriteIndex: -2
     previewSprite: {fileID: 0}
   - layerName: UpperBody
     noPiece: 0
     spriteIndex: -2
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: f52fd56819d5f0a48ab3892e7ecb1687, type: 3}
   - layerName: LowerBody
     noPiece: 0
     spriteIndex: -2
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 705f0036ec0cc2e48ba2e5be675fcfec, type: 3}
   - layerName: SubBoca
     noPiece: 1
     spriteIndex: -2
@@ -49,4 +49,4 @@ MonoBehaviour:
     previewSprite: {fileID: 0}
   continuousAttributes:
   - Name: SkinTone
-    Value: 0.03
+    Value: 0.07

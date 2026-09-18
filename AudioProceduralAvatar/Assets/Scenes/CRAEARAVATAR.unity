@@ -9162,8 +9162,8 @@ RectTransform:
   m_GameObject: {fileID: 1374487146}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 74}
-  m_LocalScale: {x: 1.3620051, y: 1.3087857, z: 1.0795}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 1.9218513, z: 1.5851629}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1447848968}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9185,7 +9185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.23529412}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5058824}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9215,7 +9215,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1374487146}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: ca96c7af05da82b41b91d27cddbf4d82, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: e62e74a48ba2e724fb7f31995d7c9fee, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -9237,7 +9237,7 @@ VideoPlayer:
   m_ControlledAudioTrackCount: 0
   m_PlayOnAwake: 1
   m_SkipOnDrop: 1
-  m_Looping: 0
+  m_Looping: 1
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
