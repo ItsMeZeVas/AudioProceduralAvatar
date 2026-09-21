@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 570e22825774dd547a07ce8f74335aca, type: 3}
+  m_Name: UI_Select
+  m_EditorClassIdentifier: Assembly-CSharp::AudioPreset
+  soundType: 0
+  volume: 1
+  oscillatorA: 0
+  oscillatorASemitones: 0
+  oscillatorADb: -5
+  oscillatorB: 1
+  oscillatorBSemitones: 12
+  oscillatorBDb: -13
+  oscillatorC: 2
+  oscillatorCSemitones: 19
+  oscillatorCDb: -33
+  attack: 0.008
+  decay: 0.08
+  sustain: 0.55
+  release: 0.12
+  pitchEnvelope: 0
+  pitchAmount: 0
+  pitchAttack: 0.005
+  pitchDecay: 0.04
+  useFilter: 1
+  filterCutoff: 1800
+  filterResonance: 0.7
+  useEQ: 0
+  lowShelfDb: 0
+  lowMidDb: 0
+  highMidDb: 0

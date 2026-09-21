@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 570e22825774dd547a07ce8f74335aca, type: 3}
+  m_Name: UI_Undo
+  m_EditorClassIdentifier: Assembly-CSharp::AudioPreset
+  soundType: 2
+  volume: 0.28
+  oscillatorA: 0
+  oscillatorASemitones: 0
+  oscillatorADb: 0
+  oscillatorB: 2
+  oscillatorBSemitones: 0
+  oscillatorBDb: 0
+  oscillatorC: 0
+  oscillatorCSemitones: 0
+  oscillatorCDb: -60
+  usePhaseModulation: 1
+  phaseModAmount: 0.1
+  attack: 0.01
+  decay: 0.06
+  sustain: 0.1112
+  release: 0.3
+  pitchEnvelope: 1
+  pitchAmount: 36
+  pitchAttackLevel: 0
+  pitchEndAmount: -36
+  pitchAttack: 0.04
+  pitchDecay: 0.36
+  useFilter: 1
+  filterCutoff: 4254.14
+  filterResonance: 0.1106
+  resonantFilter: 1
+  useEQ: 0
+  lowShelfDb: 0
+  lowMidDb: 0
+  highMidDb: 0
