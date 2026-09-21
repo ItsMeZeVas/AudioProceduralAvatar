@@ -32,6 +32,8 @@ namespace AudioProceduralAvatar.Avatar
 
         public string StudentCode = "";
 
+        public string LeitmotivPath = "";
+
         public List<LayerSelection> Layers = new();
 
         public List<ContinuousAttribute>

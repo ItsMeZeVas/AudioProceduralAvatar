@@ -68,6 +68,68 @@ namespace AudioProceduralAvatar.Audio
             source.Play();
         }
 
+        // ========================================================
+        // EXPORTAR
+        // ========================================================
+
+        public float[] RenderOffline(LeitmotivData data)
+        {
+            var preset = FindPreset(data.InstrumentHint) ?? fallbackPreset;
+            if (preset == null)
+            {
+                Debug.LogWarning($"SimpleSynthRenderer: no existe InstrumentPreset para '{data.InstrumentHint}' y tampoco hay fallback. No se puede exportar.");
+                return System.Array.Empty<float>();
+            }
+
+            double secondsPerBeat = 60.0 / Mathf.Max(1f, data.TempoBpm);
+            float attack = data.HasMappedEnvelope ? data.Attack : preset.Attack;
+            float decay = data.HasMappedEnvelope ? data.Decay : preset.Decay;
+            float sustain = data.HasMappedEnvelope ? data.Sustain : preset.Sustain;
+            float release = data.HasMappedEnvelope ? data.Release : preset.Release;
+
+            double totalSeconds = 0.1;
+            var voices = new System.Collections.Generic.List<(NoteEvent note, double start, double end)>();
+            foreach (var note in data.Notes)
+            {
+                double start = note.StartBeat * secondsPerBeat;
+                double end = (note.StartBeat + note.DurationBeats) * secondsPerBeat;
+                voices.Add((note, start, end));
+                if (end + release > totalSeconds) totalSeconds = end + release;
+            }
+
+            int totalSamples = Mathf.CeilToInt((float)(totalSeconds * SampleRate));
+            float[] buffer = new float[totalSamples];
+            var phase = new double[voices.Count];
+
+            for (int i = 0; i < totalSamples; i++)
+            {
+                double sampleTime = (double)i / SampleRate;
+                float mixed = 0f;
+
+                for (int v = 0; v < voices.Count; v++)
+                {
+                    var (note, start, end) = voices[v];
+                    double noteDuration = end - start;
+                    double noteElapsed = sampleTime - start;
+                    if (noteElapsed < 0 || noteElapsed > noteDuration + release) continue;
+
+                    int midiNote = MusicTheory.DegreeToMidiNote(data.Scale, data.RootNoteMidi, note.ScaleDegree);
+                    float frequency = MusicTheory.MidiToFrequency(midiNote);
+
+                    phase[v] += 2.0 * Mathf.PI * frequency / SampleRate;
+                    if (phase[v] > 2.0 * Mathf.PI) phase[v] -= 2.0 * Mathf.PI;
+
+                    float raw = Oscillate(preset.Waveform, phase[v]);
+                    float envelope = ComputeEnvelope(noteElapsed, noteDuration, attack, decay, sustain, release);
+                    float dynamic = Mathf.Clamp01(data.DynamicMultiplier);
+                    mixed += raw * envelope * preset.Volume * note.Velocity * dynamic;
+                }
+
+                buffer[i] = Mathf.Clamp(mixed, -1f, 1f);
+            }
+
+            return buffer;
+        }
 
         // ========================================================
         // REPRODUCIR
