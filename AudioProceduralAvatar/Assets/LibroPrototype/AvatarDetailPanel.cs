@@ -98,6 +98,17 @@ public class AvatarDetailPanel : MonoBehaviour
             var pieces = optionsDatabase.Resolve(layer.LayerName, layer.SpriteIndex);
             _rigInstance.Apply(layer.LayerName, pieces);
         }
+
+        _rigInstance.ApplyColor("Hair", ReadColor(profile, "HairColor", Color.white));
+        _rigInstance.ApplyColor("SubBarba", ReadColor(profile, "BeardColor", Color.white));
+    }
+
+    private static Color ReadColor(AvatarProfile profile, string namePrefix, Color fallback)
+    {
+        float r = profile.GetContinuousValue(namePrefix + "R", fallback.r);
+        float g = profile.GetContinuousValue(namePrefix + "G", fallback.g);
+        float b = profile.GetContinuousValue(namePrefix + "B", fallback.b);
+        return new Color(r, g, b);
     }
 
     private static void SetLayerRecursively(GameObject obj, int layer)
