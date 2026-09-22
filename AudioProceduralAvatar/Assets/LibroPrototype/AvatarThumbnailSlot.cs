@@ -20,6 +20,10 @@ public class AvatarThumbnailSlot : MonoBehaviour
     public SkinToneGradientAsset skinToneGradient;
     public string skinToneAttributeName = "SkinTone";
 
+    [Header("Color de pelo/barba (tinte guardado como atributos continuos)")]
+    public string hairColorAttributePrefix = "HairColor";
+    public string beardColorAttributePrefix = "BeardColor";
+
     [Tooltip("Orden de dibujo de atrás hacia adelante: Body, Head, SubBarba, SubBoca, Hair, UpperBody, Accessories (ajusta según tu arte real).")]
     public LayerImage[] layerImages;
 
@@ -64,7 +68,22 @@ public class AvatarThumbnailSlot : MonoBehaviour
 
             layer.image.sprite = sprite;
             layer.image.enabled = sprite != null;
+
+            if (layer.layerName == "Hair")
+                layer.image.color = ReadColor(profile, hairColorAttributePrefix, Color.white);
+            else if (layer.layerName == "SubBarba")
+                layer.image.color = ReadColor(profile, beardColorAttributePrefix, Color.white);
+            else
+                layer.image.color = Color.white;
         }
+    }
+
+    private static Color ReadColor(AvatarProfile profile, string attributePrefix, Color fallback)
+    {
+        float r = profile.GetContinuousValue(attributePrefix + "R", fallback.r);
+        float g = profile.GetContinuousValue(attributePrefix + "G", fallback.g);
+        float b = profile.GetContinuousValue(attributePrefix + "B", fallback.b);
+        return new Color(r, g, b);
     }
 
     public void Clear()

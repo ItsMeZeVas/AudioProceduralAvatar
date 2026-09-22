@@ -30,6 +30,12 @@ namespace AudioProceduralAvatar.Avatar
         [SerializeField]
         private SkinToneSelector skinToneSelector;
 
+        [SerializeField]
+        private global::HairColorPicker hairColorPicker;
+
+        [SerializeField]
+        private global::HairColorPicker beardColorPicker;
+
 
         [Header("=== LEITMOTIV ===")]
 
@@ -102,6 +108,18 @@ namespace AudioProceduralAvatar.Avatar
                     OnCodeInputChanged
                 );
             }
+
+            if (hairColorPicker != null)
+            {
+                hairColorPicker.OnColorChanged += OnHairColorChanged;
+                SetLayerTint("Hair", hairColorPicker.CurrentColor);
+            }
+
+            if (beardColorPicker != null)
+            {
+                beardColorPicker.OnColorChanged += OnBeardColorChanged;
+                SetLayerTint("SubBarba", beardColorPicker.CurrentColor);
+            }
         }
 
 
@@ -112,6 +130,35 @@ namespace AudioProceduralAvatar.Avatar
                 avatarData.studentCodeInput.onValueChanged.RemoveListener(
                     OnCodeInputChanged
                 );
+            }
+
+            if (hairColorPicker != null)
+                hairColorPicker.OnColorChanged -= OnHairColorChanged;
+
+            if (beardColorPicker != null)
+                beardColorPicker.OnColorChanged -= OnBeardColorChanged;
+        }
+
+
+        // ========================================================
+        // COLOR DE PELO / BARBA EN VIVO
+        // ========================================================
+
+        private void OnHairColorChanged(Color color) => SetLayerTint("Hair", color);
+
+        private void OnBeardColorChanged(Color color) => SetLayerTint("SubBarba", color);
+
+        private void SetLayerTint(string layerName, Color color)
+        {
+            if (avatarCreator == null) return;
+
+            foreach (var layer in avatarCreator.layers)
+            {
+                if (layer.layerName == layerName)
+                {
+                    layer.SetTint(color);
+                    return;
+                }
             }
         }
 
@@ -534,7 +581,33 @@ namespace AudioProceduralAvatar.Avatar
             }
 
 
+            // ----------------------------------------------------
+            // COLOR DE PELO Y BARBA
+            // ----------------------------------------------------
+
+            AddColorAttributes(profile, "HairColor", hairColorPicker);
+            AddColorAttributes(profile, "BeardColor", beardColorPicker);
+
+
             return profile;
+        }
+
+
+        private static void AddColorAttributes(
+            AvatarProfile profile,
+            string namePrefix,
+            global::HairColorPicker picker)
+        {
+            if (picker == null) return;
+
+            Color c = picker.CurrentColor;
+
+            profile.ContinuousAttributes.Add(
+                new ContinuousAttribute { Name = namePrefix + "R", Value = c.r });
+            profile.ContinuousAttributes.Add(
+                new ContinuousAttribute { Name = namePrefix + "G", Value = c.g });
+            profile.ContinuousAttributes.Add(
+                new ContinuousAttribute { Name = namePrefix + "B", Value = c.b });
         }
 
 

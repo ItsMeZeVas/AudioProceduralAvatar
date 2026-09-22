@@ -24,6 +24,12 @@ public class AvatarLayer
         image.sprite = sprites[currentIndex];
     }
 
+    /// <summary>Aplica un tinte de color a esta capa (Hair/SubBarba con el color picker).</summary>
+    public void SetTint(Color color)
+    {
+        if (image != null) image.color = color;
+    }
+
     public void Next()
     {
         if (sprites.Length == 0)

@@ -91,6 +91,21 @@ public class AvatarSkeletonBuilder : MonoBehaviour
         }
     }
 
+    /// <summary>Aplica un tinte de color a Hair o SubBarba (elegido con HairColorPicker).</summary>
+    public void ApplyColor(string layerName, Color color)
+    {
+        switch (layerName)
+        {
+            case "Hair":
+                if (hairRenderer != null) hairRenderer.color = color;
+                break;
+
+            case "SubBarba":
+                if (subBarbaRenderer != null) subBarbaRenderer.color = color;
+                break;
+        }
+    }
+
     private void SetIfNotNull(SpriteRenderer renderer, Sprite sprite)
     {
         if (renderer == null) return;
