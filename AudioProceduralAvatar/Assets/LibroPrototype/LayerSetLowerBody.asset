@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40a56afa1b21ece43b69d5a58cbb8509, type: 3}
+  m_Name: LayerSetLowerBody
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarPortraitLayerSet
+  layerName: LowerBody
+  sprites:
+  - {fileID: 21300000, guid: 1f20dea2e22daff43a3aa7ec05ae6ea8, type: 3}
+  - {fileID: 21300000, guid: ff7d279f40e2d6f4fbb70a892c0f6ed4, type: 3}
+  - {fileID: 21300000, guid: 832b8d7826fd5bf44992fe3f0b194855, type: 3}

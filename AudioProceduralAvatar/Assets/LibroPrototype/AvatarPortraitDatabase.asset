@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3524c1c1d3b56fd4f8eeb7dc7b651961, type: 3}
+  m_Name: AvatarPortraitDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarPortraitDatabase
+  layers:
+  - {fileID: 11400000, guid: a61665d6077c46747a1b33c4fb8bd704, type: 2}
+  - {fileID: 11400000, guid: ddf7fa00ca851a74ba6f94a55f73ecdb, type: 2}
+  - {fileID: 11400000, guid: 357980c4d0d4469419a3a135d45ab4c1, type: 2}
+  - {fileID: 11400000, guid: 06b83ad6acda8c64abb5d386552dc9d7, type: 2}
+  - {fileID: 11400000, guid: 4fdb3ced59cd6b749bec6df6aca032f8, type: 2}
+  - {fileID: 11400000, guid: d39d27aaa47bae04984be54c4ae95826, type: 2}
+  - {fileID: 11400000, guid: f47159eddd65d11499f4ddab0dcb4e0f, type: 2}
+  - {fileID: 11400000, guid: 6822baa8cb7aab54ab07673565e65206, type: 2}

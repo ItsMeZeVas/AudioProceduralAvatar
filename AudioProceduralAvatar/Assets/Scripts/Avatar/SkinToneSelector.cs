@@ -18,7 +18,7 @@ namespace AudioProceduralAvatar.Avatar
         private Image targetImage;
 
         [SerializeField]
-        private Gradient skinToneGradient;
+        private SkinToneGradientAsset skinToneGradient;
 
         [SerializeField]
         private Image gradientBarImage;
@@ -94,7 +94,7 @@ namespace AudioProceduralAvatar.Avatar
                 Mathf.Clamp01(value);
 
 
-            if (targetImage != null)
+            if (targetImage != null && skinToneGradient != null)
             {
                 targetImage.color =
                     skinToneGradient.Evaluate(
@@ -106,6 +106,14 @@ namespace AudioProceduralAvatar.Avatar
 
         private Sprite GenerateGradientSprite()
         {
+            if (skinToneGradient == null)
+            {
+                Debug.LogWarning(
+                    "SkinToneSelector: falta asignar Skin Tone Gradient."
+                );
+                return null;
+            }
+
             const int width = 256;
 
             var texture =

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40a56afa1b21ece43b69d5a58cbb8509, type: 3}
+  m_Name: LayerSetBody
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarPortraitLayerSet
+  layerName: Body
+  sprites:
+  - {fileID: 21300000, guid: 87c7c981e94652441996b882baefebde, type: 3}
+  - {fileID: 21300000, guid: 09e2e2a890160174b84face7b71c8b2e, type: 3}
+  - {fileID: 21300000, guid: f19fc8f32f401f947acc24e73a8be9c0, type: 3}
+  - {fileID: 21300000, guid: 347dbff276309764cb99e39179fd04f7, type: 3}
+  - {fileID: 21300000, guid: e4cabcf3c65787449868eddd6ab55018, type: 3}
+  - {fileID: 21300000, guid: 9855156e336cd714d8f0f2e084f8bb44, type: 3}
+  - {fileID: 21300000, guid: 26bc14dc97058824681198a9c5be8872, type: 3}
