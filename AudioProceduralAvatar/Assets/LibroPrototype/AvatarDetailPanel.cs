@@ -13,7 +13,8 @@ using AudioProceduralAvatar.Persistence;
 public class AvatarDetailPanel : MonoBehaviour
 {
     [Header("Overlay")]
-    public GameObject panelRoot; // todo el overlay (blur + contenido)
+    [Tooltip("Contenido visible del panel (blur + preview + botones). Se oculta AL INSTANTE al cerrar. El GameObject raíz que tiene este script debe quedar SIEMPRE activo (no lo pongas aquí), para que el fade de audio en segundo plano pueda terminar aunque el panel ya esté oculto.")]
+    public GameObject visualContent;
     public Button closeButton;
 
     [Header("Rig")]
@@ -41,12 +42,23 @@ public class AvatarDetailPanel : MonoBehaviour
     {
         if (closeButton != null) closeButton.onClick.AddListener(Close);
         if (playButton != null) playButton.onClick.AddListener(PlayLeitmotiv);
-        if (panelRoot != null) panelRoot.SetActive(false);
+        if (visualContent != null) visualContent.SetActive(false);
     }
 
     public void Open(AvatarProfile profile)
     {
-        if (panelRoot != null) panelRoot.SetActive(true);
+        if (_fadeRoutine != null)
+        {
+            StopCoroutine(_fadeRoutine);
+            _fadeRoutine = null;
+        }
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+            audioSource.volume = 1f;
+        }
+
+        if (visualContent != null) visualContent.SetActive(true);
         if (playButton != null) playButton.interactable = false;
 
         BuildRig(profile);
@@ -55,8 +67,16 @@ public class AvatarDetailPanel : MonoBehaviour
 
     public void Close()
     {
+        if (visualContent != null) visualContent.SetActive(false);
+
+        if (_rigInstance != null)
+        {
+            Destroy(_rigInstance.gameObject);
+            _rigInstance = null;
+        }
+
         if (_fadeRoutine != null) StopCoroutine(_fadeRoutine);
-        _fadeRoutine = StartCoroutine(FadeOutAndHide());
+        _fadeRoutine = StartCoroutine(FadeOutAudio());
     }
 
     // ================= RIG =================
@@ -137,7 +157,7 @@ public class AvatarDetailPanel : MonoBehaviour
 
     // ================= CIERRE =================
 
-    private IEnumerator FadeOutAndHide()
+    private IEnumerator FadeOutAudio()
     {
         float startVolume = audioSource != null ? audioSource.volume : 0f;
         float t = 0f;
@@ -155,13 +175,5 @@ public class AvatarDetailPanel : MonoBehaviour
             audioSource.Stop();
             audioSource.volume = startVolume;
         }
-
-        if (_rigInstance != null)
-        {
-            Destroy(_rigInstance.gameObject);
-            _rigInstance = null;
-        }
-
-        if (panelRoot != null) panelRoot.SetActive(false);
     }
 }
