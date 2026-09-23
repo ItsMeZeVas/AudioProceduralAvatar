@@ -1594,7 +1594,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00035858154, y: 100.000885}
+  m_AnchoredPosition: {x: 0.00035858154, y: 100.0009}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &328947620
@@ -7383,8 +7383,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1055405554}
   m_HandleRect: {fileID: 1055405553}
   m_Direction: 2
-  m_Value: -0.00000907898
-  m_Size: 0.6666632
+  m_Value: -0.000009231565
+  m_Size: 0.66657495
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9443,13 +9443,19 @@ MonoBehaviour:
   acceptPreset: {fileID: 11400000, guid: 8c05e7237ef65fd4a915246f25e0a4f9, type: 2}
   undoPreset: {fileID: 11400000, guid: df491f06fd3a28543b9cd9144e5e0522, type: 2}
   keyboardPreset: {fileID: 11400000, guid: 14e9b582f1e9fc94e8689a6efd6ff00f, type: 2}
+  selectVariants: 8
+  selectPitchVariation: 1.64
+  acceptVariants: 8
+  acceptPitchVariation: 1.5
+  undoVariants: 8
+  undoPitchVariation: 1.69
+  undoVolume: 0.352
   keyBaseFrequency: 800
   keyPitchVariation: 1.5
   keyVariants: 8
   keyDuration: 0.07
   backspaceSemitones: -4
   backspaceVolume: 0.8
-  audioSource: {fileID: 1336200147}
 --- !u!82 &1336200147
 AudioSource:
   m_ObjectHideFlags: 0

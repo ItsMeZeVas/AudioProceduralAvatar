@@ -10,281 +10,476 @@ public class AvatarAudioManager : MonoBehaviour
     public AudioPreset undoPreset;
     public AudioPreset keyboardPreset;
 
-    [Header("Keyboard Typing")]
-    [Tooltip("Nota base del click (Hz).")]
+    [Header("Variaciones de Select")]
+    [Min(2)]
+    public int selectVariants = 8;
+
+    [Tooltip("Variación máxima de pitch en semitonos.")]
+    [Range(0f, 2f)]
+    public float selectPitchVariation = 0.6f;
+
+    [Header("Variaciones de Accept")]
+    [Min(2)]
+    public int acceptVariants = 8;
+
+    [Tooltip("Variación máxima de pitch en semitonos.")]
+    [Range(0f, 2f)]
+    public float acceptPitchVariation = 0.5f;
+
+    [Header("Variaciones de Undo")]
+    [Min(2)]
+    public int undoVariants = 8;
+
+    [Tooltip("Variación máxima de pitch en semitonos.")]
+    [Range(0f, 2f)]
+    public float undoPitchVariation = 0.8f;
+
+    [Range(0f, 1f)]
+    public float undoVolume = 0.55f;
+
+    [Header("Keyboard")]
     public float keyBaseFrequency = 800f;
-
-    [Tooltip("Variación aleatoria de tono, en semitonos (±).")]
-    [Range(0f, 4f)]
     public float keyPitchVariation = 1.5f;
-
-    [Tooltip("Cuántas variantes se pre-generan. Más = menos repetición.")]
-    [Range(1, 32)]
     public int keyVariants = 8;
-
     public float keyDuration = 0.07f;
-
-    [Tooltip("Cuánto se baja el tono al borrar (semitonos).")]
     public float backspaceSemitones = -4f;
-
     [Range(0f, 1f)]
     public float backspaceVolume = 0.8f;
 
-    [Header("Audio")]
-    public AudioSource audioSource;
+    // ============================================================
+    // AUDIO
+    // ============================================================
 
+    private AudioSource audioSource;
     private ProceduralSynth synthesizer;
+
+    // ============================================================
+    // BANKS - SELECT / ACCEPT / UNDO
+    // ============================================================
+
+    private AudioClip[] selectClips;
+    private AudioClip[] undoClips;
+
+    // Accept tiene 3 notas:
+    // 0 = C5
+    // 1 = E5
+    // 2 = G5
+    private AudioClip[][] acceptClips;
+
+    private int lastSelectIndex = -1;
+    private int lastUndoIndex = -1;
+
+    private int lastAcceptCIndex = -1;
+    private int lastAcceptEIndex = -1;
+    private int lastAcceptGIndex = -1;
+
+    // ============================================================
+    // KEYBOARD BANKS
+    // ============================================================
 
     private AudioClip[] keyClips;
     private AudioClip[] backspaceClips;
+
     private int lastKeyIndex = -1;
     private int lastBackspaceIndex = -1;
 
+    // ============================================================
+    // UNITY
+    // ============================================================
+
     private void Awake()
     {
-        synthesizer =
-            new ProceduralSynth();
-
-        if (audioSource == null)
-        {
-            audioSource =
-                GetComponent<AudioSource>();
-        }
+        audioSource = GetComponent<AudioSource>();
 
         audioSource.playOnAwake = false;
 
-        // Se pre-generan al inicio para no calcular
-        // audio en cada pulsación.
+        synthesizer = new ProceduralSynth();
+
+        BuildAllSoundBanks();
+    }
+
+    // ============================================================
+    // BUILD ALL BANKS
+    // ============================================================
+
+    public void BuildAllSoundBanks()
+    {
+        DestroyAllBanks();
+
+        lastSelectIndex = -1;
+        lastUndoIndex = -1;
+
+        lastAcceptCIndex = -1;
+        lastAcceptEIndex = -1;
+        lastAcceptGIndex = -1;
+
+        lastKeyIndex = -1;
+        lastBackspaceIndex = -1;
+
+        // --------------------------------------------------------
+        // SELECT
+        // --------------------------------------------------------
+
+        if (selectPreset != null)
+        {
+            selectClips = GenerateBank(
+                selectPreset,
+                440f,
+                0.25f,
+                selectVariants,
+                selectPitchVariation
+            );
+        }
+
+        // --------------------------------------------------------
+        // UNDO
+        // --------------------------------------------------------
+
+        if (undoPreset != null)
+        {
+            undoClips = GenerateBank(
+                undoPreset,
+                440f,
+                0.45f,
+                undoVariants,
+                undoPitchVariation
+            );
+        }
+
+        // --------------------------------------------------------
+        // ACCEPT
+        // --------------------------------------------------------
+
+        if (acceptPreset != null)
+        {
+            acceptClips = new AudioClip[3][];
+
+            // C5
+            acceptClips[0] = GenerateBank(
+                acceptPreset,
+                523.25f,
+                0.18f,
+                acceptVariants,
+                acceptPitchVariation
+            );
+
+            // E5
+            acceptClips[1] = GenerateBank(
+                acceptPreset,
+                659.25f,
+                0.18f,
+                acceptVariants,
+                acceptPitchVariation
+            );
+
+            // G5
+            acceptClips[2] = GenerateBank(
+                acceptPreset,
+                783.99f,
+                0.25f,
+                acceptVariants,
+                acceptPitchVariation
+            );
+        }
+
+        // --------------------------------------------------------
+        // KEYBOARD
+        // --------------------------------------------------------
+
         if (keyboardPreset != null)
         {
             BuildKeyboardBanks();
         }
     }
 
-    private void OnDestroy()
-    {
-        DestroyBank(keyClips);
-        DestroyBank(backspaceClips);
-    }
-
-    // =================================================
-    // SELECCIÓN
-    // =================================================
+    // ============================================================
+    // SELECT
+    // ============================================================
 
     public void PlaySelect()
     {
-        if (selectPreset == null)
+        if (selectClips == null || selectClips.Length == 0)
         {
             Debug.LogWarning(
-                "No hay Select Preset asignado."
+                "AvatarAudioManager: No hay banco de Select. " +
+                "Verifica que selectPreset esté asignado."
             );
 
             return;
         }
 
-        // A4 = 440 Hz
-        PlayNote(
-            selectPreset,
-            440f,
-            0.25f
+        int index = PickIndex(
+            selectClips.Length,
+            ref lastSelectIndex
         );
+
+        audioSource.PlayOneShot(selectClips[index]);
     }
 
-    // =================================================
-    // ACEPTAR
-    // =================================================
+    // ============================================================
+    // ACCEPT
+    // ============================================================
 
     public void PlayAcceptChanges()
     {
-        if (acceptPreset == null)
+        if (acceptClips == null ||
+            acceptClips.Length != 3 ||
+            acceptClips[0] == null ||
+            acceptClips[1] == null ||
+            acceptClips[2] == null)
         {
             Debug.LogWarning(
-                "No hay Accept Preset asignado."
+                "AvatarAudioManager: No hay banco de Accept. " +
+                "Verifica que acceptPreset esté asignado."
             );
 
             return;
         }
 
-        StartCoroutine(
-            AcceptSequence()
-        );
+        StartCoroutine(AcceptSequence());
     }
 
     private IEnumerator AcceptSequence()
     {
         // C5
-        PlayNote(
-            acceptPreset,
-            523.25f,
-            0.18f
+        int cIndex = PickIndex(
+            acceptClips[0].Length,
+            ref lastAcceptCIndex
         );
 
-        yield return
-            new WaitForSeconds(0.07f);
+        audioSource.PlayOneShot(acceptClips[0][cIndex]);
+
+        yield return new WaitForSeconds(0.07f);
 
         // E5
-        PlayNote(
-            acceptPreset,
-            659.25f,
-            0.18f
+        int eIndex = PickIndex(
+            acceptClips[1].Length,
+            ref lastAcceptEIndex
         );
 
-        yield return
-            new WaitForSeconds(0.07f);
+        audioSource.PlayOneShot(acceptClips[1][eIndex]);
+
+        yield return new WaitForSeconds(0.07f);
 
         // G5
-        PlayNote(
-            acceptPreset,
-            783.99f,
-            0.25f
+        int gIndex = PickIndex(
+            acceptClips[2].Length,
+            ref lastAcceptGIndex
         );
+
+        audioSource.PlayOneShot(acceptClips[2][gIndex]);
     }
 
-    // =================================================
-    // DESHACER / RETROCESO
-    // =================================================
+    // ============================================================
+    // UNDO
+    // ============================================================
 
     public void PlayUndo()
     {
-        if (undoPreset == null)
+        if (undoClips == null || undoClips.Length == 0)
         {
             Debug.LogWarning(
-                "No hay Undo Preset asignado."
+                "AvatarAudioManager: No hay banco de Undo. " +
+                "Verifica que undoPreset esté asignado."
             );
 
             return;
         }
 
-        // A4 = 440 Hz. El pitch envelope del preset
-        // baja desde +36 hasta -36 semitonos.
-        PlayNote(
-            undoPreset,
-            440f,
-            0.45f
+        int index = PickIndex(
+            undoClips.Length,
+            ref lastUndoIndex
+        );
+
+        audioSource.PlayOneShot(
+            undoClips[index],
+            undoVolume
         );
     }
 
-    // =================================================
-    // TECLADO   (NUEVO)
-    // =================================================
+    // ============================================================
+    // KEYBOARD
+    // ============================================================
+
+    private void BuildKeyboardBanks()
+    {
+        keyClips = GenerateBank(
+            keyboardPreset,
+            keyBaseFrequency,
+            keyDuration,
+            keyVariants,
+            keyPitchVariation
+        );
+
+        backspaceClips = GenerateBank(
+            keyboardPreset,
+            keyBaseFrequency,
+            keyDuration,
+            keyVariants,
+            keyPitchVariation,
+            backspaceSemitones
+        );
+    }
 
     public void PlayKeyClick()
     {
-        if (!EnsureKeyboardBanks())
+        if (keyClips == null || keyClips.Length == 0)
         {
             return;
         }
 
-        int index =
-            PickIndex(
-                keyClips.Length,
-                ref lastKeyIndex
-            );
-
-        audioSource.PlayOneShot(
-            keyClips[index],
-            Random.Range(0.85f, 1f)
+        int index = PickIndex(
+            keyClips.Length,
+            ref lastKeyIndex
         );
+
+        audioSource.PlayOneShot(keyClips[index]);
     }
 
     public void PlayKeyBackspace()
     {
-        if (!EnsureKeyboardBanks())
+        if (backspaceClips == null || backspaceClips.Length == 0)
         {
             return;
         }
 
-        int index =
-            PickIndex(
-                backspaceClips.Length,
-                ref lastBackspaceIndex
-            );
+        int index = PickIndex(
+            backspaceClips.Length,
+            ref lastBackspaceIndex
+        );
 
         audioSource.PlayOneShot(
             backspaceClips[index],
-            backspaceVolume *
-            Random.Range(0.85f, 1f)
+            backspaceVolume
         );
     }
 
-    private bool EnsureKeyboardBanks()
+    // ============================================================
+    // GENERAR BANCO
+    // ============================================================
+
+    private AudioClip[] GenerateBank(
+        AudioPreset preset,
+        float baseFrequency,
+        float duration,
+        int variants,
+        float pitchVariation
+    )
     {
-        if (keyboardPreset == null)
-        {
-            Debug.LogWarning(
-                "No hay Keyboard Preset asignado."
-            );
-
-            return false;
-        }
-
-        if (keyClips == null)
-        {
-            BuildKeyboardBanks();
-        }
-
-        return true;
-    }
-
-    // Llamar de nuevo si cambias el preset o los
-    // parámetros del teclado en tiempo de ejecución.
-    public void BuildKeyboardBanks()
-    {
-        if (synthesizer == null)
-        {
-            synthesizer =
-                new ProceduralSynth();
-        }
-
-        DestroyBank(keyClips);
-        DestroyBank(backspaceClips);
-
-        keyClips =
-            GenerateBank(0f);
-
-        backspaceClips =
-            GenerateBank(backspaceSemitones);
-
-        lastKeyIndex = -1;
-        lastBackspaceIndex = -1;
+        return GenerateBank(
+            preset,
+            baseFrequency,
+            duration,
+            variants,
+            pitchVariation,
+            0f
+        );
     }
 
     private AudioClip[] GenerateBank(
-        float semitoneShift)
+        AudioPreset preset,
+        float baseFrequency,
+        float duration,
+        int variants,
+        float pitchVariation,
+        float additionalSemitones
+    )
     {
-        AudioClip[] bank =
-            new AudioClip[keyVariants];
-
-        for (int i = 0; i < bank.Length; i++)
+        if (preset == null)
         {
-            float variation =
-                Random.Range(
-                    -keyPitchVariation,
-                    keyPitchVariation
-                );
+            return null;
+        }
 
+        variants = Mathf.Max(2, variants);
+
+        AudioClip[] bank = new AudioClip[variants];
+
+        for (int i = 0; i < variants; i++)
+        {
+            // Variación pequeña de pitch.
+            float randomSemitones = Random.Range(
+                -pitchVariation,
+                pitchVariation
+            );
+
+            randomSemitones += additionalSemitones;
+
+            // Convertir semitonos a multiplicador de frecuencia.
             float frequency =
-                keyBaseFrequency *
-                Mathf.Pow(
-                    2f,
-                    (semitoneShift + variation) / 12f
-                );
+                baseFrequency *
+                Mathf.Pow(2f, randomSemitones / 12f);
 
-            // Con randomizeLfoPhase activo en el preset,
-            // cada variante además tiene un timbre distinto.
-            bank[i] =
-                synthesizer.Generate(
-                    keyboardPreset,
-                    frequency,
-                    keyDuration
-                );
+            bank[i] = synthesizer.Generate(
+                preset,
+                frequency,
+                duration
+            );
         }
 
         return bank;
     }
 
-    private void DestroyBank(
-        AudioClip[] bank)
+    // ============================================================
+    // ELEGIR VARIACIÓN SIN REPETIR INMEDIATAMENTE
+    // ============================================================
+
+    private int PickIndex(
+        int length,
+        ref int lastIndex
+    )
+    {
+        if (length <= 0)
+        {
+            return 0;
+        }
+
+        if (length == 1)
+        {
+            lastIndex = 0;
+            return 0;
+        }
+
+        int index = Random.Range(0, length);
+
+        // Evita repetir exactamente la misma variación
+        // dos veces seguidas.
+        if (index == lastIndex)
+        {
+            index = (index + 1) % length;
+        }
+
+        lastIndex = index;
+
+        return index;
+    }
+
+    // ============================================================
+    // DESTRUIR BANKS
+    // ============================================================
+
+    private void DestroyAllBanks()
+    {
+        DestroyBank(selectClips);
+        DestroyBank(undoClips);
+        DestroyBank(keyClips);
+        DestroyBank(backspaceClips);
+
+        if (acceptClips != null)
+        {
+            for (int i = 0; i < acceptClips.Length; i++)
+            {
+                DestroyBank(acceptClips[i]);
+            }
+        }
+
+        selectClips = null;
+        undoClips = null;
+        keyClips = null;
+        backspaceClips = null;
+        acceptClips = null;
+    }
+
+    private void DestroyBank(AudioClip[] bank)
     {
         if (bank == null)
         {
@@ -300,42 +495,12 @@ public class AvatarAudioManager : MonoBehaviour
         }
     }
 
-    // Evita repetir la misma variante dos veces seguidas.
-    private int PickIndex(
-        int length,
-        ref int lastIndex)
+    // ============================================================
+    // LIMPIEZA
+    // ============================================================
+
+    private void OnDestroy()
     {
-        int index =
-            Random.Range(0, length);
-
-        if (length > 1 && index == lastIndex)
-        {
-            index = (index + 1) % length;
-        }
-
-        lastIndex = index;
-
-        return index;
-    }
-
-    // =================================================
-    // GENERADOR
-    // =================================================
-
-    private void PlayNote(
-        AudioPreset preset,
-        float frequency,
-        float duration)
-    {
-        AudioClip clip =
-            synthesizer.Generate(
-                preset,
-                frequency,
-                duration
-            );
-
-        audioSource.PlayOneShot(
-            clip
-        );
+        DestroyAllBanks();
     }
 }
