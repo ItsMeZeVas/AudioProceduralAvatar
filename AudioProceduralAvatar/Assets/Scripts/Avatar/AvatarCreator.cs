@@ -31,16 +31,26 @@ public class AvatarCreator : MonoBehaviour
         {
             if (layer.layerName == layerName)
             {
-                if (layer.sprites == null || index < 0 || index >= layer.sprites.Length)
-                    return;
-
                 layer.currentIndex = index;
-                layer.UpdateSprite();
+                layer.image.sprite = layer.sprites[index];
+                layer.image.enabled = true; // <- por si venía de "Ninguno"
                 return;
             }
         }
     }
-
+    public void Remove(string layerName)
+    {
+        foreach (AvatarLayer layer in layers)
+        {
+            if (layer.layerName == layerName)
+            {
+                layer.currentIndex = -1;
+                layer.image.sprite = null;
+                layer.image.enabled = false; // <- oculta el cuadro blanco
+                return;
+            }
+        }
+    }
     public void Previous(string layerName)
     {
         foreach (AvatarLayer layer in layers)
