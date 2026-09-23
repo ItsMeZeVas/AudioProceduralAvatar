@@ -40,20 +40,50 @@ public class AvatarAudioManager : MonoBehaviour
     // ============================================================
 
     [Header("Variaciones de Undo")]
-
-    [Tooltip("Cantidad de versiones diferentes que se generan.")]
-    [Min(16)]
+    [Min(4)]
     public int undoVariants = 16;
 
-    [Tooltip("Variación de pitch del Undo.")]
+    [Tooltip("Variación general de pitch.")]
     [Range(0f, 3f)]
     public float undoPitchVariation = 1.2f;
 
-    [Tooltip("Variación máxima de duración.")]
+    [Tooltip("Variación de duración.")]
     [Range(0f, 0.10f)]
     public float undoDurationVariation = 0.025f;
 
-    [Tooltip("Volumen base del Undo.")]
+    [Tooltip("Variación de los niveles de los osciladores.")]
+    [Range(0f, 5f)]
+    public float undoOscillatorDbVariation = 1.5f;
+
+    [Tooltip("Variación de los semitonos internos de los osciladores.")]
+    [Range(0f, 2f)]
+    public float undoOscillatorSemitoneVariation = 0.5f;
+
+    [Tooltip("Variación de la envolvente Attack.")]
+    [Range(0f, 0.05f)]
+    public float undoAttackVariation = 0.012f;
+
+    [Tooltip("Variación de la envolvente Decay.")]
+    [Range(0f, 0.10f)]
+    public float undoDecayVariation = 0.025f;
+
+    [Tooltip("Variación del Sustain.")]
+    [Range(0f, 0.20f)]
+    public float undoSustainVariation = 0.08f;
+
+    [Tooltip("Variación del Release.")]
+    [Range(0f, 0.10f)]
+    public float undoReleaseVariation = 0.025f;
+
+    [Tooltip("Variación del filtro.")]
+    [Range(0f, 1500f)]
+    public float undoFilterVariation = 500f;
+
+    [Tooltip("Variación de resonancia.")]
+    [Range(0f, 0.20f)]
+    public float undoResonanceVariation = 0.08f;
+
+    [Tooltip("Volumen máximo del Undo.")]
     [Range(0f, 1f)]
     public float undoVolume = 0.50f;
 
@@ -66,7 +96,6 @@ public class AvatarAudioManager : MonoBehaviour
     // ============================================================
 
     [Header("Keyboard")]
-
     public float keyBaseFrequency = 800f;
     public float keyPitchVariation = 1.5f;
     public int keyVariants = 8;
@@ -89,7 +118,6 @@ public class AvatarAudioManager : MonoBehaviour
 
     private AudioClip[] selectClips;
     private AudioClip[] undoClips;
-
     private AudioClip[][] acceptClips;
 
     private AudioClip[] keyClips;
@@ -110,10 +138,11 @@ public class AvatarAudioManager : MonoBehaviour
     private int lastBackspaceIndex = -1;
 
     // ============================================================
-    // UNDO
+    // ORDEN DE UNDO
     // ============================================================
 
-    private List<int> undoPlayOrder = new List<int>();
+    private List<int> undoPlayOrder =
+        new List<int>();
 
     private int undoOrderPosition = 0;
 
@@ -129,10 +158,8 @@ public class AvatarAudioManager : MonoBehaviour
 
         audioSource.playOnAwake = false;
 
-        synthesizer = new ProceduralSynth();
-
-        // Aseguramos que Undo tenga 16 variantes.
-        undoVariants = 16;
+        synthesizer =
+            new ProceduralSynth();
 
         BuildAllSoundBanks();
     }
@@ -161,13 +188,14 @@ public class AvatarAudioManager : MonoBehaviour
 
         if (selectPreset != null)
         {
-            selectClips = GenerateBank(
-                selectPreset,
-                440f,
-                0.25f,
-                selectVariants,
-                selectPitchVariation
-            );
+            selectClips =
+                GenerateBank(
+                    selectPreset,
+                    440f,
+                    0.25f,
+                    selectVariants,
+                    selectPitchVariation
+                );
         }
 
         // ========================================================
@@ -185,34 +213,38 @@ public class AvatarAudioManager : MonoBehaviour
 
         if (acceptPreset != null)
         {
-            acceptClips = new AudioClip[3][];
+            acceptClips =
+                new AudioClip[3][];
 
             // C5
-            acceptClips[0] = GenerateBank(
-                acceptPreset,
-                523.25f,
-                0.18f,
-                acceptVariants,
-                acceptPitchVariation
-            );
+            acceptClips[0] =
+                GenerateBank(
+                    acceptPreset,
+                    523.25f,
+                    0.18f,
+                    acceptVariants,
+                    acceptPitchVariation
+                );
 
             // E5
-            acceptClips[1] = GenerateBank(
-                acceptPreset,
-                659.25f,
-                0.18f,
-                acceptVariants,
-                acceptPitchVariation
-            );
+            acceptClips[1] =
+                GenerateBank(
+                    acceptPreset,
+                    659.25f,
+                    0.18f,
+                    acceptVariants,
+                    acceptPitchVariation
+                );
 
             // G5
-            acceptClips[2] = GenerateBank(
-                acceptPreset,
-                783.99f,
-                0.25f,
-                acceptVariants,
-                acceptPitchVariation
-            );
+            acceptClips[2] =
+                GenerateBank(
+                    acceptPreset,
+                    783.99f,
+                    0.25f,
+                    acceptVariants,
+                    acceptPitchVariation
+                );
         }
 
         // ========================================================
@@ -226,94 +258,408 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // CREAR BANCO DE UNDO
+    // UNDO BANK MEJORADO
     // ============================================================
 
     private void BuildUndoBank()
     {
-        int variants = 16;
+        int variants =
+            Mathf.Max(
+                4,
+                undoVariants
+            );
 
-        undoClips = new AudioClip[variants];
+        undoClips =
+            new AudioClip[variants];
 
-        undoVariantVolumes = new float[variants];
+        undoVariantVolumes =
+            new float[variants];
 
-        // Guardamos el estado original.
-        bool originalRandomizeLfoPhase =
-            undoPreset.randomizeLfoPhase;
-
-        // Activamos la variación de fase de LFO mientras
-        // generamos los sonidos.
-        undoPreset.randomizeLfoPhase = true;
-
-        // ========================================================
-        // GENERAR LAS 16 VERSIONES
-        // ========================================================
+        // --------------------------------------------------------
+        // GENERAR CADA VARIANTE
+        // --------------------------------------------------------
 
         for (int i = 0; i < variants; i++)
         {
-            // ----------------------------------------------------
-            // 1. PITCH
-            // ----------------------------------------------------
-
-            float randomSemitones = Random.Range(
-                -undoPitchVariation,
-                undoPitchVariation
-            );
-
-            float frequency =
-                440f *
-                Mathf.Pow(
-                    2f,
-                    randomSemitones / 12f
+            undoClips[i] =
+                GenerateUndoVariant(
+                    out float volume
                 );
 
-            // ----------------------------------------------------
-            // 2. DURACIÓN
-            // ----------------------------------------------------
-
-            float duration = Random.Range(
-                0.45f - undoDurationVariation,
-                0.45f + undoDurationVariation
-            );
-
-            duration = Mathf.Max(
-                0.05f,
-                duration
-            );
-
-            // ----------------------------------------------------
-            // 3. GENERAR CLIP
-            // ----------------------------------------------------
-
-            undoClips[i] = synthesizer.Generate(
-                undoPreset,
-                frequency,
-                duration
-            );
-
-            // ----------------------------------------------------
-            // 4. VOLUMEN
-            // ----------------------------------------------------
-
-            float volume = Random.Range(
-                undoVolume - undoVolumeVariation,
-                undoVolume + undoVolumeVariation
-            );
-
             undoVariantVolumes[i] =
-                Mathf.Clamp01(volume);
+                volume;
         }
 
-        // Restaurar exactamente el estado original.
-        undoPreset.randomizeLfoPhase =
-            originalRandomizeLfoPhase;
+        // --------------------------------------------------------
+        // CREAR ORDEN ALEATORIO
+        // --------------------------------------------------------
 
-        // Crear orden aleatorio.
         RebuildUndoPlayOrder();
     }
 
     // ============================================================
-    // ORDEN ALEATORIO DE UNDO
+    // GENERAR UNA VARIANTE DE UNDO
+    // ============================================================
+
+    private AudioClip GenerateUndoVariant(
+        out float generatedVolume
+    )
+    {
+        // ========================================================
+        // GUARDAR VALORES ORIGINALES
+        // ========================================================
+
+        float originalVolume =
+            undoPreset.volume;
+
+        float originalOscillatorASemitones =
+            undoPreset.oscillatorASemitones;
+
+        float originalOscillatorBSemitones =
+            undoPreset.oscillatorBSemitones;
+
+        float originalOscillatorCSemitones =
+            undoPreset.oscillatorCSemitones;
+
+        float originalOscillatorADb =
+            undoPreset.oscillatorADb;
+
+        float originalOscillatorBDb =
+            undoPreset.oscillatorBDb;
+
+        float originalOscillatorCDb =
+            undoPreset.oscillatorCDb;
+
+        float originalPhaseModAmount =
+            undoPreset.phaseModAmount;
+
+        float originalPhaseModCToB =
+            undoPreset.phaseModCToB;
+
+        float originalPhaseModDToA =
+            undoPreset.phaseModDToA;
+
+        float originalAttack =
+            undoPreset.attack;
+
+        float originalDecay =
+            undoPreset.decay;
+
+        float originalSustain =
+            undoPreset.sustain;
+
+        float originalRelease =
+            undoPreset.release;
+
+        float originalFilterCutoff =
+            undoPreset.filterCutoff;
+
+        float originalFilterResonance =
+            undoPreset.filterResonance;
+
+        bool originalRandomizeLfoPhase =
+            undoPreset.randomizeLfoPhase;
+
+        float originalLfo1Rate =
+            undoPreset.lfo1.rateHz;
+
+        float originalLfo2Rate =
+            undoPreset.lfo2.rateHz;
+
+        // ========================================================
+        // VARIABLES DE GENERACIÓN
+        // ========================================================
+
+        float baseFrequency = 440f;
+
+        float pitchShift =
+            Random.Range(
+                -undoPitchVariation,
+                undoPitchVariation
+            );
+
+        float frequency =
+            baseFrequency *
+            Mathf.Pow(
+                2f,
+                pitchShift / 12f
+            );
+
+        // ========================================================
+        // OSCILADORES
+        // ========================================================
+
+        undoPreset.oscillatorASemitones =
+            originalOscillatorASemitones +
+            Random.Range(
+                -undoOscillatorSemitoneVariation,
+                undoOscillatorSemitoneVariation
+            );
+
+        undoPreset.oscillatorBSemitones =
+            originalOscillatorBSemitones +
+            Random.Range(
+                -undoOscillatorSemitoneVariation,
+                undoOscillatorSemitoneVariation
+            );
+
+        undoPreset.oscillatorCSemitones =
+            originalOscillatorCSemitones +
+            Random.Range(
+                -undoOscillatorSemitoneVariation,
+                undoOscillatorSemitoneVariation
+            );
+
+        undoPreset.oscillatorADb =
+            originalOscillatorADb +
+            Random.Range(
+                -undoOscillatorDbVariation,
+                undoOscillatorDbVariation
+            );
+
+        undoPreset.oscillatorBDb =
+            originalOscillatorBDb +
+            Random.Range(
+                -undoOscillatorDbVariation,
+                undoOscillatorDbVariation
+            );
+
+        undoPreset.oscillatorCDb =
+            originalOscillatorCDb +
+            Random.Range(
+                -undoOscillatorDbVariation,
+                undoOscillatorDbVariation
+            );
+
+        // ========================================================
+        // ENVOLVENTE PRINCIPAL
+        // ========================================================
+
+        undoPreset.attack =
+            Mathf.Max(
+                0.001f,
+                originalAttack +
+                Random.Range(
+                    -undoAttackVariation,
+                    undoAttackVariation
+                )
+            );
+
+        undoPreset.decay =
+            Mathf.Max(
+                0.001f,
+                originalDecay +
+                Random.Range(
+                    -undoDecayVariation,
+                    undoDecayVariation
+                )
+            );
+
+        undoPreset.sustain =
+            Mathf.Clamp01(
+                originalSustain +
+                Random.Range(
+                    -undoSustainVariation,
+                    undoSustainVariation
+                )
+            );
+
+        undoPreset.release =
+            Mathf.Max(
+                0.001f,
+                originalRelease +
+                Random.Range(
+                    -undoReleaseVariation,
+                    undoReleaseVariation
+                )
+            );
+
+        // ========================================================
+        // FILTRO
+        // ========================================================
+
+        if (undoPreset.useFilter)
+        {
+            undoPreset.filterCutoff =
+                Mathf.Clamp(
+                    originalFilterCutoff +
+                    Random.Range(
+                        -undoFilterVariation,
+                        undoFilterVariation
+                    ),
+                    100f,
+                    10000f
+                );
+
+            undoPreset.filterResonance =
+                Mathf.Clamp01(
+                    originalFilterResonance +
+                    Random.Range(
+                        -undoResonanceVariation,
+                        undoResonanceVariation
+                    )
+                );
+        }
+
+        // ========================================================
+        // LFO
+        // ========================================================
+
+        undoPreset.randomizeLfoPhase = true;
+
+        undoPreset.lfo1.rateHz =
+            Mathf.Max(
+                0.01f,
+                originalLfo1Rate *
+                Random.Range(
+                    0.80f,
+                    1.20f
+                )
+            );
+
+        undoPreset.lfo2.rateHz =
+            Mathf.Max(
+                0.01f,
+                originalLfo2Rate *
+                Random.Range(
+                    0.80f,
+                    1.20f
+                )
+            );
+
+        // ========================================================
+        // VOLUMEN INTERNO
+        // ========================================================
+
+        undoPreset.volume =
+            Mathf.Clamp(
+                originalVolume *
+                Random.Range(
+                    0.94f,
+                    1.02f
+                ),
+                0.01f,
+                2f
+            );
+
+        // ========================================================
+        // DURACIÓN
+        // ========================================================
+
+        float duration =
+            Random.Range(
+                0.45f -
+                undoDurationVariation,
+
+                0.45f +
+                undoDurationVariation
+            );
+
+        duration =
+            Mathf.Max(
+                0.05f,
+                duration
+            );
+
+        // ========================================================
+        // GENERAR SONIDO
+        // ========================================================
+
+        AudioClip generatedClip = null;
+
+        try
+        {
+            generatedClip =
+                synthesizer.Generate(
+                    undoPreset,
+                    frequency,
+                    duration
+                );
+        }
+        finally
+        {
+            // ====================================================
+            // RESTAURAR TODO
+            // ====================================================
+
+            undoPreset.volume =
+                originalVolume;
+
+            undoPreset.oscillatorASemitones =
+                originalOscillatorASemitones;
+
+            undoPreset.oscillatorBSemitones =
+                originalOscillatorBSemitones;
+
+            undoPreset.oscillatorCSemitones =
+                originalOscillatorCSemitones;
+
+            undoPreset.oscillatorADb =
+                originalOscillatorADb;
+
+            undoPreset.oscillatorBDb =
+                originalOscillatorBDb;
+
+            undoPreset.oscillatorCDb =
+                originalOscillatorCDb;
+
+            undoPreset.phaseModAmount =
+                originalPhaseModAmount;
+
+            undoPreset.phaseModCToB =
+                originalPhaseModCToB;
+
+            undoPreset.phaseModDToA =
+                originalPhaseModDToA;
+
+            undoPreset.attack =
+                originalAttack;
+
+            undoPreset.decay =
+                originalDecay;
+
+            undoPreset.sustain =
+                originalSustain;
+
+            undoPreset.release =
+                originalRelease;
+
+            undoPreset.filterCutoff =
+                originalFilterCutoff;
+
+            undoPreset.filterResonance =
+                originalFilterResonance;
+
+            undoPreset.randomizeLfoPhase =
+                originalRandomizeLfoPhase;
+
+            undoPreset.lfo1.rateHz =
+                originalLfo1Rate;
+
+            undoPreset.lfo2.rateHz =
+                originalLfo2Rate;
+        }
+
+        // ========================================================
+        // VOLUMEN FINAL
+        // ========================================================
+
+        generatedVolume =
+            Mathf.Clamp(
+                undoVolume +
+                Random.Range(
+                    -undoVolumeVariation,
+                    undoVolumeVariation
+                ),
+                0f,
+                1f
+            );
+
+        return generatedClip;
+    }
+
+    // ============================================================
+    // ORDEN DE UNDO
     // ============================================================
 
     private void RebuildUndoPlayOrder()
@@ -328,23 +674,27 @@ public class AvatarAudioManager : MonoBehaviour
             return;
         }
 
-        // Meter las 16 variantes.
-        for (int i = 0; i < undoClips.Length; i++)
+        for (
+            int i = 0;
+            i < undoClips.Length;
+            i++
+        )
         {
             undoPlayOrder.Add(i);
         }
 
-        // Mezclar.
+        // Fisher-Yates.
         for (
             int i = undoPlayOrder.Count - 1;
             i > 0;
             i--
         )
         {
-            int randomIndex = Random.Range(
-                0,
-                i + 1
-            );
+            int randomIndex =
+                Random.Range(
+                    0,
+                    i + 1
+                );
 
             int temp =
                 undoPlayOrder[i];
@@ -356,18 +706,19 @@ public class AvatarAudioManager : MonoBehaviour
                 temp;
         }
 
-        // Evitar que el comienzo del siguiente grupo
-        // sea exactamente el último sonido utilizado.
+        // Evitar que el primer sonido del nuevo ciclo
+        // sea igual al último del ciclo anterior.
         if (
             undoPlayOrder.Count > 1 &&
             lastUndoIndex >= 0 &&
             undoPlayOrder[0] == lastUndoIndex
         )
         {
-            int swapIndex = Random.Range(
-                1,
-                undoPlayOrder.Count
-            );
+            int swapIndex =
+                Random.Range(
+                    1,
+                    undoPlayOrder.Count
+                );
 
             int temp =
                 undoPlayOrder[0];
@@ -383,7 +734,7 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // SELECT
+    // PLAY SELECT
     // ============================================================
 
     public void PlaySelect()
@@ -401,10 +752,11 @@ public class AvatarAudioManager : MonoBehaviour
             return;
         }
 
-        int index = PickIndex(
-            selectClips.Length,
-            ref lastSelectIndex
-        );
+        int index =
+            PickIndex(
+                selectClips.Length,
+                ref lastSelectIndex
+            );
 
         audioSource.PlayOneShot(
             selectClips[index]
@@ -412,7 +764,7 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // ACCEPT
+    // PLAY ACCEPT
     // ============================================================
 
     public void PlayAcceptChanges()
@@ -440,39 +792,41 @@ public class AvatarAudioManager : MonoBehaviour
 
     private IEnumerator AcceptSequence()
     {
-        // C5
-        int cIndex = PickIndex(
-            acceptClips[0].Length,
-            ref lastAcceptCIndex
-        );
+        int cIndex =
+            PickIndex(
+                acceptClips[0].Length,
+                ref lastAcceptCIndex
+            );
 
         audioSource.PlayOneShot(
             acceptClips[0][cIndex]
         );
 
-        yield return new WaitForSeconds(
-            0.07f
-        );
+        yield return
+            new WaitForSeconds(
+                0.07f
+            );
 
-        // E5
-        int eIndex = PickIndex(
-            acceptClips[1].Length,
-            ref lastAcceptEIndex
-        );
+        int eIndex =
+            PickIndex(
+                acceptClips[1].Length,
+                ref lastAcceptEIndex
+            );
 
         audioSource.PlayOneShot(
             acceptClips[1][eIndex]
         );
 
-        yield return new WaitForSeconds(
-            0.07f
-        );
+        yield return
+            new WaitForSeconds(
+                0.07f
+            );
 
-        // G5
-        int gIndex = PickIndex(
-            acceptClips[2].Length,
-            ref lastAcceptGIndex
-        );
+        int gIndex =
+            PickIndex(
+                acceptClips[2].Length,
+                ref lastAcceptGIndex
+            );
 
         audioSource.PlayOneShot(
             acceptClips[2][gIndex]
@@ -480,7 +834,7 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // UNDO
+    // PLAY UNDO
     // ============================================================
 
     public void PlayUndo()
@@ -506,14 +860,13 @@ public class AvatarAudioManager : MonoBehaviour
             RebuildUndoPlayOrder();
         }
 
-        // Tomar la siguiente variante.
         int index =
-            undoPlayOrder[undoOrderPosition];
+            undoPlayOrder[
+                undoOrderPosition
+            ];
 
         undoOrderPosition++;
 
-        // Si ya usamos las 16,
-        // crear otro orden completamente nuevo.
         if (
             undoOrderPosition >=
             undoPlayOrder.Count
@@ -524,7 +877,6 @@ public class AvatarAudioManager : MonoBehaviour
 
         lastUndoIndex = index;
 
-        // Obtener volumen de esta variante.
         float volume =
             undoVolume;
 
@@ -538,7 +890,6 @@ public class AvatarAudioManager : MonoBehaviour
                 undoVariantVolumes[index];
         }
 
-        // Reproducir.
         audioSource.PlayOneShot(
             undoClips[index],
             volume
@@ -551,22 +902,24 @@ public class AvatarAudioManager : MonoBehaviour
 
     private void BuildKeyboardBanks()
     {
-        keyClips = GenerateBank(
-            keyboardPreset,
-            keyBaseFrequency,
-            keyDuration,
-            keyVariants,
-            keyPitchVariation
-        );
+        keyClips =
+            GenerateBank(
+                keyboardPreset,
+                keyBaseFrequency,
+                keyDuration,
+                keyVariants,
+                keyPitchVariation
+            );
 
-        backspaceClips = GenerateBank(
-            keyboardPreset,
-            keyBaseFrequency,
-            keyDuration,
-            keyVariants,
-            keyPitchVariation,
-            backspaceSemitones
-        );
+        backspaceClips =
+            GenerateBank(
+                keyboardPreset,
+                keyBaseFrequency,
+                keyDuration,
+                keyVariants,
+                keyPitchVariation,
+                backspaceSemitones
+            );
     }
 
     public void PlayKeyClick()
@@ -579,10 +932,11 @@ public class AvatarAudioManager : MonoBehaviour
             return;
         }
 
-        int index = PickIndex(
-            keyClips.Length,
-            ref lastKeyIndex
-        );
+        int index =
+            PickIndex(
+                keyClips.Length,
+                ref lastKeyIndex
+            );
 
         audioSource.PlayOneShot(
             keyClips[index]
@@ -599,10 +953,11 @@ public class AvatarAudioManager : MonoBehaviour
             return;
         }
 
-        int index = PickIndex(
-            backspaceClips.Length,
-            ref lastBackspaceIndex
-        );
+        int index =
+            PickIndex(
+                backspaceClips.Length,
+                ref lastBackspaceIndex
+            );
 
         audioSource.PlayOneShot(
             backspaceClips[index],
@@ -646,15 +1001,20 @@ public class AvatarAudioManager : MonoBehaviour
             return null;
         }
 
-        variants = Mathf.Max(
-            2,
-            variants
-        );
+        variants =
+            Mathf.Max(
+                2,
+                variants
+            );
 
         AudioClip[] bank =
             new AudioClip[variants];
 
-        for (int i = 0; i < variants; i++)
+        for (
+            int i = 0;
+            i < variants;
+            i++
+        )
         {
             float randomSemitones =
                 Random.Range(
@@ -761,6 +1121,7 @@ public class AvatarAudioManager : MonoBehaviour
         selectClips = null;
         undoClips = null;
         acceptClips = null;
+
         keyClips = null;
         backspaceClips = null;
 
