@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
@@ -10,6 +11,10 @@ public class AvatarAudioManager : MonoBehaviour
     public AudioPreset undoPreset;
     public AudioPreset keyboardPreset;
 
+    // ============================================================
+    // SELECT
+    // ============================================================
+
     [Header("Variaciones de Select")]
     [Min(2)]
     public int selectVariants = 8;
@@ -17,6 +22,10 @@ public class AvatarAudioManager : MonoBehaviour
     [Tooltip("Variación máxima de pitch en semitonos.")]
     [Range(0f, 2f)]
     public float selectPitchVariation = 0.6f;
+
+    // ============================================================
+    // ACCEPT
+    // ============================================================
 
     [Header("Variaciones de Accept")]
     [Min(2)]
@@ -26,23 +35,44 @@ public class AvatarAudioManager : MonoBehaviour
     [Range(0f, 2f)]
     public float acceptPitchVariation = 0.5f;
 
+    // ============================================================
+    // UNDO
+    // ============================================================
+
     [Header("Variaciones de Undo")]
-    [Min(2)]
-    public int undoVariants = 8;
 
-    [Tooltip("Variación máxima de pitch en semitonos.")]
-    [Range(0f, 2f)]
-    public float undoPitchVariation = 0.8f;
+    [Tooltip("Cantidad de versiones diferentes que se generan.")]
+    [Min(16)]
+    public int undoVariants = 16;
 
+    [Tooltip("Variación de pitch del Undo.")]
+    [Range(0f, 3f)]
+    public float undoPitchVariation = 1.2f;
+
+    [Tooltip("Variación máxima de duración.")]
+    [Range(0f, 0.10f)]
+    public float undoDurationVariation = 0.025f;
+
+    [Tooltip("Volumen base del Undo.")]
     [Range(0f, 1f)]
-    public float undoVolume = 0.55f;
+    public float undoVolume = 0.50f;
+
+    [Tooltip("Pequeña variación de volumen entre versiones.")]
+    [Range(0f, 0.15f)]
+    public float undoVolumeVariation = 0.03f;
+
+    // ============================================================
+    // KEYBOARD
+    // ============================================================
 
     [Header("Keyboard")]
+
     public float keyBaseFrequency = 800f;
     public float keyPitchVariation = 1.5f;
     public int keyVariants = 8;
     public float keyDuration = 0.07f;
     public float backspaceSemitones = -4f;
+
     [Range(0f, 1f)]
     public float backspaceVolume = 0.8f;
 
@@ -54,17 +84,20 @@ public class AvatarAudioManager : MonoBehaviour
     private ProceduralSynth synthesizer;
 
     // ============================================================
-    // BANKS - SELECT / ACCEPT / UNDO
+    // BANKS
     // ============================================================
 
     private AudioClip[] selectClips;
     private AudioClip[] undoClips;
 
-    // Accept tiene 3 notas:
-    // 0 = C5
-    // 1 = E5
-    // 2 = G5
     private AudioClip[][] acceptClips;
+
+    private AudioClip[] keyClips;
+    private AudioClip[] backspaceClips;
+
+    // ============================================================
+    // INDICES
+    // ============================================================
 
     private int lastSelectIndex = -1;
     private int lastUndoIndex = -1;
@@ -73,15 +106,18 @@ public class AvatarAudioManager : MonoBehaviour
     private int lastAcceptEIndex = -1;
     private int lastAcceptGIndex = -1;
 
-    // ============================================================
-    // KEYBOARD BANKS
-    // ============================================================
-
-    private AudioClip[] keyClips;
-    private AudioClip[] backspaceClips;
-
     private int lastKeyIndex = -1;
     private int lastBackspaceIndex = -1;
+
+    // ============================================================
+    // UNDO
+    // ============================================================
+
+    private List<int> undoPlayOrder = new List<int>();
+
+    private int undoOrderPosition = 0;
+
+    private float[] undoVariantVolumes;
 
     // ============================================================
     // UNITY
@@ -94,6 +130,9 @@ public class AvatarAudioManager : MonoBehaviour
         audioSource.playOnAwake = false;
 
         synthesizer = new ProceduralSynth();
+
+        // Aseguramos que Undo tenga 16 variantes.
+        undoVariants = 16;
 
         BuildAllSoundBanks();
     }
@@ -116,9 +155,9 @@ public class AvatarAudioManager : MonoBehaviour
         lastKeyIndex = -1;
         lastBackspaceIndex = -1;
 
-        // --------------------------------------------------------
+        // ========================================================
         // SELECT
-        // --------------------------------------------------------
+        // ========================================================
 
         if (selectPreset != null)
         {
@@ -131,24 +170,18 @@ public class AvatarAudioManager : MonoBehaviour
             );
         }
 
-        // --------------------------------------------------------
+        // ========================================================
         // UNDO
-        // --------------------------------------------------------
+        // ========================================================
 
         if (undoPreset != null)
         {
-            undoClips = GenerateBank(
-                undoPreset,
-                440f,
-                0.45f,
-                undoVariants,
-                undoPitchVariation
-            );
+            BuildUndoBank();
         }
 
-        // --------------------------------------------------------
+        // ========================================================
         // ACCEPT
-        // --------------------------------------------------------
+        // ========================================================
 
         if (acceptPreset != null)
         {
@@ -182,9 +215,9 @@ public class AvatarAudioManager : MonoBehaviour
             );
         }
 
-        // --------------------------------------------------------
+        // ========================================================
         // KEYBOARD
-        // --------------------------------------------------------
+        // ========================================================
 
         if (keyboardPreset != null)
         {
@@ -193,12 +226,172 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
+    // CREAR BANCO DE UNDO
+    // ============================================================
+
+    private void BuildUndoBank()
+    {
+        int variants = 16;
+
+        undoClips = new AudioClip[variants];
+
+        undoVariantVolumes = new float[variants];
+
+        // Guardamos el estado original.
+        bool originalRandomizeLfoPhase =
+            undoPreset.randomizeLfoPhase;
+
+        // Activamos la variación de fase de LFO mientras
+        // generamos los sonidos.
+        undoPreset.randomizeLfoPhase = true;
+
+        // ========================================================
+        // GENERAR LAS 16 VERSIONES
+        // ========================================================
+
+        for (int i = 0; i < variants; i++)
+        {
+            // ----------------------------------------------------
+            // 1. PITCH
+            // ----------------------------------------------------
+
+            float randomSemitones = Random.Range(
+                -undoPitchVariation,
+                undoPitchVariation
+            );
+
+            float frequency =
+                440f *
+                Mathf.Pow(
+                    2f,
+                    randomSemitones / 12f
+                );
+
+            // ----------------------------------------------------
+            // 2. DURACIÓN
+            // ----------------------------------------------------
+
+            float duration = Random.Range(
+                0.45f - undoDurationVariation,
+                0.45f + undoDurationVariation
+            );
+
+            duration = Mathf.Max(
+                0.05f,
+                duration
+            );
+
+            // ----------------------------------------------------
+            // 3. GENERAR CLIP
+            // ----------------------------------------------------
+
+            undoClips[i] = synthesizer.Generate(
+                undoPreset,
+                frequency,
+                duration
+            );
+
+            // ----------------------------------------------------
+            // 4. VOLUMEN
+            // ----------------------------------------------------
+
+            float volume = Random.Range(
+                undoVolume - undoVolumeVariation,
+                undoVolume + undoVolumeVariation
+            );
+
+            undoVariantVolumes[i] =
+                Mathf.Clamp01(volume);
+        }
+
+        // Restaurar exactamente el estado original.
+        undoPreset.randomizeLfoPhase =
+            originalRandomizeLfoPhase;
+
+        // Crear orden aleatorio.
+        RebuildUndoPlayOrder();
+    }
+
+    // ============================================================
+    // ORDEN ALEATORIO DE UNDO
+    // ============================================================
+
+    private void RebuildUndoPlayOrder()
+    {
+        undoPlayOrder.Clear();
+
+        if (
+            undoClips == null ||
+            undoClips.Length == 0
+        )
+        {
+            return;
+        }
+
+        // Meter las 16 variantes.
+        for (int i = 0; i < undoClips.Length; i++)
+        {
+            undoPlayOrder.Add(i);
+        }
+
+        // Mezclar.
+        for (
+            int i = undoPlayOrder.Count - 1;
+            i > 0;
+            i--
+        )
+        {
+            int randomIndex = Random.Range(
+                0,
+                i + 1
+            );
+
+            int temp =
+                undoPlayOrder[i];
+
+            undoPlayOrder[i] =
+                undoPlayOrder[randomIndex];
+
+            undoPlayOrder[randomIndex] =
+                temp;
+        }
+
+        // Evitar que el comienzo del siguiente grupo
+        // sea exactamente el último sonido utilizado.
+        if (
+            undoPlayOrder.Count > 1 &&
+            lastUndoIndex >= 0 &&
+            undoPlayOrder[0] == lastUndoIndex
+        )
+        {
+            int swapIndex = Random.Range(
+                1,
+                undoPlayOrder.Count
+            );
+
+            int temp =
+                undoPlayOrder[0];
+
+            undoPlayOrder[0] =
+                undoPlayOrder[swapIndex];
+
+            undoPlayOrder[swapIndex] =
+                temp;
+        }
+
+        undoOrderPosition = 0;
+    }
+
+    // ============================================================
     // SELECT
     // ============================================================
 
     public void PlaySelect()
     {
-        if (selectClips == null || selectClips.Length == 0)
+        if (
+            selectClips == null ||
+            selectClips.Length == 0
+        )
         {
             Debug.LogWarning(
                 "AvatarAudioManager: No hay banco de Select. " +
@@ -213,7 +406,9 @@ public class AvatarAudioManager : MonoBehaviour
             ref lastSelectIndex
         );
 
-        audioSource.PlayOneShot(selectClips[index]);
+        audioSource.PlayOneShot(
+            selectClips[index]
+        );
     }
 
     // ============================================================
@@ -222,11 +417,13 @@ public class AvatarAudioManager : MonoBehaviour
 
     public void PlayAcceptChanges()
     {
-        if (acceptClips == null ||
+        if (
+            acceptClips == null ||
             acceptClips.Length != 3 ||
             acceptClips[0] == null ||
             acceptClips[1] == null ||
-            acceptClips[2] == null)
+            acceptClips[2] == null
+        )
         {
             Debug.LogWarning(
                 "AvatarAudioManager: No hay banco de Accept. " +
@@ -236,7 +433,9 @@ public class AvatarAudioManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(AcceptSequence());
+        StartCoroutine(
+            AcceptSequence()
+        );
     }
 
     private IEnumerator AcceptSequence()
@@ -247,9 +446,13 @@ public class AvatarAudioManager : MonoBehaviour
             ref lastAcceptCIndex
         );
 
-        audioSource.PlayOneShot(acceptClips[0][cIndex]);
+        audioSource.PlayOneShot(
+            acceptClips[0][cIndex]
+        );
 
-        yield return new WaitForSeconds(0.07f);
+        yield return new WaitForSeconds(
+            0.07f
+        );
 
         // E5
         int eIndex = PickIndex(
@@ -257,9 +460,13 @@ public class AvatarAudioManager : MonoBehaviour
             ref lastAcceptEIndex
         );
 
-        audioSource.PlayOneShot(acceptClips[1][eIndex]);
+        audioSource.PlayOneShot(
+            acceptClips[1][eIndex]
+        );
 
-        yield return new WaitForSeconds(0.07f);
+        yield return new WaitForSeconds(
+            0.07f
+        );
 
         // G5
         int gIndex = PickIndex(
@@ -267,7 +474,9 @@ public class AvatarAudioManager : MonoBehaviour
             ref lastAcceptGIndex
         );
 
-        audioSource.PlayOneShot(acceptClips[2][gIndex]);
+        audioSource.PlayOneShot(
+            acceptClips[2][gIndex]
+        );
     }
 
     // ============================================================
@@ -276,7 +485,10 @@ public class AvatarAudioManager : MonoBehaviour
 
     public void PlayUndo()
     {
-        if (undoClips == null || undoClips.Length == 0)
+        if (
+            undoClips == null ||
+            undoClips.Length == 0
+        )
         {
             Debug.LogWarning(
                 "AvatarAudioManager: No hay banco de Undo. " +
@@ -286,14 +498,50 @@ public class AvatarAudioManager : MonoBehaviour
             return;
         }
 
-        int index = PickIndex(
-            undoClips.Length,
-            ref lastUndoIndex
-        );
+        if (
+            undoPlayOrder == null ||
+            undoPlayOrder.Count == 0
+        )
+        {
+            RebuildUndoPlayOrder();
+        }
 
+        // Tomar la siguiente variante.
+        int index =
+            undoPlayOrder[undoOrderPosition];
+
+        undoOrderPosition++;
+
+        // Si ya usamos las 16,
+        // crear otro orden completamente nuevo.
+        if (
+            undoOrderPosition >=
+            undoPlayOrder.Count
+        )
+        {
+            RebuildUndoPlayOrder();
+        }
+
+        lastUndoIndex = index;
+
+        // Obtener volumen de esta variante.
+        float volume =
+            undoVolume;
+
+        if (
+            undoVariantVolumes != null &&
+            index >= 0 &&
+            index < undoVariantVolumes.Length
+        )
+        {
+            volume =
+                undoVariantVolumes[index];
+        }
+
+        // Reproducir.
         audioSource.PlayOneShot(
             undoClips[index],
-            undoVolume
+            volume
         );
     }
 
@@ -323,7 +571,10 @@ public class AvatarAudioManager : MonoBehaviour
 
     public void PlayKeyClick()
     {
-        if (keyClips == null || keyClips.Length == 0)
+        if (
+            keyClips == null ||
+            keyClips.Length == 0
+        )
         {
             return;
         }
@@ -333,12 +584,17 @@ public class AvatarAudioManager : MonoBehaviour
             ref lastKeyIndex
         );
 
-        audioSource.PlayOneShot(keyClips[index]);
+        audioSource.PlayOneShot(
+            keyClips[index]
+        );
     }
 
     public void PlayKeyBackspace()
     {
-        if (backspaceClips == null || backspaceClips.Length == 0)
+        if (
+            backspaceClips == null ||
+            backspaceClips.Length == 0
+        )
         {
             return;
         }
@@ -355,7 +611,7 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // GENERAR BANCO
+    // GENERAR BANCO NORMAL
     // ============================================================
 
     private AudioClip[] GenerateBank(
@@ -390,37 +646,45 @@ public class AvatarAudioManager : MonoBehaviour
             return null;
         }
 
-        variants = Mathf.Max(2, variants);
+        variants = Mathf.Max(
+            2,
+            variants
+        );
 
-        AudioClip[] bank = new AudioClip[variants];
+        AudioClip[] bank =
+            new AudioClip[variants];
 
         for (int i = 0; i < variants; i++)
         {
-            // Variación pequeña de pitch.
-            float randomSemitones = Random.Range(
-                -pitchVariation,
-                pitchVariation
-            );
+            float randomSemitones =
+                Random.Range(
+                    -pitchVariation,
+                    pitchVariation
+                );
 
-            randomSemitones += additionalSemitones;
+            randomSemitones +=
+                additionalSemitones;
 
-            // Convertir semitonos a multiplicador de frecuencia.
             float frequency =
                 baseFrequency *
-                Mathf.Pow(2f, randomSemitones / 12f);
+                Mathf.Pow(
+                    2f,
+                    randomSemitones / 12f
+                );
 
-            bank[i] = synthesizer.Generate(
-                preset,
-                frequency,
-                duration
-            );
+            bank[i] =
+                synthesizer.Generate(
+                    preset,
+                    frequency,
+                    duration
+                );
         }
 
         return bank;
     }
 
     // ============================================================
-    // ELEGIR VARIACIÓN SIN REPETIR INMEDIATAMENTE
+    // ELEGIR VARIACIÓN NORMAL
     // ============================================================
 
     private int PickIndex(
@@ -436,16 +700,21 @@ public class AvatarAudioManager : MonoBehaviour
         if (length == 1)
         {
             lastIndex = 0;
+
             return 0;
         }
 
-        int index = Random.Range(0, length);
+        int index =
+            Random.Range(
+                0,
+                length
+            );
 
-        // Evita repetir exactamente la misma variación
-        // dos veces seguidas.
         if (index == lastIndex)
         {
-            index = (index + 1) % length;
+            index =
+                (index + 1) %
+                length;
         }
 
         lastIndex = index;
@@ -459,38 +728,72 @@ public class AvatarAudioManager : MonoBehaviour
 
     private void DestroyAllBanks()
     {
-        DestroyBank(selectClips);
-        DestroyBank(undoClips);
-        DestroyBank(keyClips);
-        DestroyBank(backspaceClips);
+        DestroyBank(
+            selectClips
+        );
+
+        DestroyBank(
+            undoClips
+        );
+
+        DestroyBank(
+            keyClips
+        );
+
+        DestroyBank(
+            backspaceClips
+        );
 
         if (acceptClips != null)
         {
-            for (int i = 0; i < acceptClips.Length; i++)
+            for (
+                int i = 0;
+                i < acceptClips.Length;
+                i++
+            )
             {
-                DestroyBank(acceptClips[i]);
+                DestroyBank(
+                    acceptClips[i]
+                );
             }
         }
 
         selectClips = null;
         undoClips = null;
+        acceptClips = null;
         keyClips = null;
         backspaceClips = null;
-        acceptClips = null;
+
+        undoVariantVolumes = null;
+
+        if (undoPlayOrder != null)
+        {
+            undoPlayOrder.Clear();
+        }
+
+        undoOrderPosition = 0;
     }
 
-    private void DestroyBank(AudioClip[] bank)
+    private void DestroyBank(
+        AudioClip[] bank
+    )
     {
         if (bank == null)
         {
             return;
         }
 
-        for (int i = 0; i < bank.Length; i++)
+        for (
+            int i = 0;
+            i < bank.Length;
+            i++
+        )
         {
             if (bank[i] != null)
             {
-                Destroy(bank[i]);
+                Destroy(
+                    bank[i]
+                );
             }
         }
     }

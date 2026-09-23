@@ -1594,7 +1594,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00035858154, y: 100.0009}
+  m_AnchoredPosition: {x: 0.00035858154, y: 100.00002}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &328947620
@@ -7383,8 +7383,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1055405554}
   m_HandleRect: {fileID: 1055405553}
   m_Direction: 2
-  m_Value: -0.000009231565
-  m_Size: 0.66657495
+  m_Value: 0
+  m_Size: 0.6665376
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9447,9 +9447,11 @@ MonoBehaviour:
   selectPitchVariation: 1.64
   acceptVariants: 8
   acceptPitchVariation: 1.5
-  undoVariants: 8
-  undoPitchVariation: 1.69
-  undoVolume: 0.352
+  undoVariants: 16
+  undoPitchVariation: 3
+  undoDurationVariation: 0.0945
+  undoVolume: 0.267
+  undoVolumeVariation: 0.15
   keyBaseFrequency: 800
   keyPitchVariation: 1.5
   keyVariants: 8
