@@ -548,6 +548,24 @@ namespace AudioProceduralAvatar.Avatar
                         layerName
                     );
 
+                // currentIndex == -1 es el marcador que deja AvatarCreator.
+                // Remove() cuando la persona elige "no poner" esta capa
+                // (ej. sin barba). OJO: -1 también significa "prenda
+                // secreta" en el resto del sistema (secretOptions[0]), así
+                // que NO se puede guardar el -1 tal cual -- hay que
+                // convertirlo en una marca explícita de oculto.
+                if (index == -1)
+                {
+                    profile.Layers.Add(
+                        new LayerSelection
+                        {
+                            LayerName = layerName,
+                            SpriteIndex = 0,
+                            Hidden = true
+                        }
+                    );
+                    continue;
+                }
 
                 profile.Layers.Add(
                     new LayerSelection
