@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using TMPro;
 using AudioProceduralAvatar.Avatar;
 using AudioProceduralAvatar.Audio;
 using AudioProceduralAvatar.Persistence;
@@ -22,6 +22,10 @@ public class AvatarDetailPanel : MonoBehaviour
     [Tooltip("Contenido visible del panel (blur + preview + botones). Se oculta AL INSTANTE al cerrar. El GameObject raíz que tiene este script debe quedar SIEMPRE activo (no lo pongas aquí), para que el fade de audio en segundo plano pueda terminar aunque el panel ya esté oculto.")]
     public GameObject visualContent;
     public Button closeButton;
+
+    [Header("Datos del avatar")]
+    public TMP_Text avatarNameText;
+    public TMP_Text studentCodeText;
 
     [Header("Rig")]
     public AvatarSkeletonBuilder rigPrefab;
@@ -73,6 +77,9 @@ public class AvatarDetailPanel : MonoBehaviour
         if (visualContent != null) visualContent.SetActive(true);
         if (playButton != null) playButton.interactable = false;
 
+        if (avatarNameText != null) avatarNameText.text = profile.AvatarName;
+        if (studentCodeText != null) studentCodeText.text = profile.StudentCode;
+
         BuildRig(profile);
         StartCoroutine(LoadAndPrepareAudio(profile));
     }
@@ -118,7 +125,6 @@ public class AvatarDetailPanel : MonoBehaviour
             if (fallbackPortrait != null && portraitDatabase != null)
             {
                 fallbackPortrait.gameObject.SetActive(true);
-                Debug.Log($"Mostrando avatar {profile.Id} / {profile.AvatarName}");
                 fallbackPortrait.SetAvatar(profile, portraitDatabase);
             }
             else
