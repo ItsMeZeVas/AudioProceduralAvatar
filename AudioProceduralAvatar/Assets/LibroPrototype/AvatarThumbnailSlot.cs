@@ -75,6 +75,8 @@ public class AvatarThumbnailSlot : MonoBehaviour
             int index = profile.GetSpriteIndex(layer.layerName);
             Sprite sprite = database.Resolve(layer.layerName, index);
 
+            Debug.Log($"[AvatarThumbnailSlot] layer='{layer.layerName}' index={index} sprite={(sprite != null ? sprite.name : "null")}");
+
             layer.image.sprite = sprite;
             layer.image.enabled = sprite != null;
 

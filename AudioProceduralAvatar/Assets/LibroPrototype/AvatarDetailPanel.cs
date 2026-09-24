@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -10,6 +11,11 @@ using AudioProceduralAvatar.Persistence;
 // AvatarSkeletonBuilder que el mundo abierto, en Idle) y reproducción del
 // leitmotiv ya exportado a WAV -- se puede repetir sin límite; solo se
 // genera si es la primera vez que se abre un avatar viejo sin WAV.
+//
+// Fallback: si no hay rigPrefab/rigContainer asignado (rig 3D todavía sin
+// terminar), se muestra en su lugar un AvatarThumbnailSlot -- el mismo
+// componente plano/2D que usan las miniaturas del libro -- para no dejar el
+// panel vacío mientras el rig no esté listo.
 public class AvatarDetailPanel : MonoBehaviour
 {
     [Header("Overlay")]
@@ -24,6 +30,11 @@ public class AvatarDetailPanel : MonoBehaviour
     [Header("Vista previa (cámara dedicada + RenderTexture)")]
     [Tooltip("Layer exclusivo para el rig del panel, para que la cámara de vista previa no renderice nada más (el libro, el resto de la escena, etc).")]
     public string previewLayerName = "AvatarPreview";
+
+    [Header("Fallback plano (si no hay rig 3D asignado todavía)")]
+    [Tooltip("Se activa y se usa en vez del rig cuando rigPrefab o rigContainer están sin asignar. Mismo componente que usan las miniaturas del álbum.")]
+    public AvatarThumbnailSlot fallbackPortrait;
+    public AvatarPortraitDatabase portraitDatabase;
 
     [Header("Solo para el fallback (avatar viejo sin WAV aún)")]
     public AvatarOptionsDatabase optionsDatabase;
@@ -43,6 +54,7 @@ public class AvatarDetailPanel : MonoBehaviour
         if (closeButton != null) closeButton.onClick.AddListener(Close);
         if (playButton != null) playButton.onClick.AddListener(PlayLeitmotiv);
         if (visualContent != null) visualContent.SetActive(false);
+        if (fallbackPortrait != null) fallbackPortrait.gameObject.SetActive(false);
     }
 
     public void Open(AvatarProfile profile)
@@ -75,6 +87,12 @@ public class AvatarDetailPanel : MonoBehaviour
             _rigInstance = null;
         }
 
+        if (fallbackPortrait != null)
+        {
+            fallbackPortrait.Clear();
+            fallbackPortrait.gameObject.SetActive(false);
+        }
+
         if (_fadeRoutine != null) StopCoroutine(_fadeRoutine);
         _fadeRoutine = StartCoroutine(FadeOutAudio());
     }
@@ -84,9 +102,41 @@ public class AvatarDetailPanel : MonoBehaviour
     private void BuildRig(AvatarProfile profile)
     {
         if (_rigInstance != null)
+        {
             Destroy(_rigInstance.gameObject);
+            _rigInstance = null;
+        }
 
-        if (rigPrefab == null || rigContainer == null) return;
+        bool canBuildRig = rigPrefab != null && rigContainer != null;
+
+        if (rigContainer != null)
+            rigContainer.gameObject.SetActive(canBuildRig);
+
+        if (!canBuildRig)
+        {
+            // No hay rig 3D asignado todavía: fallback al avatar plano.
+            if (fallbackPortrait != null && portraitDatabase != null)
+            {
+                fallbackPortrait.gameObject.SetActive(true);
+                Debug.Log($"Mostrando avatar {profile.Id} / {profile.AvatarName}");
+                fallbackPortrait.SetAvatar(profile, portraitDatabase);
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "[AvatarDetailPanel] No hay rig3D asignado y falta " +
+                    "fallbackPortrait/portraitDatabase para mostrar el " +
+                    "avatar plano -- el panel va a quedar vacío."
+                );
+            }
+            return;
+        }
+
+        if (fallbackPortrait != null)
+        {
+            fallbackPortrait.Clear();
+            fallbackPortrait.gameObject.SetActive(false);
+        }
 
         // El rig trae su propio Animator en loop Idle por defecto (mismo
         // prefab que el mundo abierto) -- no hace falta dispararlo aquí.
