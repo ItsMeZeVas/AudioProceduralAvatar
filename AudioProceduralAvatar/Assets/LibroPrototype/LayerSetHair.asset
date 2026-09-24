@@ -26,3 +26,13 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 04fca22951aa42549b451c31c2b59b75, type: 3}
   - {fileID: 21300000, guid: 4c6e4b749dd66da4b884ee0353441d5a, type: 3}
   - {fileID: 21300000, guid: 7cfa2e389a5ed7346b93b3856c44c536, type: 3}
+  secretSprites:
+  - {fileID: 21300000, guid: 0bd55d936cee2ea4aafc7cbc969477b7, type: 3}
+  - {fileID: 21300000, guid: 0b0610679d90f48428767dac72906c51, type: 3}
+  - {fileID: 21300000, guid: 1a2939639d9f42746871e9caa8c64878, type: 3}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: e37ed3ff90016a34a97654a320deff42, type: 3}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: 6e0b04161fcfc8945917417888c3b7b3, type: 3}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: ca52b05d665232440b8322e73424b07c, type: 3}

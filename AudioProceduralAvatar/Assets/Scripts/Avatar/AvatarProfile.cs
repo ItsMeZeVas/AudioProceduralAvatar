@@ -8,6 +8,12 @@ namespace AudioProceduralAvatar.Avatar
     {
         public string LayerName;
         public int SpriteIndex;
+
+        // True solo para capas de avatares secretos que el preset marcó
+        // explícitamente como "sin prenda" (noPiece). Distinto de que la
+        // capa simplemente no esté en la lista (caso normal / avatares
+        // viejos), donde SÍ se quiere usar el fallback público.
+        public bool Hidden;
     }
 
 
@@ -51,6 +57,22 @@ namespace AudioProceduralAvatar.Avatar
             }
 
             return fallback;
+        }
+
+
+        // True si esta capa fue marcada explícitamente como "sin prenda"
+        // (ej. un avatar secreto sin pelo). Hay que chequear esto ANTES de
+        // resolver el sprite con GetSpriteIndex, porque una capa oculta no
+        // debe caer en el fallback público.
+        public bool IsLayerHidden(string layerName)
+        {
+            foreach (var l in Layers)
+            {
+                if (l.LayerName == layerName)
+                    return l.Hidden;
+            }
+
+            return false;
         }
 
 

@@ -63,6 +63,15 @@ public class AvatarThumbnailSlot : MonoBehaviour
         {
             if (layer.image == null) continue;
 
+            // Capa marcada explícitamente como "sin prenda" (avatar
+            // secreto) -> apagar directo, sin pasar por el fallback público
+            // de GetSpriteIndex.
+            if (profile.IsLayerHidden(layer.layerName))
+            {
+                layer.image.enabled = false;
+                continue;
+            }
+
             int index = profile.GetSpriteIndex(layer.layerName);
             Sprite sprite = database.Resolve(layer.layerName, index);
 

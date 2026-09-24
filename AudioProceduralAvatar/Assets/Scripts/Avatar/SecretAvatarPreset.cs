@@ -61,7 +61,19 @@ namespace AudioProceduralAvatar.Avatar
             foreach (var layer in layers)
             {
                 if (layer.noPiece)
+                {
+                    // Antes: se saltaba por completo, y eso era indistinguible
+                    // de "capa no especificada" -> el álbum/rig caían al
+                    // fallback público (índice 0), mostrando una prenda que
+                    // el preset nunca quiso. Ahora queda una marca explícita.
+                    profile.Layers.Add(new LayerSelection
+                    {
+                        LayerName = layer.layerName,
+                        SpriteIndex = 0,
+                        Hidden = true
+                    });
                     continue;
+                }
 
                 profile.Layers.Add(new LayerSelection
                 {
