@@ -60,6 +60,8 @@ namespace AudioProceduralAvatar.Avatar
             "Head",
             "Hair",
             "Eyes",
+            "SubBoca",
+            "SubBarba",
             "UpperBody",
             "LowerBody",
             "Accessories"

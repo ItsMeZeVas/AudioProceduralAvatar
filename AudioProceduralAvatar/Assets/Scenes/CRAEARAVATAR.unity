@@ -11779,8 +11779,8 @@ MonoBehaviour:
   - Hair
   - UpperBody
   - LowerBody
-  - ' SubBoca'
-  - ' SubBarba'
+  - SubBoca
+  - SubBarba
   - Accessories
   profanityFilter: {fileID: 11400000, guid: 234fbbe549a330d4b9fdc6e056cb03b9, type: 2}
   requireUniqueStudentCode: 1
