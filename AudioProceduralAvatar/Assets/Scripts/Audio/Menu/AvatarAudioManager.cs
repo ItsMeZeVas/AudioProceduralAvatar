@@ -23,6 +23,10 @@ public class AvatarAudioManager : MonoBehaviour
     [Range(0f, 2f)]
     public float selectPitchVariation = 0.6f;
 
+    [Tooltip("Volumen predeterminado de Select.")]
+    [Range(0f, 1f)]
+    public float selectVolume = 1f;
+
     // ============================================================
     // ACCEPT
     // ============================================================
@@ -34,6 +38,10 @@ public class AvatarAudioManager : MonoBehaviour
     [Tooltip("Variación máxima de pitch en semitonos.")]
     [Range(0f, 2f)]
     public float acceptPitchVariation = 0.5f;
+
+    [Tooltip("Volumen predeterminado de Accept.")]
+    [Range(0f, 1f)]
+    public float acceptVolume = 1f;
 
     // ============================================================
     // UNDO
@@ -83,13 +91,9 @@ public class AvatarAudioManager : MonoBehaviour
     [Range(0f, 0.20f)]
     public float undoResonanceVariation = 0.08f;
 
-    [Tooltip("Volumen máximo del Undo.")]
+    [Tooltip("Volumen predeterminado del Undo.")]
     [Range(0f, 1f)]
     public float undoVolume = 0.50f;
-
-    [Tooltip("Pequeña variación de volumen entre versiones.")]
-    [Range(0f, 0.15f)]
-    public float undoVolumeVariation = 0.03f;
 
     // ============================================================
     // KEYBOARD
@@ -102,6 +106,11 @@ public class AvatarAudioManager : MonoBehaviour
     public float keyDuration = 0.07f;
     public float backspaceSemitones = -4f;
 
+    [Tooltip("Volumen predeterminado de las teclas.")]
+    [Range(0f, 1f)]
+    public float keyboardVolume = 1f;
+
+    [Tooltip("Volumen predeterminado de Backspace.")]
     [Range(0f, 1f)]
     public float backspaceVolume = 0.8f;
 
@@ -145,8 +154,6 @@ public class AvatarAudioManager : MonoBehaviour
         new List<int>();
 
     private int undoOrderPosition = 0;
-
-    private float[] undoVariantVolumes;
 
     // ============================================================
     // UNITY
@@ -272,9 +279,6 @@ public class AvatarAudioManager : MonoBehaviour
         undoClips =
             new AudioClip[variants];
 
-        undoVariantVolumes =
-            new float[variants];
-
         // --------------------------------------------------------
         // GENERAR CADA VARIANTE
         // --------------------------------------------------------
@@ -282,12 +286,7 @@ public class AvatarAudioManager : MonoBehaviour
         for (int i = 0; i < variants; i++)
         {
             undoClips[i] =
-                GenerateUndoVariant(
-                    out float volume
-                );
-
-            undoVariantVolumes[i] =
-                volume;
+                GenerateUndoVariant();
         }
 
         // --------------------------------------------------------
@@ -301,9 +300,7 @@ public class AvatarAudioManager : MonoBehaviour
     // GENERAR UNA VARIANTE DE UNDO
     // ============================================================
 
-    private AudioClip GenerateUndoVariant(
-        out float generatedVolume
-    )
+    private AudioClip GenerateUndoVariant()
     {
         // ========================================================
         // GUARDAR VALORES ORIGINALES
@@ -640,21 +637,6 @@ public class AvatarAudioManager : MonoBehaviour
                 originalLfo2Rate;
         }
 
-        // ========================================================
-        // VOLUMEN FINAL
-        // ========================================================
-
-        generatedVolume =
-            Mathf.Clamp(
-                undoVolume +
-                Random.Range(
-                    -undoVolumeVariation,
-                    undoVolumeVariation
-                ),
-                0f,
-                1f
-            );
-
         return generatedClip;
     }
 
@@ -759,7 +741,8 @@ public class AvatarAudioManager : MonoBehaviour
             );
 
         audioSource.PlayOneShot(
-            selectClips[index]
+            selectClips[index],
+            selectVolume
         );
     }
 
@@ -799,7 +782,8 @@ public class AvatarAudioManager : MonoBehaviour
             );
 
         audioSource.PlayOneShot(
-            acceptClips[0][cIndex]
+            acceptClips[0][cIndex],
+            acceptVolume
         );
 
         yield return
@@ -814,7 +798,8 @@ public class AvatarAudioManager : MonoBehaviour
             );
 
         audioSource.PlayOneShot(
-            acceptClips[1][eIndex]
+            acceptClips[1][eIndex],
+            acceptVolume
         );
 
         yield return
@@ -829,7 +814,8 @@ public class AvatarAudioManager : MonoBehaviour
             );
 
         audioSource.PlayOneShot(
-            acceptClips[2][gIndex]
+            acceptClips[2][gIndex],
+            acceptVolume
         );
     }
 
@@ -877,22 +863,9 @@ public class AvatarAudioManager : MonoBehaviour
 
         lastUndoIndex = index;
 
-        float volume =
-            undoVolume;
-
-        if (
-            undoVariantVolumes != null &&
-            index >= 0 &&
-            index < undoVariantVolumes.Length
-        )
-        {
-            volume =
-                undoVariantVolumes[index];
-        }
-
         audioSource.PlayOneShot(
             undoClips[index],
-            volume
+            undoVolume
         );
     }
 
@@ -939,7 +912,8 @@ public class AvatarAudioManager : MonoBehaviour
             );
 
         audioSource.PlayOneShot(
-            keyClips[index]
+            keyClips[index],
+            keyboardVolume
         );
     }
 
@@ -1124,8 +1098,6 @@ public class AvatarAudioManager : MonoBehaviour
 
         keyClips = null;
         backspaceClips = null;
-
-        undoVariantVolumes = null;
 
         if (undoPlayOrder != null)
         {

@@ -9160,8 +9160,10 @@ MonoBehaviour:
   keyboardPreset: {fileID: 11400000, guid: 14e9b582f1e9fc94e8689a6efd6ff00f, type: 2}
   selectVariants: 8
   selectPitchVariation: 1.64
+  selectVolume: 1
   acceptVariants: 8
   acceptPitchVariation: 1.5
+  acceptVolume: 1
   undoVariants: 16
   undoPitchVariation: 3
   undoDurationVariation: 0.0945
@@ -9174,13 +9176,13 @@ MonoBehaviour:
   undoFilterVariation: 0
   undoResonanceVariation: 0.086
   undoVolume: 0.267
-  undoVolumeVariation: 0.15
   keyBaseFrequency: 800
   keyPitchVariation: 1.5
   keyVariants: 8
   keyDuration: 0.07
   backspaceSemitones: -4
-  backspaceVolume: 0.8
+  keyboardVolume: 1
+  backspaceVolume: 0.763
 --- !u!82 &1336200147
 AudioSource:
   m_ObjectHideFlags: 0
