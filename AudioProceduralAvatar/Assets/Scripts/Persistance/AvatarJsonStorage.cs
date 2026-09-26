@@ -1,10 +1,26 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using AudioProceduralAvatar.Avatar;
 
 namespace AudioProceduralAvatar.Persistence
 {
+    [Serializable]
+    public class AvatarRosterEntry
+    {
+        public string Id;
+        public string AvatarName;
+        public string StudentCode;
+    }
+
+    // Wrapper porque JsonUtility no serializa una List<> suelta como raíz.
+    [Serializable]
+    public class AvatarRoster
+    {
+        public List<AvatarRosterEntry> Entries = new();
+    }
+
     /// <summary>
     /// Guarda y carga el AvatarProfile en JSON. Pensado para desacoplar la
     /// escena de personalización de la escena de galería — todavía no está
@@ -14,10 +30,16 @@ namespace AudioProceduralAvatar.Persistence
     ///
     /// Por cada avatar: avatars/{id}.json (datos) + avatars/{id}.png (la
     /// captura de AvatarCapture, opcional).
+    ///
+    /// Además mantiene roster.json (afuera de la carpeta avatars/, un nivel
+    /// arriba) con solo AvatarName + StudentCode de TODOS los avatares
+    /// guardados, para poder tomar asistencia leyendo un solo archivo en vez
+    /// de abrir los JSON uno por uno. Se actualiza en cada Save().
     /// </summary>
     public static class AvatarJsonStorage
     {
         private static string FolderPath => Path.Combine(Application.persistentDataPath, "avatars");
+        private static string RosterPath => Path.Combine(Application.persistentDataPath, "roster.json");
 
         public static void EnsureFolder()
         {
@@ -39,6 +61,8 @@ namespace AudioProceduralAvatar.Persistence
                 byte[] png = capturedImage.EncodeToPNG();
                 File.WriteAllBytes(GetImagePath(profile.Id), png);
             }
+
+            UpdateRoster(profile);
 
             Debug.Log($"[AvatarJsonStorage] Guardado: {GetJsonPath(profile.Id)}");
         }
@@ -89,6 +113,40 @@ namespace AudioProceduralAvatar.Persistence
                 if (profile.StudentCode.Trim().ToLowerInvariant() == normalized) return true;
             }
             return false;
+        }
+
+        // ================= ROSTER (para tomar asistencia) =================
+
+        /// <summary>Carga roster.json completo. Devuelve uno vacío si todavía no existe.</summary>
+        public static AvatarRoster LoadRoster()
+        {
+            if (!File.Exists(RosterPath))
+                return new AvatarRoster();
+
+            string json = File.ReadAllText(RosterPath);
+            var roster = JsonUtility.FromJson<AvatarRoster>(json);
+            return roster ?? new AvatarRoster();
+        }
+
+        private static void UpdateRoster(AvatarProfile profile)
+        {
+            var roster = LoadRoster();
+
+            int existingIndex = roster.Entries.FindIndex(e => e.Id == profile.Id);
+            var entry = new AvatarRosterEntry
+            {
+                Id = profile.Id,
+                AvatarName = profile.AvatarName,
+                StudentCode = profile.StudentCode
+            };
+
+            if (existingIndex >= 0)
+                roster.Entries[existingIndex] = entry;
+            else
+                roster.Entries.Add(entry);
+
+            string json = JsonUtility.ToJson(roster, prettyPrint: true);
+            File.WriteAllText(RosterPath, json);
         }
 
         private static string GetJsonPath(string id) => Path.Combine(FolderPath, $"{id}.json");
