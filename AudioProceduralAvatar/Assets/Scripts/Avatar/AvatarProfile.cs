@@ -40,6 +40,11 @@ namespace AudioProceduralAvatar.Avatar
 
         public string LeitmotivPath = "";
 
+        // Se llena la primera vez que se sube el .wav a Supabase (desde el
+        // panel de detalle). Si ya tiene valor, no hace falta volver a
+        // subirlo -- se reusa para el QR directo.
+        public string WavPublicUrl = "";
+
         public List<LayerSelection> Layers = new();
 
         public List<ContinuousAttribute>

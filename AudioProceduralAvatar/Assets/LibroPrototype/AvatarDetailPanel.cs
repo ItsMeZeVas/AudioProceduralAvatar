@@ -50,15 +50,26 @@ public class AvatarDetailPanel : MonoBehaviour
     public Button playButton;
     public float closeFadeSeconds = 1f;
 
+    [Header("Descarga por QR")]
+    public AvatarUploadConfig uploadConfig;
+    public Button qrButton;
+    public RawImage qrImage;
+    public GameObject qrLoadingIndicator;
+    public TMP_Text qrStatusText;
+
     private AvatarSkeletonBuilder _rigInstance;
     private Coroutine _fadeRoutine;
+    private AvatarProfile _currentProfile;
+    private Coroutine _qrRoutine;
 
     private void Awake()
     {
         if (closeButton != null) closeButton.onClick.AddListener(Close);
         if (playButton != null) playButton.onClick.AddListener(PlayLeitmotiv);
+        if (qrButton != null) qrButton.onClick.AddListener(OnQrButtonClicked);
         if (visualContent != null) visualContent.SetActive(false);
         if (fallbackPortrait != null) fallbackPortrait.gameObject.SetActive(false);
+        ResetQrUi();
     }
 
     public void Open(AvatarProfile profile)
@@ -77,6 +88,9 @@ public class AvatarDetailPanel : MonoBehaviour
         if (visualContent != null) visualContent.SetActive(true);
         if (playButton != null) playButton.interactable = false;
 
+        _currentProfile = profile;
+        ResetQrUi();
+
         if (avatarNameText != null) avatarNameText.text = profile.AvatarName;
         if (studentCodeText != null) studentCodeText.text = profile.StudentCode;
 
@@ -87,6 +101,13 @@ public class AvatarDetailPanel : MonoBehaviour
     public void Close()
     {
         if (visualContent != null) visualContent.SetActive(false);
+
+        if (_qrRoutine != null)
+        {
+            StopCoroutine(_qrRoutine);
+            _qrRoutine = null;
+        }
+        _currentProfile = null;
 
         if (_rigInstance != null)
         {
@@ -242,5 +263,90 @@ public class AvatarDetailPanel : MonoBehaviour
             audioSource.Stop();
             audioSource.volume = startVolume;
         }
+    }
+
+    // ================= DESCARGA POR QR =================
+
+    private void ResetQrUi()
+    {
+        if (qrImage != null)
+        {
+            qrImage.texture = null;
+            qrImage.gameObject.SetActive(false);
+        }
+        if (qrLoadingIndicator != null) qrLoadingIndicator.SetActive(false);
+        if (qrStatusText != null) qrStatusText.text = "";
+        if (qrButton != null) qrButton.interactable = true;
+    }
+
+    private void OnQrButtonClicked()
+    {
+        if (_currentProfile == null) return;
+        if (_qrRoutine != null) StopCoroutine(_qrRoutine);
+        _qrRoutine = StartCoroutine(EnsureWavUrlAndShowQr(_currentProfile));
+    }
+
+    private IEnumerator EnsureWavUrlAndShowQr(AvatarProfile profile)
+    {
+        if (qrButton != null) qrButton.interactable = false;
+        if (qrLoadingIndicator != null) qrLoadingIndicator.SetActive(true);
+        if (qrStatusText != null) qrStatusText.text = "Preparando...";
+
+        // Si ya se subió antes, nos ahorramos el upload.
+        if (string.IsNullOrEmpty(profile.WavPublicUrl))
+        {
+            if (qrStatusText != null) qrStatusText.text = "Subiendo audio...";
+
+            string wavPath = AvatarAudioStorage.GetWavPath(profile.Id);
+            string uploadedUrl = null;
+            string uploadError = null;
+
+            yield return AvatarWavUploader.Upload(
+                wavPath,
+                profile.Id,
+                uploadConfig,
+                url => uploadedUrl = url,
+                err => uploadError = err
+            );
+
+            if (!string.IsNullOrEmpty(uploadError))
+            {
+                Debug.LogWarning($"[AvatarDetailPanel] {uploadError}");
+                if (qrStatusText != null) qrStatusText.text = "No se pudo subir el audio.";
+                if (qrLoadingIndicator != null) qrLoadingIndicator.SetActive(false);
+                if (qrButton != null) qrButton.interactable = true;
+                yield break;
+            }
+
+            profile.WavPublicUrl = uploadedUrl;
+            AvatarJsonStorage.Save(profile); // persiste la URL para no re-subir la próxima vez
+        }
+
+        if (qrStatusText != null) qrStatusText.text = "Generando QR...";
+
+        string qrApiUrl =
+            "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+            UnityWebRequest.EscapeURL(profile.WavPublicUrl);
+
+        using var qrRequest = UnityEngine.Networking.UnityWebRequestTexture.GetTexture(qrApiUrl);
+        yield return qrRequest.SendWebRequest();
+
+        if (qrLoadingIndicator != null) qrLoadingIndicator.SetActive(false);
+        if (qrButton != null) qrButton.interactable = true;
+
+        if (qrRequest.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogWarning($"[AvatarDetailPanel] No se pudo generar el QR: {qrRequest.error}");
+            if (qrStatusText != null) qrStatusText.text = "No se pudo generar el QR.";
+            yield break;
+        }
+
+        var texture = UnityEngine.Networking.DownloadHandlerTexture.GetContent(qrRequest);
+        if (qrImage != null)
+        {
+            qrImage.texture = texture;
+            qrImage.gameObject.SetActive(true);
+        }
+        if (qrStatusText != null) qrStatusText.text = "";
     }
 }
