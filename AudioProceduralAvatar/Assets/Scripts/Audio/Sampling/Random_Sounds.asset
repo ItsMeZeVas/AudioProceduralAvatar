@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1233149941 &-2229817409820494135
+AudioContainerElement:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Treads_{-2229817409820494135}
+  m_AudioClip: {fileID: 8300000, guid: eb84ab79d2094154a98decd31018ccf8, type: 3}
+  m_Volume: 0
+  m_Enabled: 1
+--- !u!1233149941 &1487590346684853903
+AudioContainerElement:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Whoosh_{1487590346684853903}
+  m_AudioClip: {fileID: 8300000, guid: dd835daa9358afa468cde1e5229c249f, type: 3}
+  m_Volume: -6
+  m_Enabled: 1
+--- !u!1233149941 &2041281852717896643
+AudioContainerElement:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Bird_{2041281852717896643}
+  m_AudioClip: {fileID: 8300000, guid: 37af2a7a045520644a8c90097adbec33, type: 3}
+  m_Volume: 0
+  m_Enabled: 1
+--- !u!1307931743 &6418180475301049370
+AudioRandomContainer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Random_Sounds
+  m_Volume: 0
+  m_Pitch: 0
+  m_AutomaticTriggerTime: 1
+  m_LoopCount: 1
+  m_VolumeRandomizationRange: {x: -6, y: 0}
+  m_PitchRandomizationRange: {x: -463.768, y: 423.18835}
+  m_AutomaticTriggerTimeRandomizationRange: {x: -0.5, y: 2}
+  m_LoopCountRandomizationRange: {x: 0, y: 0}
+  m_Elements:
+  - {fileID: 2041281852717896643}
+  - {fileID: -2229817409820494135}
+  - {fileID: 1487590346684853903}
+  m_AvoidRepeatingLast: 0
+  m_PlaybackMode: 1
+  m_TriggerMode: 1
+  m_AutomaticTriggerMode: 1
+  m_LoopMode: 0
+  m_VolumeRandomizationEnabled: 1
+  m_PitchRandomizationEnabled: 1
+  m_AutomaticTriggerTimeRandomizationEnabled: 1
+  m_LoopCountRandomizationEnabled: 0
