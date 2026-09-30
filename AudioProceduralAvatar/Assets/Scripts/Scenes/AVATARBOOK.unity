@@ -412,6 +412,7 @@ MonoBehaviour:
   mappingConfig: {fileID: 11400000, guid: baebe2b582bc7ed478d14fc5cd017061, type: 2}
   rootNoteStrategy: {fileID: 11400000, guid: 3bc93bf97d2693d4f860129bd6569d88, type: 2}
   noteCount: 10
+  preferMappingConfigRoot: 1
 --- !u!1 &169579079
 GameObject:
   m_ObjectHideFlags: 0
@@ -2040,6 +2041,7 @@ GameObject:
   - component: {fileID: 583287230}
   - component: {fileID: 583287229}
   - component: {fileID: 583287228}
+  - component: {fileID: 583287231}
   m_Layer: 5
   m_Name: BuscarText
   m_TagString: Untagged
@@ -2218,6 +2220,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 583287226}
   m_CullTransparentMesh: 1
+--- !u!114 &583287231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583287226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29dcffce72930aa4391483ef44e08099, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardTypingEffect
+  audioManager: {fileID: 856795415}
+  mode: 0
+  inputField: {fileID: 583287228}
+  targetText: {fileID: 0}
+  charactersPerSecond: 25
+  timingJitter: 0.3
+  silentOnSpaces: 1
+  startDelay: 0
+  playOnEnable: 1
+  onFinished:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &645736406
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2861,7 +2887,14 @@ MonoBehaviour:
   selectPreset: {fileID: 11400000, guid: 29e5f106f3d14df4b9df6eb74b60190d, type: 2}
   acceptPreset: {fileID: 11400000, guid: 8c05e7237ef65fd4a915246f25e0a4f9, type: 2}
   undoPreset: {fileID: 11400000, guid: df491f06fd3a28543b9cd9144e5e0522, type: 2}
-  keyboardPreset: {fileID: 11400000, guid: 14e9b582f1e9fc94e8689a6efd6ff00f, type: 2}
+  keyboardTypingPreset: {fileID: 11400000, guid: 84225f8223cbdd2418c6beff26a45a9b, type: 2}
+  keyboardBackspacePreset: {fileID: 11400000, guid: 1696bc8a96de13e44b23a1e28fa88a8a, type: 2}
+  keyboardPreset: {fileID: 11400000, guid: e6c52aca24bd17c45a50f271fcbc847f, type: 2}
+  deletePreset: {fileID: 11400000, guid: 5791189991b52244392a7060e3f06fd8, type: 2}
+  colorSliderPreset: {fileID: 11400000, guid: bfaea760b0f220649bef005912c95485, type: 2}
+  pagePreviousPreset: {fileID: 11400000, guid: 4c61c5eb421a544468fb645d699b3c48, type: 2}
+  pageNextPreset: {fileID: 11400000, guid: ea498200ff8b1d9488156962a31bd3a4, type: 2}
+  qrSuccessPreset: {fileID: 11400000, guid: b7166702845c83c45a6e902eb998564a, type: 2}
   selectVariants: 8
   selectPitchVariation: 1.64
   selectVolume: 1
@@ -2880,13 +2913,26 @@ MonoBehaviour:
   undoFilterVariation: 0
   undoResonanceVariation: 0.086
   undoVolume: 0.267
-  keyBaseFrequency: 800
-  keyPitchVariation: 1.5
+  keyBaseFrequency: 220
+  keyPitchVariation: 0.8
   keyVariants: 8
-  keyDuration: 0.07
+  keyDuration: 0.065
   backspaceSemitones: -4
-  keyboardVolume: 1
-  backspaceVolume: 0.763
+  backspaceBaseFrequency: 220
+  backspaceDuration: 0.075
+  keyboardVolume: 0.65
+  backspaceVolume: 0.6
+  deleteVolume: 0.75
+  deletePitch: 0
+  deleteDuration: 0.14
+  colorSliderVolume: 0.45
+  colorSliderPitchVariation: 0.35
+  colorSliderDuration: 0.055
+  pageVolume: 0.6
+  pagePitchVariation: 0.3
+  pageDuration: 0.16
+  qrSuccessVolume: 0.8
+  qrSuccessPitchVariation: 0.25
 --- !u!82 &856795416
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3549,7 +3595,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 856795415}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
-        m_MethodName: PlayKeyClick
+        m_MethodName: PlayPagePrevious
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4119,7 +4165,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 856795415}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
-        m_MethodName: PlayKeyClick
+        m_MethodName: PlayPageNext
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5901,6 +5947,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.SimpleSynthRenderer
   presets: []
   fallbackPreset: {fileID: 11400000, guid: ec46797cba4a2ed4489f1917f9c37ed9, type: 2}
+  masterVolume: 0.92
+  limiterStrength: 1.1
+  bassMasterLevel: 0.42
+  textureMasterLevel: 0.24
+  percussionMasterLevel: 0.2
 --- !u!82 &1634783212
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6461,7 +6512,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 856795415}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
-        m_MethodName: PlayKeyClick
+        m_MethodName: PlayQRSuccess
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

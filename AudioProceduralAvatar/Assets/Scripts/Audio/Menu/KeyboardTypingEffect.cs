@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
-/// Sonido de teclado para un campo de texto.
+/// Sistema de sonidos de teclado.
 ///
-/// Modo InputField: suena cada vez que el jugador escribe (o borra) en un TMP_InputField.
-/// Modo TypeOut:    el texto de un TMP_Text se "escribe solo", letra por letra, con sonido.
+/// InputField:
+/// - Escribir = Keyboard Typing
+/// - Borrar = Keyboard Backspace
+///
+/// TypeOut:
+/// - Cada carácter utiliza Keyboard Typing
 /// </summary>
 public class KeyboardTypingEffect : MonoBehaviour
 {
@@ -17,50 +21,76 @@ public class KeyboardTypingEffect : MonoBehaviour
         TypeOut
     }
 
+    // ============================================================
+    // REFERENCIAS
+    // ============================================================
+
     [Header("Referencias")]
+
     public AvatarAudioManager audioManager;
 
+    // ============================================================
+    // MODO
+    // ============================================================
+
     [Header("Modo")]
-    public Mode mode = Mode.InputField;
 
-    // =================================================
-    // MODO INPUT FIELD
-    // =================================================
+    public Mode mode =
+        Mode.InputField;
 
-    [Header("Modo InputField (el jugador escribe)")]
-    [Tooltip("El objeto que contiene 'Text Area' como hijo.")]
+    // ============================================================
+    // INPUT FIELD
+    // ============================================================
+
+    [Header("Modo InputField")]
+
+    [Tooltip(
+        "TMP_InputField donde escribe el jugador."
+    )]
     public TMP_InputField inputField;
 
-    // =================================================
-    // MODO TYPE OUT
-    // =================================================
+    // ============================================================
+    // TYPE OUT
+    // ============================================================
 
-    [Header("Modo TypeOut (el texto se escribe solo)")]
+    [Header("Modo TypeOut")]
+
     public TMP_Text targetText;
 
     [Tooltip("Letras por segundo.")]
     public float charactersPerSecond = 25f;
 
-    [Tooltip("Variación aleatoria del ritmo (0 = mecánico, 0.3 = humano).")]
+    [Tooltip(
+        "Variación aleatoria del ritmo."
+    )]
     [Range(0f, 0.6f)]
     public float timingJitter = 0.3f;
 
-    [Tooltip("No suena al mostrar espacios ni saltos de línea.")]
+    [Tooltip(
+        "No reproduce sonido para espacios."
+    )]
     public bool silentOnSpaces = true;
 
     public float startDelay = 0f;
 
-    [Tooltip("Empieza a escribir automáticamente al activarse el objeto.")]
+    [Tooltip(
+        "Comienza automáticamente al activarse."
+    )]
     public bool playOnEnable = true;
 
     public UnityEvent onFinished;
 
+    // ============================================================
+    // ESTADO
+    // ============================================================
+
     private Coroutine typingRoutine;
+
     private int lastLength;
 
-    // =================================================
-    // CICLO DE VIDA
-    // =================================================
+    // ============================================================
+    // ENABLE
+    // ============================================================
 
     private void OnEnable()
     {
@@ -68,11 +98,13 @@ public class KeyboardTypingEffect : MonoBehaviour
         {
             if (inputField != null)
             {
-                lastLength = inputField.text.Length;
+                lastLength =
+                    inputField.text.Length;
 
-                inputField.onValueChanged.AddListener(
-                    HandleValueChanged
-                );
+                inputField.onValueChanged
+                    .AddListener(
+                        HandleValueChanged
+                    );
             }
         }
         else if (playOnEnable)
@@ -81,54 +113,72 @@ public class KeyboardTypingEffect : MonoBehaviour
         }
     }
 
+    // ============================================================
+    // DISABLE
+    // ============================================================
+
     private void OnDisable()
     {
         if (inputField != null)
         {
-            inputField.onValueChanged.RemoveListener(
-                HandleValueChanged
-            );
+            inputField.onValueChanged
+                .RemoveListener(
+                    HandleValueChanged
+                );
         }
 
         StopTyping();
     }
 
-    // =================================================
+    // ============================================================
     // INPUT FIELD
-    // =================================================
+    // ============================================================
 
-    private void HandleValueChanged(string value)
+    private void HandleValueChanged(
+        string value
+    )
     {
         if (audioManager == null)
         {
             return;
         }
 
-        int length = value.Length;
+        int length =
+            value.Length;
+
+        // ========================================================
+        // ESCRIBIR
+        // ========================================================
 
         if (length > lastLength)
         {
             audioManager.PlayKeyClick();
         }
+
+        // ========================================================
+        // BORRAR
+        // ========================================================
+
         else if (length < lastLength)
         {
             audioManager.PlayKeyBackspace();
         }
 
-        lastLength = length;
+        lastLength =
+            length;
     }
 
-    // =================================================
-    // TYPE OUT (API pública)
-    // =================================================
+    // ============================================================
+    // PLAY
+    // ============================================================
 
-    /// <summary>Escribe el texto que ya tiene targetText.</summary>
     public void Play()
     {
         if (targetText == null)
         {
             Debug.LogWarning(
-                "KeyboardTypingEffect: falta asignar Target Text."
+                "KeyboardTypingEffect: " +
+                "falta asignar Target Text."
             );
 
             return;
@@ -137,23 +187,34 @@ public class KeyboardTypingEffect : MonoBehaviour
         StopTyping();
 
         typingRoutine =
-            StartCoroutine(TypeRoutine());
+            StartCoroutine(
+                TypeRoutine()
+            );
     }
 
-    /// <summary>Reemplaza el texto y lo escribe desde cero.</summary>
-    public void Play(string newText)
+    // ============================================================
+    // PLAY CON TEXTO NUEVO
+    // ============================================================
+
+    public void Play(
+        string newText
+    )
     {
         if (targetText == null)
         {
             return;
         }
 
-        targetText.text = newText;
+        targetText.text =
+            newText;
 
         Play();
     }
 
-    /// <summary>Muestra todo el texto de golpe, sin sonido.</summary>
+    // ============================================================
+    // SKIP
+    // ============================================================
+
     public void Skip()
     {
         StopTyping();
@@ -165,19 +226,31 @@ public class KeyboardTypingEffect : MonoBehaviour
         }
     }
 
+    // ============================================================
+    // STOP
+    // ============================================================
+
     private void StopTyping()
     {
         if (typingRoutine != null)
         {
-            StopCoroutine(typingRoutine);
+            StopCoroutine(
+                typingRoutine
+            );
+
             typingRoutine = null;
         }
     }
 
+    // ============================================================
+    // TYPE ROUTINE
+    // ============================================================
+
     private IEnumerator TypeRoutine()
     {
-        // Oculta todo antes de calcular el texto.
-        targetText.maxVisibleCharacters = 0;
+        targetText.maxVisibleCharacters =
+            0;
+
         targetText.ForceMeshUpdate();
 
         int total =
@@ -186,7 +259,9 @@ public class KeyboardTypingEffect : MonoBehaviour
         if (startDelay > 0f)
         {
             yield return
-                new WaitForSecondsRealtime(startDelay);
+                new WaitForSecondsRealtime(
+                    startDelay
+                );
         }
 
         float baseDelay =
@@ -196,12 +271,18 @@ public class KeyboardTypingEffect : MonoBehaviour
                 charactersPerSecond
             );
 
-        for (int i = 0; i < total; i++)
+        for (
+            int i = 0;
+            i < total;
+            i++
+        )
         {
-            targetText.maxVisibleCharacters = i + 1;
+            targetText.maxVisibleCharacters =
+                i + 1;
 
             char c =
-                targetText.textInfo
+                targetText
+                    .textInfo
                     .characterInfo[i]
                     .character;
 
@@ -209,7 +290,10 @@ public class KeyboardTypingEffect : MonoBehaviour
                 silentOnSpaces &&
                 char.IsWhiteSpace(c);
 
-            if (!silent && audioManager != null)
+            if (
+                !silent &&
+                audioManager != null
+            )
             {
                 audioManager.PlayKeyClick();
             }
@@ -230,7 +314,8 @@ public class KeyboardTypingEffect : MonoBehaviour
         targetText.maxVisibleCharacters =
             int.MaxValue;
 
-        typingRoutine = null;
+        typingRoutine =
+            null;
 
         onFinished?.Invoke();
     }

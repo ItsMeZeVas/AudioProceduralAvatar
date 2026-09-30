@@ -5,25 +5,75 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class AvatarAudioManager : MonoBehaviour
 {
-    [Header("Presets")]
+    // ============================================================
+    // PRESETS
+    // ============================================================
+
+    [Header("Presets principales")]
+
     public AudioPreset selectPreset;
+
     public AudioPreset acceptPreset;
+
     public AudioPreset undoPreset;
+
+    // ============================================================
+    // TECLADO
+    // ============================================================
+
+    [Header("Teclado - DOS SONIDOS")]
+
+    [Tooltip(
+        "Sonido para escribir una letra. " +
+        "Debe ser diferente al Backspace."
+    )]
+    public AudioPreset keyboardTypingPreset;
+
+    [Tooltip(
+        "Sonido para borrar una letra con Backspace."
+    )]
+    public AudioPreset keyboardBackspacePreset;
+
+    // Mantiene compatibilidad con el preset antiguo.
+    [Tooltip(
+        "Preset antiguo de teclado. " +
+        "Solo se usa como respaldo si no asignas los nuevos."
+    )]
     public AudioPreset keyboardPreset;
+
+    // ============================================================
+    // NUEVOS SONIDOS
+    // ============================================================
+
+    [Header("Nuevos sonidos de interfaz")]
+
+    [Tooltip("Sonido para quitar/eliminar una selección.")]
+    public AudioPreset deletePreset;
+
+    [Tooltip("Sonido para mover un slider de color.")]
+    public AudioPreset colorSliderPreset;
+
+    [Tooltip("Sonido para pasar a la página anterior.")]
+    public AudioPreset pagePreviousPreset;
+
+    [Tooltip("Sonido para pasar a la página siguiente.")]
+    public AudioPreset pageNextPreset;
+
+    [Tooltip("Sonido de éxito al descargar/generar el QR.")]
+    public AudioPreset qrSuccessPreset;
 
     // ============================================================
     // SELECT
     // ============================================================
 
     [Header("Variaciones de Select")]
+
     [Min(2)]
     public int selectVariants = 8;
 
-    [Tooltip("Variación máxima de pitch en semitonos.")]
     [Range(0f, 2f)]
     public float selectPitchVariation = 0.6f;
 
-    [Tooltip("Volumen predeterminado de Select.")]
     [Range(0f, 1f)]
     public float selectVolume = 1f;
 
@@ -32,14 +82,13 @@ public class AvatarAudioManager : MonoBehaviour
     // ============================================================
 
     [Header("Variaciones de Accept")]
+
     [Min(2)]
     public int acceptVariants = 8;
 
-    [Tooltip("Variación máxima de pitch en semitonos.")]
     [Range(0f, 2f)]
     public float acceptPitchVariation = 0.5f;
 
-    [Tooltip("Volumen predeterminado de Accept.")]
     [Range(0f, 1f)]
     public float acceptVolume = 1f;
 
@@ -48,50 +97,40 @@ public class AvatarAudioManager : MonoBehaviour
     // ============================================================
 
     [Header("Variaciones de Undo")]
+
     [Min(4)]
     public int undoVariants = 16;
 
-    [Tooltip("Variación general de pitch.")]
     [Range(0f, 3f)]
     public float undoPitchVariation = 1.2f;
 
-    [Tooltip("Variación de duración.")]
     [Range(0f, 0.10f)]
     public float undoDurationVariation = 0.025f;
 
-    [Tooltip("Variación de los niveles de los osciladores.")]
     [Range(0f, 5f)]
     public float undoOscillatorDbVariation = 1.5f;
 
-    [Tooltip("Variación de los semitonos internos de los osciladores.")]
     [Range(0f, 2f)]
     public float undoOscillatorSemitoneVariation = 0.5f;
 
-    [Tooltip("Variación de la envolvente Attack.")]
     [Range(0f, 0.05f)]
     public float undoAttackVariation = 0.012f;
 
-    [Tooltip("Variación de la envolvente Decay.")]
     [Range(0f, 0.10f)]
     public float undoDecayVariation = 0.025f;
 
-    [Tooltip("Variación del Sustain.")]
     [Range(0f, 0.20f)]
     public float undoSustainVariation = 0.08f;
 
-    [Tooltip("Variación del Release.")]
     [Range(0f, 0.10f)]
     public float undoReleaseVariation = 0.025f;
 
-    [Tooltip("Variación del filtro.")]
     [Range(0f, 1500f)]
     public float undoFilterVariation = 500f;
 
-    [Tooltip("Variación de resonancia.")]
     [Range(0f, 0.20f)]
     public float undoResonanceVariation = 0.08f;
 
-    [Tooltip("Volumen predeterminado del Undo.")]
     [Range(0f, 1f)]
     public float undoVolume = 0.50f;
 
@@ -99,26 +138,99 @@ public class AvatarAudioManager : MonoBehaviour
     // KEYBOARD
     // ============================================================
 
-    [Header("Keyboard")]
-    public float keyBaseFrequency = 800f;
-    public float keyPitchVariation = 1.5f;
+    [Header("Keyboard - Sonido más grave")]
+
+    [Tooltip("Frecuencia base del sonido al escribir.")]
+    [Range(80f, 800f)]
+    public float keyBaseFrequency = 300f;
+
+    [Tooltip("Variación de pitch de las teclas.")]
+    [Range(0f, 2f)]
+    public float keyPitchVariation = 0.7f;
+
+    [Min(2)]
     public int keyVariants = 8;
-    public float keyDuration = 0.07f;
-    public float backspaceSemitones = -4f;
 
-    [Tooltip("Volumen predeterminado de las teclas.")]
-    [Range(0f, 1f)]
-    public float keyboardVolume = 1f;
+    [Tooltip("Duración de la tecla normal.")]
+    [Range(0.02f, 0.20f)]
+    public float keyDuration = 0.065f;
 
-    [Tooltip("Volumen predeterminado de Backspace.")]
+    [Tooltip(
+        "El Backspace queda más grave que la tecla normal."
+    )]
+    [Range(-24f, 0f)]
+    public float backspaceSemitones = -5f;
+
+    [Tooltip("Frecuencia base del Backspace.")]
+    [Range(60f, 600f)]
+    public float backspaceBaseFrequency = 220f;
+
+    [Range(0.02f, 0.20f)]
+    public float backspaceDuration = 0.075f;
+
     [Range(0f, 1f)]
-    public float backspaceVolume = 0.8f;
+    public float keyboardVolume = 0.65f;
+
+    [Range(0f, 1f)]
+    public float backspaceVolume = 0.60f;
+
+    // ============================================================
+    // NUEVOS SONIDOS - CONFIGURACIÓN
+    // ============================================================
+
+    [Header("Eliminar")]
+
+    [Range(0f, 1f)]
+    public float deleteVolume = 0.75f;
+
+    [Range(0f, 3f)]
+    public float deletePitch = -1f;
+
+    [Range(0.03f, 0.50f)]
+    public float deleteDuration = 0.14f;
+
+    // ------------------------------------------------------------
+
+    [Header("Slider de color")]
+
+    [Range(0f, 1f)]
+    public float colorSliderVolume = 0.45f;
+
+    [Range(0f, 2f)]
+    public float colorSliderPitchVariation = 0.35f;
+
+    [Range(0.02f, 0.20f)]
+    public float colorSliderDuration = 0.055f;
+
+    // ------------------------------------------------------------
+
+    [Header("Páginas del libro")]
+
+    [Range(0f, 1f)]
+    public float pageVolume = 0.60f;
+
+    [Range(0f, 2f)]
+    public float pagePitchVariation = 0.30f;
+
+    [Range(0.05f, 0.50f)]
+    public float pageDuration = 0.16f;
+
+    // ------------------------------------------------------------
+
+    [Header("Éxito QR")]
+
+    [Range(0f, 1f)]
+    public float qrSuccessVolume = 0.80f;
+
+    [Range(0f, 2f)]
+    public float qrSuccessPitchVariation = 0.25f;
 
     // ============================================================
     // AUDIO
     // ============================================================
 
     private AudioSource audioSource;
+
     private ProceduralSynth synthesizer;
 
     // ============================================================
@@ -126,28 +238,55 @@ public class AvatarAudioManager : MonoBehaviour
     // ============================================================
 
     private AudioClip[] selectClips;
+
     private AudioClip[] undoClips;
+
     private AudioClip[][] acceptClips;
 
     private AudioClip[] keyClips;
+
     private AudioClip[] backspaceClips;
+
+    private AudioClip[] deleteClips;
+
+    private AudioClip[] colorSliderClips;
+
+    private AudioClip[] pagePreviousClips;
+
+    private AudioClip[] pageNextClips;
+
+    private AudioClip[] qrSuccessClips;
 
     // ============================================================
     // INDICES
     // ============================================================
 
     private int lastSelectIndex = -1;
+
     private int lastUndoIndex = -1;
 
     private int lastAcceptCIndex = -1;
+
     private int lastAcceptEIndex = -1;
+
     private int lastAcceptGIndex = -1;
 
     private int lastKeyIndex = -1;
+
     private int lastBackspaceIndex = -1;
 
+    private int lastDeleteIndex = -1;
+
+    private int lastColorSliderIndex = -1;
+
+    private int lastPagePreviousIndex = -1;
+
+    private int lastPageNextIndex = -1;
+
+    private int lastQRSuccessIndex = -1;
+
     // ============================================================
-    // ORDEN DE UNDO
+    // ORDEN UNDO
     // ============================================================
 
     private List<int> undoPlayOrder =
@@ -161,7 +300,8 @@ public class AvatarAudioManager : MonoBehaviour
 
     private void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
+        audioSource =
+            GetComponent<AudioSource>();
 
         audioSource.playOnAwake = false;
 
@@ -172,22 +312,14 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // BUILD ALL BANKS
+    // BUILD
     // ============================================================
 
     public void BuildAllSoundBanks()
     {
         DestroyAllBanks();
 
-        lastSelectIndex = -1;
-        lastUndoIndex = -1;
-
-        lastAcceptCIndex = -1;
-        lastAcceptEIndex = -1;
-        lastAcceptGIndex = -1;
-
-        lastKeyIndex = -1;
-        lastBackspaceIndex = -1;
+        ResetIndices();
 
         // ========================================================
         // SELECT
@@ -223,7 +355,6 @@ public class AvatarAudioManager : MonoBehaviour
             acceptClips =
                 new AudioClip[3][];
 
-            // C5
             acceptClips[0] =
                 GenerateBank(
                     acceptPreset,
@@ -233,7 +364,6 @@ public class AvatarAudioManager : MonoBehaviour
                     acceptPitchVariation
                 );
 
-            // E5
             acceptClips[1] =
                 GenerateBank(
                     acceptPreset,
@@ -243,7 +373,6 @@ public class AvatarAudioManager : MonoBehaviour
                     acceptPitchVariation
                 );
 
-            // G5
             acceptClips[2] =
                 GenerateBank(
                     acceptPreset,
@@ -255,17 +384,115 @@ public class AvatarAudioManager : MonoBehaviour
         }
 
         // ========================================================
-        // KEYBOARD
+        // TECLADO
         // ========================================================
 
-        if (keyboardPreset != null)
+        BuildKeyboardBanks();
+
+        // ========================================================
+        // ELIMINAR
+        // ========================================================
+
+        if (deletePreset != null)
         {
-            BuildKeyboardBanks();
+            deleteClips =
+                GenerateBank(
+                    deletePreset,
+                    330f,
+                    deleteDuration,
+                    8,
+                    0.35f,
+                    deletePitch
+                );
+        }
+
+        // ========================================================
+        // SLIDER
+        // ========================================================
+
+        if (colorSliderPreset != null)
+        {
+            colorSliderClips =
+                GenerateBank(
+                    colorSliderPreset,
+                    520f,
+                    colorSliderDuration,
+                    8,
+                    colorSliderPitchVariation
+                );
+        }
+
+        // ========================================================
+        // PÁGINA ANTERIOR
+        // ========================================================
+
+        if (pagePreviousPreset != null)
+        {
+            pagePreviousClips =
+                GenerateBank(
+                    pagePreviousPreset,
+                    300f,
+                    pageDuration,
+                    6,
+                    pagePitchVariation
+                );
+        }
+
+        // ========================================================
+        // PÁGINA SIGUIENTE
+        // ========================================================
+
+        if (pageNextPreset != null)
+        {
+            pageNextClips =
+                GenerateBank(
+                    pageNextPreset,
+                    380f,
+                    pageDuration,
+                    6,
+                    pagePitchVariation
+                );
+        }
+
+        // ========================================================
+        // QR SUCCESS
+        // ========================================================
+
+        if (qrSuccessPreset != null)
+        {
+            BuildQRSuccessBank();
         }
     }
 
     // ============================================================
-    // UNDO BANK MEJORADO
+    // RESET INDICES
+    // ============================================================
+
+    private void ResetIndices()
+    {
+        lastSelectIndex = -1;
+
+        lastUndoIndex = -1;
+
+        lastAcceptCIndex = -1;
+        lastAcceptEIndex = -1;
+        lastAcceptGIndex = -1;
+
+        lastKeyIndex = -1;
+        lastBackspaceIndex = -1;
+
+        lastDeleteIndex = -1;
+
+        lastColorSliderIndex = -1;
+
+        lastPagePreviousIndex = -1;
+        lastPageNextIndex = -1;
+
+        lastQRSuccessIndex = -1;
+    }
+
+    // ============================================================
+    // UNDO
     // ============================================================
 
     private void BuildUndoBank()
@@ -279,33 +506,17 @@ public class AvatarAudioManager : MonoBehaviour
         undoClips =
             new AudioClip[variants];
 
-        // --------------------------------------------------------
-        // GENERAR CADA VARIANTE
-        // --------------------------------------------------------
-
         for (int i = 0; i < variants; i++)
         {
             undoClips[i] =
                 GenerateUndoVariant();
         }
 
-        // --------------------------------------------------------
-        // CREAR ORDEN ALEATORIO
-        // --------------------------------------------------------
-
         RebuildUndoPlayOrder();
     }
 
-    // ============================================================
-    // GENERAR UNA VARIANTE DE UNDO
-    // ============================================================
-
     private AudioClip GenerateUndoVariant()
     {
-        // ========================================================
-        // GUARDAR VALORES ORIGINALES
-        // ========================================================
-
         float originalVolume =
             undoPreset.volume;
 
@@ -326,15 +537,6 @@ public class AvatarAudioManager : MonoBehaviour
 
         float originalOscillatorCDb =
             undoPreset.oscillatorCDb;
-
-        float originalPhaseModAmount =
-            undoPreset.phaseModAmount;
-
-        float originalPhaseModCToB =
-            undoPreset.phaseModCToB;
-
-        float originalPhaseModDToA =
-            undoPreset.phaseModDToA;
 
         float originalAttack =
             undoPreset.attack;
@@ -363,12 +565,6 @@ public class AvatarAudioManager : MonoBehaviour
         float originalLfo2Rate =
             undoPreset.lfo2.rateHz;
 
-        // ========================================================
-        // VARIABLES DE GENERACIÓN
-        // ========================================================
-
-        float baseFrequency = 440f;
-
         float pitchShift =
             Random.Range(
                 -undoPitchVariation,
@@ -376,15 +572,11 @@ public class AvatarAudioManager : MonoBehaviour
             );
 
         float frequency =
-            baseFrequency *
+            440f *
             Mathf.Pow(
                 2f,
                 pitchShift / 12f
             );
-
-        // ========================================================
-        // OSCILADORES
-        // ========================================================
 
         undoPreset.oscillatorASemitones =
             originalOscillatorASemitones +
@@ -428,10 +620,6 @@ public class AvatarAudioManager : MonoBehaviour
                 undoOscillatorDbVariation
             );
 
-        // ========================================================
-        // ENVOLVENTE PRINCIPAL
-        // ========================================================
-
         undoPreset.attack =
             Mathf.Max(
                 0.001f,
@@ -471,10 +659,6 @@ public class AvatarAudioManager : MonoBehaviour
                 )
             );
 
-        // ========================================================
-        // FILTRO
-        // ========================================================
-
         if (undoPreset.useFilter)
         {
             undoPreset.filterCutoff =
@@ -498,10 +682,6 @@ public class AvatarAudioManager : MonoBehaviour
                 );
         }
 
-        // ========================================================
-        // LFO
-        // ========================================================
-
         undoPreset.randomizeLfoPhase = true;
 
         undoPreset.lfo1.rateHz =
@@ -524,10 +704,6 @@ public class AvatarAudioManager : MonoBehaviour
                 )
             );
 
-        // ========================================================
-        // VOLUMEN INTERNO
-        // ========================================================
-
         undoPreset.volume =
             Mathf.Clamp(
                 originalVolume *
@@ -539,17 +715,10 @@ public class AvatarAudioManager : MonoBehaviour
                 2f
             );
 
-        // ========================================================
-        // DURACIÓN
-        // ========================================================
-
         float duration =
             Random.Range(
-                0.45f -
-                undoDurationVariation,
-
-                0.45f +
-                undoDurationVariation
+                0.45f - undoDurationVariation,
+                0.45f + undoDurationVariation
             );
 
         duration =
@@ -557,10 +726,6 @@ public class AvatarAudioManager : MonoBehaviour
                 0.05f,
                 duration
             );
-
-        // ========================================================
-        // GENERAR SONIDO
-        // ========================================================
 
         AudioClip generatedClip = null;
 
@@ -575,10 +740,6 @@ public class AvatarAudioManager : MonoBehaviour
         }
         finally
         {
-            // ====================================================
-            // RESTAURAR TODO
-            // ====================================================
-
             undoPreset.volume =
                 originalVolume;
 
@@ -599,15 +760,6 @@ public class AvatarAudioManager : MonoBehaviour
 
             undoPreset.oscillatorCDb =
                 originalOscillatorCDb;
-
-            undoPreset.phaseModAmount =
-                originalPhaseModAmount;
-
-            undoPreset.phaseModCToB =
-                originalPhaseModCToB;
-
-            undoPreset.phaseModDToA =
-                originalPhaseModDToA;
 
             undoPreset.attack =
                 originalAttack;
@@ -640,10 +792,6 @@ public class AvatarAudioManager : MonoBehaviour
         return generatedClip;
     }
 
-    // ============================================================
-    // ORDEN DE UNDO
-    // ============================================================
-
     private void RebuildUndoPlayOrder()
     {
         undoPlayOrder.Clear();
@@ -656,16 +804,11 @@ public class AvatarAudioManager : MonoBehaviour
             return;
         }
 
-        for (
-            int i = 0;
-            i < undoClips.Length;
-            i++
-        )
+        for (int i = 0; i < undoClips.Length; i++)
         {
             undoPlayOrder.Add(i);
         }
 
-        // Fisher-Yates.
         for (
             int i = undoPlayOrder.Count - 1;
             i > 0;
@@ -688,8 +831,6 @@ public class AvatarAudioManager : MonoBehaviour
                 temp;
         }
 
-        // Evitar que el primer sonido del nuevo ciclo
-        // sea igual al último del ciclo anterior.
         if (
             undoPlayOrder.Count > 1 &&
             lastUndoIndex >= 0 &&
@@ -716,55 +857,73 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // PLAY SELECT
+    // QR SUCCESS
+    // ============================================================
+
+    private void BuildQRSuccessBank()
+    {
+        qrSuccessClips =
+            new AudioClip[6];
+
+        float[] frequencies =
+        {
+            523.25f,
+            587.33f,
+            659.25f,
+            698.46f,
+            783.99f,
+            880f
+        };
+
+        for (int i = 0; i < qrSuccessClips.Length; i++)
+        {
+            float pitch =
+                Random.Range(
+                    -qrSuccessPitchVariation,
+                    qrSuccessPitchVariation
+                );
+
+            float frequency =
+                frequencies[i] *
+                Mathf.Pow(
+                    2f,
+                    pitch / 12f
+                );
+
+            qrSuccessClips[i] =
+                synthesizer.Generate(
+                    qrSuccessPreset,
+                    frequency,
+                    0.15f + i * 0.015f
+                );
+        }
+    }
+
+    // ============================================================
+    // SELECT
     // ============================================================
 
     public void PlaySelect()
     {
-        if (
-            selectClips == null ||
-            selectClips.Length == 0
-        )
-        {
-            Debug.LogWarning(
-                "AvatarAudioManager: No hay banco de Select. " +
-                "Verifica que selectPreset esté asignado."
-            );
-
-            return;
-        }
-
-        int index =
-            PickIndex(
-                selectClips.Length,
-                ref lastSelectIndex
-            );
-
-        audioSource.PlayOneShot(
-            selectClips[index],
-            selectVolume
+        PlayFromBank(
+            selectClips,
+            ref lastSelectIndex,
+            selectVolume,
+            "Select"
         );
     }
 
     // ============================================================
-    // PLAY ACCEPT
+    // ACCEPT
     // ============================================================
 
     public void PlayAcceptChanges()
     {
         if (
             acceptClips == null ||
-            acceptClips.Length != 3 ||
-            acceptClips[0] == null ||
-            acceptClips[1] == null ||
-            acceptClips[2] == null
+            acceptClips.Length != 3
         )
         {
-            Debug.LogWarning(
-                "AvatarAudioManager: No hay banco de Accept. " +
-                "Verifica que acceptPreset esté asignado."
-            );
-
             return;
         }
 
@@ -775,52 +934,36 @@ public class AvatarAudioManager : MonoBehaviour
 
     private IEnumerator AcceptSequence()
     {
-        int cIndex =
-            PickIndex(
-                acceptClips[0].Length,
-                ref lastAcceptCIndex
-            );
-
-        audioSource.PlayOneShot(
-            acceptClips[0][cIndex],
-            acceptVolume
+        PlayFromBank(
+            acceptClips[0],
+            ref lastAcceptCIndex,
+            acceptVolume,
+            "Accept C"
         );
 
         yield return
-            new WaitForSeconds(
-                0.07f
-            );
+            new WaitForSeconds(0.07f);
 
-        int eIndex =
-            PickIndex(
-                acceptClips[1].Length,
-                ref lastAcceptEIndex
-            );
-
-        audioSource.PlayOneShot(
-            acceptClips[1][eIndex],
-            acceptVolume
+        PlayFromBank(
+            acceptClips[1],
+            ref lastAcceptEIndex,
+            acceptVolume,
+            "Accept E"
         );
 
         yield return
-            new WaitForSeconds(
-                0.07f
-            );
+            new WaitForSeconds(0.07f);
 
-        int gIndex =
-            PickIndex(
-                acceptClips[2].Length,
-                ref lastAcceptGIndex
-            );
-
-        audioSource.PlayOneShot(
-            acceptClips[2][gIndex],
-            acceptVolume
+        PlayFromBank(
+            acceptClips[2],
+            ref lastAcceptGIndex,
+            acceptVolume,
+            "Accept G"
         );
     }
 
     // ============================================================
-    // PLAY UNDO
+    // UNDO
     // ============================================================
 
     public void PlayUndo()
@@ -830,11 +973,6 @@ public class AvatarAudioManager : MonoBehaviour
             undoClips.Length == 0
         )
         {
-            Debug.LogWarning(
-                "AvatarAudioManager: No hay banco de Undo. " +
-                "Verifica que undoPreset esté asignado."
-            );
-
             return;
         }
 
@@ -870,77 +1008,191 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // KEYBOARD
+    // KEYBOARD BANKS
     // ============================================================
 
     private void BuildKeyboardBanks()
     {
-        keyClips =
-            GenerateBank(
-                keyboardPreset,
-                keyBaseFrequency,
-                keyDuration,
-                keyVariants,
-                keyPitchVariation
-            );
+        AudioPreset typingPreset =
+            keyboardTypingPreset != null
+                ? keyboardTypingPreset
+                : keyboardPreset;
 
-        backspaceClips =
-            GenerateBank(
-                keyboardPreset,
-                keyBaseFrequency,
-                keyDuration,
-                keyVariants,
-                keyPitchVariation,
-                backspaceSemitones
-            );
+        AudioPreset backspacePreset =
+            keyboardBackspacePreset != null
+                ? keyboardBackspacePreset
+                : keyboardPreset;
+
+        if (typingPreset != null)
+        {
+            keyClips =
+                GenerateBank(
+                    typingPreset,
+                    keyBaseFrequency,
+                    keyDuration,
+                    keyVariants,
+                    keyPitchVariation
+                );
+        }
+
+        if (backspacePreset != null)
+        {
+            backspaceClips =
+                GenerateBank(
+                    backspacePreset,
+                    backspaceBaseFrequency,
+                    backspaceDuration,
+                    keyVariants,
+                    keyPitchVariation,
+                    backspaceSemitones
+                );
+        }
     }
+
+    // ============================================================
+    // KEYBOARD - ESCRIBIR
+    // ============================================================
 
     public void PlayKeyClick()
     {
-        if (
-            keyClips == null ||
-            keyClips.Length == 0
-        )
-        {
-            return;
-        }
-
-        int index =
-            PickIndex(
-                keyClips.Length,
-                ref lastKeyIndex
-            );
-
-        audioSource.PlayOneShot(
-            keyClips[index],
-            keyboardVolume
-        );
-    }
-
-    public void PlayKeyBackspace()
-    {
-        if (
-            backspaceClips == null ||
-            backspaceClips.Length == 0
-        )
-        {
-            return;
-        }
-
-        int index =
-            PickIndex(
-                backspaceClips.Length,
-                ref lastBackspaceIndex
-            );
-
-        audioSource.PlayOneShot(
-            backspaceClips[index],
-            backspaceVolume
+        PlayFromBank(
+            keyClips,
+            ref lastKeyIndex,
+            keyboardVolume,
+            "Keyboard typing"
         );
     }
 
     // ============================================================
-    // GENERAR BANCO NORMAL
+    // KEYBOARD - BACKSPACE
+    // ============================================================
+
+    public void PlayKeyBackspace()
+    {
+        PlayFromBank(
+            backspaceClips,
+            ref lastBackspaceIndex,
+            backspaceVolume,
+            "Keyboard backspace"
+        );
+    }
+
+    // ============================================================
+    // ELIMINAR SELECCIÓN
+    // ============================================================
+
+    public void PlayDelete()
+    {
+        PlayFromBank(
+            deleteClips,
+            ref lastDeleteIndex,
+            deleteVolume,
+            "Delete"
+        );
+    }
+
+    // Alias por si prefieres llamarlo Remove
+    public void PlayRemove()
+    {
+        PlayDelete();
+    }
+
+    // ============================================================
+    // SLIDER DE COLOR
+    // ============================================================
+
+    public void PlayColorSlider()
+    {
+        PlayFromBank(
+            colorSliderClips,
+            ref lastColorSliderIndex,
+            colorSliderVolume,
+            "Color Slider"
+        );
+    }
+
+    // ============================================================
+    // PÁGINA ANTERIOR
+    // ============================================================
+
+    public void PlayPagePrevious()
+    {
+        PlayFromBank(
+            pagePreviousClips,
+            ref lastPagePreviousIndex,
+            pageVolume,
+            "Page Previous"
+        );
+    }
+
+    // ============================================================
+    // PÁGINA SIGUIENTE
+    // ============================================================
+
+    public void PlayPageNext()
+    {
+        PlayFromBank(
+            pageNextClips,
+            ref lastPageNextIndex,
+            pageVolume,
+            "Page Next"
+        );
+    }
+
+    // ============================================================
+    // QR SUCCESS
+    // ============================================================
+
+    public void PlayQRSuccess()
+    {
+        if (
+            qrSuccessClips == null ||
+            qrSuccessClips.Length == 0
+        )
+        {
+            return;
+        }
+
+        StartCoroutine(
+            QRSuccessSequence()
+        );
+    }
+
+    private IEnumerator QRSuccessSequence()
+    {
+        int[] melody =
+        {
+            0,
+            2,
+            4,
+            5
+        };
+
+        for (int i = 0; i < melody.Length; i++)
+        {
+            int index =
+                melody[i];
+
+            if (
+                index >= 0 &&
+                index < qrSuccessClips.Length
+            )
+            {
+                audioSource.PlayOneShot(
+                    qrSuccessClips[index],
+                    qrSuccessVolume
+                );
+            }
+
+            yield return
+                new WaitForSeconds(
+                    0.075f
+                );
+        }
+    }
+
+    // ============================================================
+    // GENERAR BANCO
     // ============================================================
 
     private AudioClip[] GenerateBank(
@@ -984,11 +1236,7 @@ public class AvatarAudioManager : MonoBehaviour
         AudioClip[] bank =
             new AudioClip[variants];
 
-        for (
-            int i = 0;
-            i < variants;
-            i++
-        )
+        for (int i = 0; i < variants; i++)
         {
             float randomSemitones =
                 Random.Range(
@@ -1018,7 +1266,48 @@ public class AvatarAudioManager : MonoBehaviour
     }
 
     // ============================================================
-    // ELEGIR VARIACIÓN NORMAL
+    // PLAY BANK
+    // ============================================================
+
+    private void PlayFromBank(
+        AudioClip[] bank,
+        ref int lastIndex,
+        float volume,
+        string soundName
+    )
+    {
+        if (
+            bank == null ||
+            bank.Length == 0
+        )
+        {
+            Debug.LogWarning(
+                "AvatarAudioManager: No hay banco para " +
+                soundName
+            );
+
+            return;
+        }
+
+        int index =
+            PickIndex(
+                bank.Length,
+                ref lastIndex
+            );
+
+        if (bank[index] == null)
+        {
+            return;
+        }
+
+        audioSource.PlayOneShot(
+            bank[index],
+            volume
+        );
+    }
+
+    // ============================================================
+    // PICK INDEX
     // ============================================================
 
     private int PickIndex(
@@ -1062,21 +1351,23 @@ public class AvatarAudioManager : MonoBehaviour
 
     private void DestroyAllBanks()
     {
-        DestroyBank(
-            selectClips
-        );
+        DestroyBank(selectClips);
 
-        DestroyBank(
-            undoClips
-        );
+        DestroyBank(undoClips);
 
-        DestroyBank(
-            keyClips
-        );
+        DestroyBank(keyClips);
 
-        DestroyBank(
-            backspaceClips
-        );
+        DestroyBank(backspaceClips);
+
+        DestroyBank(deleteClips);
+
+        DestroyBank(colorSliderClips);
+
+        DestroyBank(pagePreviousClips);
+
+        DestroyBank(pageNextClips);
+
+        DestroyBank(qrSuccessClips);
 
         if (acceptClips != null)
         {
@@ -1093,11 +1384,24 @@ public class AvatarAudioManager : MonoBehaviour
         }
 
         selectClips = null;
+
         undoClips = null;
+
         acceptClips = null;
 
         keyClips = null;
+
         backspaceClips = null;
+
+        deleteClips = null;
+
+        colorSliderClips = null;
+
+        pagePreviousClips = null;
+
+        pageNextClips = null;
+
+        qrSuccessClips = null;
 
         if (undoPlayOrder != null)
         {
@@ -1124,15 +1428,44 @@ public class AvatarAudioManager : MonoBehaviour
         {
             if (bank[i] != null)
             {
-                Destroy(
+                DestroyGeneratedClip(
                     bank[i]
                 );
             }
         }
     }
 
+    private void DestroyGeneratedClip(
+        AudioClip clip
+    )
+    {
+        if (clip == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(clip);
+        }
+        else
+        {
+            DestroyImmediate(clip);
+        }
+    }
+
     // ============================================================
-    // LIMPIEZA
+    // REBUILD MANUAL
+    // ============================================================
+
+    [ContextMenu("Rebuild All Sound Banks")]
+    public void RebuildAllSoundBanks()
+    {
+        BuildAllSoundBanks();
+    }
+
+    // ============================================================
+    // CLEANUP
     // ============================================================
 
     private void OnDestroy()

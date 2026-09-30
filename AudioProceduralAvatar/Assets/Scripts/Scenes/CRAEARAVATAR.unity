@@ -224,20 +224,44 @@ PrefabInstance:
       value: NONE
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1038841367}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 7670603039966759435}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Remove
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlayRemove
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: AvatarCreator, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: AvatarAudioManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
@@ -245,6 +269,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -934,7 +962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29dcffce72930aa4391483ef44e08099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardTypingEffect
-  audioManager: {fileID: 1336200146}
+  audioManager: {fileID: 7670603039966759435}
   mode: 0
   inputField: {fileID: 201887211}
   targetText: {fileID: 0}
@@ -1226,7 +1254,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1336200146}
+      - m_Target: {fileID: 7670603039966759435}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
         m_MethodName: PlayUndo
         m_Mode: 1
@@ -2016,7 +2044,7 @@ PrefabInstance:
     - target: {fileID: 5899293960168513972, guid: 9cc378e7adef892408f912f86f2919ad, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1336200146}
+      objectReference: {fileID: 7670603039966759435}
     - target: {fileID: 5899293960168513972, guid: 9cc378e7adef892408f912f86f2919ad, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -4724,7 +4752,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1336200146}
+      - m_Target: {fileID: 7670603039966759435}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
         m_MethodName: PlayUndo
         m_Mode: 1
@@ -5019,7 +5047,19 @@ MonoBehaviour:
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7670603039966759435}
+        m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
+        m_MethodName: PlaySelect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &929337729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6964,7 +7004,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29dcffce72930aa4391483ef44e08099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardTypingEffect
-  audioManager: {fileID: 1336200146}
+  audioManager: {fileID: 7670603039966759435}
   mode: 0
   inputField: {fileID: 1053708962}
   targetText: {fileID: 0}
@@ -7453,7 +7493,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7670603039966759435}
+        m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
+        m_MethodName: PlayColorSlider
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!224 &1114354190
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7703,7 +7755,7 @@ PrefabInstance:
     - target: {fileID: 5899293960168513972, guid: 9cc378e7adef892408f912f86f2919ad, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1336200145}
+      objectReference: {fileID: 7732770725039284921}
     - target: {fileID: 5899293960168513972, guid: 9cc378e7adef892408f912f86f2919ad, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -8505,7 +8557,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1336200146}
+      - m_Target: {fileID: 7670603039966759435}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
         m_MethodName: PlayUndo
         m_Mode: 1
@@ -9125,177 +9177,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1336200145
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1336200148}
-  - component: {fileID: 1336200147}
-  - component: {fileID: 1336200146}
-  m_Layer: 0
-  m_Name: (Manenager) MenuSounds
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1336200146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1336200145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4e7785806c65da449e61a69c7f4df31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AvatarAudioManager
-  selectPreset: {fileID: 11400000, guid: 29e5f106f3d14df4b9df6eb74b60190d, type: 2}
-  acceptPreset: {fileID: 11400000, guid: 8c05e7237ef65fd4a915246f25e0a4f9, type: 2}
-  undoPreset: {fileID: 11400000, guid: df491f06fd3a28543b9cd9144e5e0522, type: 2}
-  keyboardPreset: {fileID: 11400000, guid: 14e9b582f1e9fc94e8689a6efd6ff00f, type: 2}
-  selectVariants: 8
-  selectPitchVariation: 1.64
-  selectVolume: 1
-  acceptVariants: 8
-  acceptPitchVariation: 1.5
-  acceptVolume: 1
-  undoVariants: 16
-  undoPitchVariation: 3
-  undoDurationVariation: 0.0945
-  undoOscillatorDbVariation: 1.5
-  undoOscillatorSemitoneVariation: 0.5
-  undoAttackVariation: 0.012
-  undoDecayVariation: 0.0466
-  undoSustainVariation: 0.06
-  undoReleaseVariation: 0.025
-  undoFilterVariation: 0
-  undoResonanceVariation: 0.086
-  undoVolume: 0.267
-  keyBaseFrequency: 800
-  keyPitchVariation: 1.5
-  keyVariants: 8
-  keyDuration: 0.07
-  backspaceSemitones: -4
-  keyboardVolume: 1
-  backspaceVolume: 0.763
---- !u!82 &1336200147
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1336200145}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!4 &1336200148
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1336200145}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 212.26532, y: 144.9787, z: -6983.013}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2135327120}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1337225744
 GameObject:
   m_ObjectHideFlags: 0
@@ -9784,7 +9665,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1336200146}
+      - m_Target: {fileID: 7670603039966759435}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
         m_MethodName: PlayUndo
         m_Mode: 1
@@ -10122,22 +10003,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1336200145}
+      objectReference: {fileID: 7732770725039284921}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1038841367}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 7670603039966759435}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
@@ -10145,8 +10038,16 @@ PrefabInstance:
       value: Remove
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: PlayRemove
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: AvatarCreator, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: AvatarAudioManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
@@ -10154,6 +10055,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -10177,6 +10082,7 @@ GameObject:
   - component: {fileID: 1442347929}
   - component: {fileID: 1442347930}
   - component: {fileID: 1442347931}
+  - component: {fileID: 1442347932}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -10241,6 +10147,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &1442347932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442347928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7670603039966759435}
+        m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
+        m_MethodName: PlaySelect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1447848964
 GameObject:
   m_ObjectHideFlags: 0
@@ -11258,7 +11220,19 @@ MonoBehaviour:
   m_VerticalScrollbarSpacing: -3
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7670603039966759435}
+        m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
+        m_MethodName: PlaySelect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1566792146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12271,7 +12245,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1336200146}
+      - m_Target: {fileID: 7670603039966759435}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
         m_MethodName: PlayUndo
         m_Mode: 1
@@ -12458,20 +12432,44 @@ PrefabInstance:
       value: NONE
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1038841367}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 7670603039966759435}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Remove
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: PlayRemove
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: AvatarCreator, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: AvatarAudioManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
@@ -12479,6 +12477,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -13377,7 +13379,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1336200146}
+      - m_Target: {fileID: 7670603039966759435}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
         m_MethodName: PlayUndo
         m_Mode: 1
@@ -13631,7 +13633,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NormalizedDragArea
   OnNormalizedPositionChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7670603039966759435}
+        m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
+        m_MethodName: PlayColorSlider
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1985515096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14819,7 +14833,7 @@ Transform:
   - {fileID: 1666724875}
   - {fileID: 40972088}
   - {fileID: 71233571}
-  - {fileID: 1336200148}
+  - {fileID: 3266706239534966866}
   - {fileID: 1627538514}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -15056,7 +15070,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1336200146}
+      - m_Target: {fileID: 7670603039966759435}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
         m_MethodName: PlayAcceptChanges
         m_Mode: 1
@@ -15106,6 +15120,197 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2145800607}
   m_CullTransparentMesh: 1
+--- !u!82 &465336296342211332
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7732770725039284921}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &3266706239534966866
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7732770725039284921}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 212.26532, y: 144.9787, z: -6983.013}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2135327120}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7670603039966759435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7732770725039284921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4e7785806c65da449e61a69c7f4df31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarAudioManager
+  selectPreset: {fileID: 11400000, guid: 29e5f106f3d14df4b9df6eb74b60190d, type: 2}
+  acceptPreset: {fileID: 11400000, guid: 8c05e7237ef65fd4a915246f25e0a4f9, type: 2}
+  undoPreset: {fileID: 11400000, guid: df491f06fd3a28543b9cd9144e5e0522, type: 2}
+  keyboardTypingPreset: {fileID: 11400000, guid: 84225f8223cbdd2418c6beff26a45a9b, type: 2}
+  keyboardBackspacePreset: {fileID: 11400000, guid: 1696bc8a96de13e44b23a1e28fa88a8a, type: 2}
+  keyboardPreset: {fileID: 11400000, guid: e6c52aca24bd17c45a50f271fcbc847f, type: 2}
+  deletePreset: {fileID: 11400000, guid: 5791189991b52244392a7060e3f06fd8, type: 2}
+  colorSliderPreset: {fileID: 11400000, guid: bfaea760b0f220649bef005912c95485, type: 2}
+  pagePreviousPreset: {fileID: 11400000, guid: 4c61c5eb421a544468fb645d699b3c48, type: 2}
+  pageNextPreset: {fileID: 11400000, guid: ea498200ff8b1d9488156962a31bd3a4, type: 2}
+  qrSuccessPreset: {fileID: 11400000, guid: b7166702845c83c45a6e902eb998564a, type: 2}
+  selectVariants: 8
+  selectPitchVariation: 1.64
+  selectVolume: 1
+  acceptVariants: 8
+  acceptPitchVariation: 1.5
+  acceptVolume: 1
+  undoVariants: 16
+  undoPitchVariation: 3
+  undoDurationVariation: 0.0945
+  undoOscillatorDbVariation: 1.5
+  undoOscillatorSemitoneVariation: 0.5
+  undoAttackVariation: 0.012
+  undoDecayVariation: 0.0466
+  undoSustainVariation: 0.06
+  undoReleaseVariation: 0.025
+  undoFilterVariation: 0
+  undoResonanceVariation: 0.086
+  undoVolume: 0.267
+  keyBaseFrequency: 220
+  keyPitchVariation: 0.8
+  keyVariants: 8
+  keyDuration: 0.065
+  backspaceSemitones: -4
+  backspaceBaseFrequency: 220
+  backspaceDuration: 0.075
+  keyboardVolume: 0.65
+  backspaceVolume: 0.6
+  deleteVolume: 0.75
+  deletePitch: 0
+  deleteDuration: 0.14
+  colorSliderVolume: 0.45
+  colorSliderPitchVariation: 0.35
+  colorSliderDuration: 0.055
+  pageVolume: 0.6
+  pagePitchVariation: 0.3
+  pageDuration: 0.16
+  qrSuccessVolume: 0.8
+  qrSuccessPitchVariation: 0.25
+--- !u!1 &7732770725039284921
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3266706239534966866}
+  - component: {fileID: 465336296342211332}
+  - component: {fileID: 7670603039966759435}
+  m_Layer: 0
+  m_Name: (Manenager) MenuSounds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

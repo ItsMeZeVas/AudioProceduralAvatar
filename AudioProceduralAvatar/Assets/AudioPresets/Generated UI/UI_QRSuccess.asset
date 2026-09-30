@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: UI_QRSuccess
+  m_EditorClassIdentifier: Assembly-CSharp::AudioPreset
+  soundType: 9
+  volume: 0.7
+  oscillatorA: 0
+  oscillatorASemitones: 0
+  oscillatorADb: -3
+  oscillatorB: 1
+  oscillatorBSemitones: 12
+  oscillatorBDb: -9
+  oscillatorC: 0
+  oscillatorCSemitones: 19
+  oscillatorCDb: -18
+  useOscillatorD: 0
+  oscillatorD: 1
+  oscillatorDSemitones: 0
+  usePhaseModulation: 0
+  phaseModAmount: 0
+  phaseModCToB: 0
+  phaseModDToA: 0
+  attack: 0.004
+  decay: 0.08
+  sustain: 0.25
+  release: 0.11
+  env2:
+    attack: 0.001
+    decay: 0.03
+    sustain: 0
+    release: 0.02
+  env3:
+    attack: 0.001
+    decay: 0.03
+    sustain: 0
+    release: 0.02
+  lfo1:
+    wave: 0
+    rateHz: 8
+  lfo2:
+    wave: 0
+    rateHz: 5
+  randomizeLfoPhase: 0
+  ampModEnv3ToA: 0
+  ampModLfo1ToC: 0
+  ampModMainToD: 0
+  pitchEnvelope: 0
+  pitchAmount: 0
+  pitchAttackLevel: 0
+  pitchEndAmount: 0
+  pitchAttack: 0.005
+  pitchDecay: 0.04
+  useFilter: 1
+  filterCutoff: 3500
+  filterResonance: 0.08
+  resonantFilter: 0
+  filterModMain: 0
+  filterModEnv2: 0
+  filterModEnv3: 0
+  filterModLfo1: 0
+  filterModLfo2: 0
+  filterModOctaves: 1
+  useEQ: 0
+  lowShelfDb: 0
+  lowMidDb: 0
+  highMidDb: 0
