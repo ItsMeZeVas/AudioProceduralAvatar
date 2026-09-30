@@ -6,7 +6,7 @@ using AudioProceduralAvatar.Avatar;
 namespace AudioProceduralAvatar.Audio
 {
     // ============================================================
-    // ESCALA - CABELLO
+    // ESCALA
     // ============================================================
 
     [Serializable]
@@ -17,15 +17,27 @@ namespace AudioProceduralAvatar.Audio
         public MusicalScale Scale;
     }
 
+    // ============================================================
+    // TÓNICA / HEAD
+    // ============================================================
+
+    [Serializable]
+    public struct LayerRootRule
+    {
+        public string LayerName;
+        public int SpriteIndex;
+
+        [Range(-12, 12)]
+        public int SemitoneOffset;
+    }
 
     // ============================================================
-    // TEMPO - COLOR DE PIEL
+    // TEMPO
     // ============================================================
 
     [Serializable]
     public struct ContinuousTempoRule
     {
-        [Tooltip("Nombre del atributo continuo. Ejemplo: SkinTone.")]
         public string AttributeName;
 
         [Range(0f, 1f)]
@@ -38,9 +50,8 @@ namespace AudioProceduralAvatar.Audio
         public float TempoBpm;
     }
 
-
     // ============================================================
-    // INSTRUMENTO - OJOS
+    // INSTRUMENTO
     // ============================================================
 
     [Serializable]
@@ -49,16 +60,11 @@ namespace AudioProceduralAvatar.Audio
         public string LayerName;
         public int SpriteIndex;
 
-        [Tooltip(
-            "Debe coincidir exactamente con el PresetId " +
-            "de un InstrumentPreset."
-        )]
         public string InstrumentPresetId;
     }
 
-
     // ============================================================
-    // ADSR - ROPA SUPERIOR
+    // ADSR
     // ============================================================
 
     [Serializable]
@@ -67,26 +73,21 @@ namespace AudioProceduralAvatar.Audio
         public string LayerName;
         public int SpriteIndex;
 
-        [Header("Attack")]
         [Range(0f, 1f)]
         public float Attack;
 
-        [Header("Decay")]
         [Range(0f, 1f)]
         public float Decay;
 
-        [Header("Sustain")]
         [Range(0f, 1f)]
         public float Sustain;
 
-        [Header("Release")]
         [Range(0f, 1f)]
         public float Release;
     }
 
-
     // ============================================================
-    // RITMO - ROPA INFERIOR
+    // RITMO
     // ============================================================
 
     [Serializable]
@@ -98,9 +99,8 @@ namespace AudioProceduralAvatar.Audio
         public RhythmPattern Rhythm;
     }
 
-
     // ============================================================
-    // DINÁMICA - ACCESORIOS
+    // DINÁMICA
     // ============================================================
 
     [Serializable]
@@ -109,17 +109,12 @@ namespace AudioProceduralAvatar.Audio
         public string LayerName;
         public int SpriteIndex;
 
-        [Range(0f, 2f)]
-        [Tooltip(
-            "Multiplicador de intensidad. " +
-            "1 = normal, 0.5 = suave, 1.5 = fuerte."
-        )]
+        [Range(0.65f, 1.20f)]
         public float DynamicMultiplier;
     }
 
-
     // ============================================================
-    // CONFIGURACIÓN PRINCIPAL
+    // CONFIGURACIÓN
     // ============================================================
 
     [CreateAssetMenu(
@@ -129,145 +124,499 @@ namespace AudioProceduralAvatar.Audio
     public class LeitmotivMappingConfig : ScriptableObject
     {
         // ========================================================
-        // NOMBRES DE LAS CAPAS
+        // CAPAS
         // ========================================================
 
         [Header("=== CAPAS DEL AVATAR ===")]
 
-        [Tooltip(
-            "Nombre exacto de la capa utilizada para determinar la escala."
-        )]
+        public string HeadLayerName = "Head";
+
         public string HairLayerName = "Hair";
 
-        [Tooltip(
-            "Nombre exacto del atributo continuo utilizado para el tempo."
-        )]
         public string SkinToneAttributeName = "SkinTone";
 
-        [Tooltip(
-            "Nombre exacto de la capa utilizada para determinar el instrumento."
-        )]
         public string EyesLayerName = "Eyes";
 
-        [Tooltip(
-            "Nombre exacto de la capa utilizada para determinar el ADSR."
-        )]
         public string UpperBodyLayerName = "UpperBody";
 
-        [Tooltip(
-            "Nombre exacto de la capa utilizada para determinar el ritmo."
-        )]
         public string LowerBodyLayerName = "LowerBody";
 
-        [Tooltip(
-            "Nombre exacto de la capa utilizada para determinar la dinámica."
-        )]
         public string AccessoriesLayerName = "Accessories";
 
+        public string MouthLayerName = "SubBoca";
+
+        public string BeardLayerName = "SubBarba";
 
         // ========================================================
-        // ESCALA
+        // HEAD -> TÓNICA
+        // ========================================================
+
+        [Header("=== CABEZA → TÓNICA / REGISTRO ===")]
+
+        public List<LayerRootRule> RootRules =
+            new List<LayerRootRule>();
+
+        // ========================================================
+        // HAIR -> ESCALA
         // ========================================================
 
         [Header("=== CABELLO → ESCALA ===")]
 
-        public List<LayerScaleRule> ScaleRules = new();
+        public List<LayerScaleRule> ScaleRules =
+            new List<LayerScaleRule>();
 
-        public MusicalScale DefaultScale = MusicalScale.Mayor;
-
+        public MusicalScale DefaultScale =
+            MusicalScale.Mayor;
 
         // ========================================================
-        // TEMPO
+        // SKIN -> TEMPO
         // ========================================================
 
         [Header("=== COLOR DE PIEL → TEMPO ===")]
 
-        public List<ContinuousTempoRule> TempoRules = new();
+        public List<ContinuousTempoRule> TempoRules =
+            new List<ContinuousTempoRule>();
 
         [Range(60f, 180f)]
         public float DefaultTempoBpm = 100f;
 
+        // ========================================================
+        // EYES -> INSTRUMENTO
+        // ========================================================
+
+        [Header("=== OJOS → INSTRUMENTO PRINCIPAL ===")]
+
+        public List<LayerInstrumentRule> InstrumentRules =
+            new List<LayerInstrumentRule>();
+
+        public string DefaultInstrumentPresetId =
+            "warm_pluck";
 
         // ========================================================
-        // INSTRUMENTO
-        // ========================================================
-
-        [Header("=== OJOS → INSTRUMENTACIÓN ===")]
-
-        public List<LayerInstrumentRule> InstrumentRules = new();
-
-        public string DefaultInstrumentPresetId = "pluck";
-
-
-        // ========================================================
-        // ADSR
+        // UPPER BODY -> ADSR
         // ========================================================
 
         [Header("=== ROPA SUPERIOR → ADSR ===")]
 
-        public List<LayerEnvelopeRule> EnvelopeRules = new();
-
-        [Header("ADSR por defecto")]
-
-        [Range(0f, 1f)]
-        public float DefaultAttack = 0.01f;
+        public List<LayerEnvelopeRule> EnvelopeRules =
+            new List<LayerEnvelopeRule>();
 
         [Range(0f, 1f)]
-        public float DefaultDecay = 0.1f;
+        public float DefaultAttack = 0.015f;
 
         [Range(0f, 1f)]
-        public float DefaultSustain = 0.7f;
+        public float DefaultDecay = 0.12f;
 
         [Range(0f, 1f)]
-        public float DefaultRelease = 0.15f;
+        public float DefaultSustain = 0.65f;
 
+        [Range(0f, 1f)]
+        public float DefaultRelease = 0.18f;
 
         // ========================================================
-        // RITMO
+        // LOWER BODY -> RITMO
         // ========================================================
 
         [Header("=== ROPA INFERIOR → RITMO ===")]
 
-        public List<LayerRhythmRule> RhythmRules = new();
+        public List<LayerRhythmRule> RhythmRules =
+            new List<LayerRhythmRule>();
 
-        public RhythmPattern DefaultRhythm = RhythmPattern.Balanced;
-
+        public RhythmPattern DefaultRhythm =
+            RhythmPattern.Balanced;
 
         // ========================================================
-        // DINÁMICA
+        // ACCESSORIES -> DINÁMICA
         // ========================================================
 
         [Header("=== ACCESORIOS → DINÁMICA ===")]
 
-        public List<LayerDynamicsRule> DynamicsRules = new();
+        public List<LayerDynamicsRule> DynamicsRules =
+            new List<LayerDynamicsRule>();
 
-        [Range(0f, 2f)]
+        [Range(0.65f, 1.20f)]
         public float DefaultDynamicMultiplier = 1f;
 
-
         // ========================================================
-        // TÓNICA
+        // RANGO DE TÓNICA
         // ========================================================
 
         [Header("=== RANGO DE TÓNICA ===")]
 
         public int MinRootMidi = 48;
+
         public int MaxRootMidi = 60;
 
+        // ========================================================
+        // INSTRUMENTOS EXTRA
+        // ========================================================
+
+        [Header("=== INSTRUMENTACIÓN SECUNDARIA ===")]
+
+        public string DefaultBassInstrumentId =
+            "deep_bass";
+
+        public string DefaultTextureInstrumentId =
+            "air_texture";
+
+        public string DefaultPercussionInstrumentId =
+            "soft_percussion";
+
+        // ========================================================
+        // AUTO CONFIGURACIÓN
+        // ========================================================
+
+        private void OnValidate()
+        {
+            EnsureDefaultRules();
+        }
+
+        private void OnEnable()
+        {
+            EnsureDefaultRules();
+        }
+
+        [ContextMenu("Restaurar reglas recomendadas")]
+        public void EnsureDefaultRules()
+        {
+            // ----------------------------------------------------
+            // HEAD
+            // ----------------------------------------------------
+
+            if (RootRules.Count == 0)
+            {
+                int[] offsets =
+                {
+                    -5,
+                    -3,
+                    -1,
+                    2,
+                    4,
+                    7
+                };
+
+                for (int i = 0; i < offsets.Length; i++)
+                {
+                    RootRules.Add(
+                        new LayerRootRule
+                        {
+                            LayerName = HeadLayerName,
+                            SpriteIndex = i,
+                            SemitoneOffset = offsets[i]
+                        }
+                    );
+                }
+            }
+
+            // ----------------------------------------------------
+            // HAIR
+            // ----------------------------------------------------
+
+            if (ScaleRules.Count == 0)
+            {
+                MusicalScale[] scales =
+                {
+                    MusicalScale.Mayor,
+                    MusicalScale.Pentatonica,
+                    MusicalScale.Dorico,
+                    MusicalScale.Lidio,
+                    MusicalScale.MenorNatural,
+                    MusicalScale.Mayor
+                };
+
+                for (int i = 0; i < scales.Length; i++)
+                {
+                    ScaleRules.Add(
+                        new LayerScaleRule
+                        {
+                            LayerName = HairLayerName,
+                            SpriteIndex = i,
+                            Scale = scales[i]
+                        }
+                    );
+                }
+            }
+
+            // ----------------------------------------------------
+            // SKIN
+            // ----------------------------------------------------
+
+            if (TempoRules.Count == 0)
+            {
+                TempoRules.Add(
+                    new ContinuousTempoRule
+                    {
+                        AttributeName = SkinToneAttributeName,
+                        MinValue = 0f,
+                        MaxValue = 0.2f,
+                        TempoBpm = 82f
+                    }
+                );
+
+                TempoRules.Add(
+                    new ContinuousTempoRule
+                    {
+                        AttributeName = SkinToneAttributeName,
+                        MinValue = 0.2f,
+                        MaxValue = 0.4f,
+                        TempoBpm = 92f
+                    }
+                );
+
+                TempoRules.Add(
+                    new ContinuousTempoRule
+                    {
+                        AttributeName = SkinToneAttributeName,
+                        MinValue = 0.4f,
+                        MaxValue = 0.6f,
+                        TempoBpm = 102f
+                    }
+                );
+
+                TempoRules.Add(
+                    new ContinuousTempoRule
+                    {
+                        AttributeName = SkinToneAttributeName,
+                        MinValue = 0.6f,
+                        MaxValue = 0.8f,
+                        TempoBpm = 112f
+                    }
+                );
+
+                TempoRules.Add(
+                    new ContinuousTempoRule
+                    {
+                        AttributeName = SkinToneAttributeName,
+                        MinValue = 0.8f,
+                        MaxValue = 1f,
+                        TempoBpm = 124f
+                    }
+                );
+            }
+
+            // ----------------------------------------------------
+            // EYES
+            // ----------------------------------------------------
+
+            if (InstrumentRules.Count == 0)
+            {
+                string[] instruments =
+                {
+                    "warm_pluck",
+                    "soft_bell",
+                    "warm_pad",
+                    "glass_lead",
+                    "bright_pluck",
+                    "air_texture"
+                };
+
+                for (int i = 0; i < instruments.Length; i++)
+                {
+                    InstrumentRules.Add(
+                        new LayerInstrumentRule
+                        {
+                            LayerName = EyesLayerName,
+                            SpriteIndex = i,
+                            InstrumentPresetId =
+                                instruments[i]
+                        }
+                    );
+                }
+            }
+
+            // ----------------------------------------------------
+            // UPPER BODY
+            // ----------------------------------------------------
+
+            if (EnvelopeRules.Count == 0)
+            {
+                EnvelopeRules.Add(
+                    CreateEnvelope(0, 0.008f, 0.08f, 0.75f, 0.12f)
+                );
+
+                EnvelopeRules.Add(
+                    CreateEnvelope(1, 0.02f, 0.15f, 0.65f, 0.20f)
+                );
+
+                EnvelopeRules.Add(
+                    CreateEnvelope(2, 0.05f, 0.20f, 0.80f, 0.35f)
+                );
+
+                EnvelopeRules.Add(
+                    CreateEnvelope(3, 0.01f, 0.10f, 0.55f, 0.10f)
+                );
+
+                EnvelopeRules.Add(
+                    CreateEnvelope(4, 0.08f, 0.25f, 0.85f, 0.45f)
+                );
+
+                EnvelopeRules.Add(
+                    CreateEnvelope(5, 0.015f, 0.12f, 0.70f, 0.25f)
+                );
+            }
+
+            // ----------------------------------------------------
+            // LOWER BODY
+            // ----------------------------------------------------
+
+            if (RhythmRules.Count == 0)
+            {
+                RhythmRules.Add(
+                    new LayerRhythmRule
+                    {
+                        LayerName = LowerBodyLayerName,
+                        SpriteIndex = 0,
+                        Rhythm = RhythmPattern.Balanced
+                    }
+                );
+
+                RhythmRules.Add(
+                    new LayerRhythmRule
+                    {
+                        LayerName = LowerBodyLayerName,
+                        SpriteIndex = 1,
+                        Rhythm = RhythmPattern.Short
+                    }
+                );
+
+                RhythmRules.Add(
+                    new LayerRhythmRule
+                    {
+                        LayerName = LowerBodyLayerName,
+                        SpriteIndex = 2,
+                        Rhythm = RhythmPattern.Long
+                    }
+                );
+
+                RhythmRules.Add(
+                    new LayerRhythmRule
+                    {
+                        LayerName = LowerBodyLayerName,
+                        SpriteIndex = 3,
+                        Rhythm = RhythmPattern.Syncopated
+                    });
+
+                RhythmRules.Add(
+                    new LayerRhythmRule
+                    {
+                        LayerName = LowerBodyLayerName,
+                        SpriteIndex = 4,
+                        Rhythm = RhythmPattern.Short
+                    });
+
+                RhythmRules.Add(
+                    new LayerRhythmRule
+                    {
+                        LayerName = LowerBodyLayerName,
+                        SpriteIndex = 5,
+                        Rhythm = RhythmPattern.Balanced
+                    });
+            }
+
+            // ----------------------------------------------------
+            // ACCESSORIES
+            // ----------------------------------------------------
+
+            if (DynamicsRules.Count == 0)
+            {
+                float[] dynamics =
+                {
+                    0.78f,
+                    0.88f,
+                    0.98f,
+                    1.05f,
+                    1.12f,
+                    1.18f
+                };
+
+                for (int i = 0; i < dynamics.Length; i++)
+                {
+                    DynamicsRules.Add(
+                        new LayerDynamicsRule
+                        {
+                            LayerName =
+                                AccessoriesLayerName,
+
+                            SpriteIndex = i,
+
+                            DynamicMultiplier =
+                                dynamics[i]
+                        }
+                    );
+                }
+            }
+        }
+
+        private static LayerEnvelopeRule CreateEnvelope(
+            int index,
+            float attack,
+            float decay,
+            float sustain,
+            float release)
+        {
+            return new LayerEnvelopeRule
+            {
+                LayerName = "UpperBody",
+                SpriteIndex = index,
+                Attack = attack,
+                Decay = decay,
+                Sustain = sustain,
+                Release = release
+            };
+        }
+
+        // ========================================================
+        // GET ROOT
+        // ========================================================
+
+        public int GetRootMidi(
+            AvatarProfile profile,
+            int minRoot,
+            int maxRoot)
+        {
+            int headIndex =
+                GetLayerSpriteIndex(
+                    profile,
+                    HeadLayerName
+                );
+
+            foreach (var rule in RootRules)
+            {
+                if (rule.LayerName == HeadLayerName &&
+                    rule.SpriteIndex == headIndex)
+                {
+                    return Mathf.Clamp(
+                        54 + rule.SemitoneOffset,
+                        minRoot,
+                        maxRoot
+                    );
+                }
+            }
+
+            return Mathf.Clamp(
+                57,
+                minRoot,
+                maxRoot
+            );
+        }
 
         // ========================================================
         // GET SCALE
         // ========================================================
 
-        public MusicalScale GetScale(AvatarProfile profile)
+        public MusicalScale GetScale(
+            AvatarProfile profile)
         {
+            int index =
+                GetLayerSpriteIndex(
+                    profile,
+                    HairLayerName
+                );
+
             foreach (var rule in ScaleRules)
             {
-                if (MatchesLayer(
-                    profile,
-                    HairLayerName,
-                    rule.SpriteIndex,
-                    rule.LayerName))
+                if (rule.LayerName == HairLayerName &&
+                    rule.SpriteIndex == index)
                 {
                     return rule.Scale;
                 }
@@ -276,22 +625,26 @@ namespace AudioProceduralAvatar.Audio
             return DefaultScale;
         }
 
-
         // ========================================================
         // GET TEMPO
         // ========================================================
 
-        public float GetTempo(AvatarProfile profile)
+        public float GetTempo(
+            AvatarProfile profile)
         {
-            float value = profile.GetContinuousValue(
-                SkinToneAttributeName,
-                0.5f
-            );
+            float value =
+                profile.GetContinuousValue(
+                    SkinToneAttributeName,
+                    0.5f
+                );
 
             foreach (var rule in TempoRules)
             {
-                if (rule.AttributeName != SkinToneAttributeName)
+                if (rule.AttributeName !=
+                    SkinToneAttributeName)
+                {
                     continue;
+                }
 
                 if (value >= rule.MinValue &&
                     value <= rule.MaxValue)
@@ -303,20 +656,25 @@ namespace AudioProceduralAvatar.Audio
             return DefaultTempoBpm;
         }
 
-
         // ========================================================
-        // GET INSTRUMENT
+        // GET INSTRUMENTO
         // ========================================================
 
-        public string GetInstrumentPresetId(AvatarProfile profile)
+        public string GetInstrumentPresetId(
+            AvatarProfile profile)
         {
+            int index =
+                GetLayerSpriteIndex(
+                    profile,
+                    EyesLayerName
+                );
+
             foreach (var rule in InstrumentRules)
             {
-                if (MatchesLayer(
-                    profile,
-                    EyesLayerName,
-                    rule.SpriteIndex,
-                    rule.LayerName))
+                if (rule.LayerName == EyesLayerName &&
+                    rule.SpriteIndex == index &&
+                    !string.IsNullOrEmpty(
+                        rule.InstrumentPresetId))
                 {
                     return rule.InstrumentPresetId;
                 }
@@ -324,7 +682,6 @@ namespace AudioProceduralAvatar.Audio
 
             return DefaultInstrumentPresetId;
         }
-
 
         // ========================================================
         // GET ADSR
@@ -337,13 +694,17 @@ namespace AudioProceduralAvatar.Audio
             out float sustain,
             out float release)
         {
+            int index =
+                GetLayerSpriteIndex(
+                    profile,
+                    UpperBodyLayerName
+                );
+
             foreach (var rule in EnvelopeRules)
             {
-                if (MatchesLayer(
-                    profile,
-                    UpperBodyLayerName,
-                    rule.SpriteIndex,
-                    rule.LayerName))
+                if (rule.LayerName ==
+                    UpperBodyLayerName &&
+                    rule.SpriteIndex == index)
                 {
                     attack = rule.Attack;
                     decay = rule.Decay;
@@ -362,20 +723,24 @@ namespace AudioProceduralAvatar.Audio
             return false;
         }
 
-
         // ========================================================
         // GET RITMO
         // ========================================================
 
-        public RhythmPattern GetRhythm(AvatarProfile profile)
+        public RhythmPattern GetRhythm(
+            AvatarProfile profile)
         {
+            int index =
+                GetLayerSpriteIndex(
+                    profile,
+                    LowerBodyLayerName
+                );
+
             foreach (var rule in RhythmRules)
             {
-                if (MatchesLayer(
-                    profile,
-                    LowerBodyLayerName,
-                    rule.SpriteIndex,
-                    rule.LayerName))
+                if (rule.LayerName ==
+                    LowerBodyLayerName &&
+                    rule.SpriteIndex == index)
                 {
                     return rule.Rhythm;
                 }
@@ -384,54 +749,202 @@ namespace AudioProceduralAvatar.Audio
             return DefaultRhythm;
         }
 
-
         // ========================================================
         // GET DINÁMICA
         // ========================================================
 
-        public float GetDynamicMultiplier(AvatarProfile profile)
+        public float GetDynamicMultiplier(
+            AvatarProfile profile)
         {
+            int index =
+                GetLayerSpriteIndex(
+                    profile,
+                    AccessoriesLayerName
+                );
+
             foreach (var rule in DynamicsRules)
             {
-                if (MatchesLayer(
-                    profile,
-                    AccessoriesLayerName,
-                    rule.SpriteIndex,
-                    rule.LayerName))
+                if (rule.LayerName ==
+                    AccessoriesLayerName &&
+                    rule.SpriteIndex == index)
                 {
-                    return rule.DynamicMultiplier;
+                    return Mathf.Clamp(
+                        rule.DynamicMultiplier,
+                        0.65f,
+                        1.20f
+                    );
                 }
             }
 
             return DefaultDynamicMultiplier;
         }
 
-
         // ========================================================
-        // MATCH DE CAPAS
+        // GET CAPAS EXTRA
         // ========================================================
 
-        private static bool MatchesLayer(
-            AvatarProfile profile,
-            string configuredLayerName,
-            int spriteIndex,
-            string ruleLayerName)
+        public float GetTimbreBrightness(
+            AvatarProfile profile)
         {
-            // El nombre definido en la regla debe coincidir
-            // con el nombre configurado para esa característica.
-            if (ruleLayerName != configuredLayerName)
-                return false;
+            float hairR =
+                profile.GetContinuousValue(
+                    "HairColorR",
+                    0.5f
+                );
+
+            float hairG =
+                profile.GetContinuousValue(
+                    "HairColorG",
+                    0.5f
+                );
+
+            float hairB =
+                profile.GetContinuousValue(
+                    "HairColorB",
+                    0.5f
+                );
+
+            return Mathf.Clamp01(
+                hairR * 0.25f +
+                hairG * 0.35f +
+                hairB * 0.40f
+            );
+        }
+
+        public float GetWarmth(
+            AvatarProfile profile)
+        {
+            float r =
+                profile.GetContinuousValue(
+                    "BeardColorR",
+                    0.5f
+                );
+
+            float g =
+                profile.GetContinuousValue(
+                    "BeardColorG",
+                    0.5f
+                );
+
+            float b =
+                profile.GetContinuousValue(
+                    "BeardColorB",
+                    0.5f
+                );
+
+            return Mathf.Clamp01(
+                r * 0.50f +
+                g * 0.35f +
+                b * 0.15f
+            );
+        }
+
+        public float GetArticulation(
+            AvatarProfile profile)
+        {
+            int mouth =
+                GetLayerSpriteIndex(
+                    profile,
+                    MouthLayerName
+                );
+
+            return Mathf.Lerp(
+                0.55f,
+                0.95f,
+                Mathf.InverseLerp(
+                    0,
+                    5,
+                    mouth
+                )
+            );
+        }
+
+        public float GetBassLevel(
+            AvatarProfile profile)
+        {
+            int lower =
+                GetLayerSpriteIndex(
+                    profile,
+                    LowerBodyLayerName
+                );
+
+            return Mathf.Lerp(
+                0.32f,
+                0.55f,
+                Mathf.InverseLerp(
+                    0,
+                    5,
+                    lower
+                )
+            );
+        }
+
+        public float GetTextureLevel(
+            AvatarProfile profile)
+        {
+            int beard =
+                GetLayerSpriteIndex(
+                    profile,
+                    BeardLayerName
+                );
+
+            return Mathf.Lerp(
+                0.18f,
+                0.40f,
+                Mathf.InverseLerp(
+                    0,
+                    5,
+                    beard
+                )
+            );
+        }
+
+        public float GetPercussionLevel(
+            AvatarProfile profile)
+        {
+            int accessories =
+                GetLayerSpriteIndex(
+                    profile,
+                    AccessoriesLayerName
+                );
+
+            return Mathf.Lerp(
+                0.18f,
+                0.42f,
+                Mathf.InverseLerp(
+                    0,
+                    5,
+                    accessories
+                )
+            );
+        }
+
+        // ========================================================
+        // UTILIDAD
+        // ========================================================
+
+        private static int GetLayerSpriteIndex(
+            AvatarProfile profile,
+            string layerName)
+        {
+            if (profile == null ||
+                profile.Layers == null)
+            {
+                return 0;
+            }
 
             foreach (var layer in profile.Layers)
             {
-                if (layer.LayerName == configuredLayerName &&
-                    layer.SpriteIndex == spriteIndex)
+                if (layer.LayerName == layerName)
                 {
-                    return true;
+                    return Mathf.Max(
+                        0,
+                        layer.SpriteIndex
+                    );
                 }
             }
 
-            return false;
+            return 0;
         }
     }
 }

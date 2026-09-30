@@ -3,22 +3,10 @@ using AudioProceduralAvatar.Avatar;
 
 namespace AudioProceduralAvatar.Audio
 {
-    /// <summary>
-    /// Convierte un atributo continuo en una tónica MIDI.
-    ///
-    /// Es opcional dentro del sistema.
-    /// La asignación principal del proyecto utiliza:
-    ///
-    /// Hair        -> Scale
-    /// SkinTone    -> Tempo
-    /// Eyes        -> Instrument
-    /// UpperBody   -> ADSR
-    /// LowerBody   -> Rhythm
-    /// Accessories -> Dynamics
-    /// </summary>
     [CreateAssetMenu(
         fileName = "ContinuousAttributeRootNoteStrategy",
-        menuName = "AudioProceduralAvatar/Root Note Strategy/By Continuous Attribute"
+        menuName =
+            "AudioProceduralAvatar/Root Note Strategy/By Continuous Attribute"
     )]
     public class ContinuousAttributeRootNoteStrategy
         : RootNoteStrategy
@@ -26,41 +14,62 @@ namespace AudioProceduralAvatar.Audio
         [Tooltip(
             "Nombre del atributo continuo."
         )]
-        public string AttributeName = "SkinTone";
+        public string AttributeName =
+            "SkinTone";
 
         public bool Invert = false;
 
         [Range(0f, 1f)]
         public float FallbackValue = 0.5f;
 
-
         public override int GetRootMidi(
             AvatarProfile profile,
             int minRoot,
             int maxRoot)
         {
+            if (profile == null)
+            {
+                return Mathf.Clamp(
+                    Mathf.RoundToInt(
+                        Mathf.Lerp(
+                            minRoot,
+                            maxRoot,
+                            FallbackValue
+                        )
+                    ),
+                    minRoot,
+                    maxRoot
+                );
+            }
+
             float value =
                 profile.GetContinuousValue(
                     AttributeName,
                     FallbackValue
                 );
 
+            value =
+                Mathf.Clamp01(
+                    value
+                );
 
             if (Invert)
                 value = 1f - value;
 
-
-            int range =
-                Mathf.Max(
-                    1,
-                    maxRoot - minRoot
+            int result =
+                Mathf.RoundToInt(
+                    Mathf.Lerp(
+                        minRoot,
+                        maxRoot,
+                        value
+                    )
                 );
 
-
-            return minRoot +
-                   Mathf.RoundToInt(
-                       value * range
-                   );
+            return Mathf.Clamp(
+                result,
+                minRoot,
+                maxRoot
+            );
         }
     }
 }

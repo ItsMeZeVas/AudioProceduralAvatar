@@ -13,10 +13,6 @@ namespace AudioProceduralAvatar.Audio
         Lidio
     }
 
-    /// <summary>
-    /// Patrones rítmicos disponibles para el leitmotiv.
-    /// La ropa inferior determina cuál se utiliza.
-    /// </summary>
     public enum RhythmPattern
     {
         Balanced,
@@ -32,16 +28,15 @@ namespace AudioProceduralAvatar.Audio
         public float StartBeat;
         public float DurationBeats;
 
-        /// <summary>
-        /// Intensidad individual de la nota.
-        /// </summary>
+        [Range(0f, 1f)]
         public float Velocity;
     }
 
     /// <summary>
-    /// Resultado completo del LeitmotivGenerator.
-    /// Contiene qué se toca y los parámetros musicales
-    /// determinados por el avatar.
+    /// Información musical completa generada para un avatar.
+    ///
+    /// El struct SIEMPRE es válido.
+    /// Notes nunca debe quedar en null.
     /// </summary>
     [Serializable]
     public struct LeitmotivData
@@ -54,47 +49,78 @@ namespace AudioProceduralAvatar.Audio
 
         public float TempoBpm;
 
+        // Instrumento principal.
         public string InstrumentHint;
+
+        // Instrumentos adicionales.
+        public string BassInstrumentHint;
+        public string TextureInstrumentHint;
+        public string PercussionInstrumentHint;
 
         public List<NoteEvent> Notes;
 
-        [Tooltip(
-            "0-1. Variación determinista del timbre."
-        )]
+        // Variación determinista.
+        [Range(0f, 1f)]
         public float TimbreVariation;
+
+        // ---------------------------------------------------------
+        // TIMBRE
+        // ---------------------------------------------------------
+
+        [Range(0f, 1f)]
+        public float TimbreBrightness;
+
+        [Range(0f, 1f)]
+        public float HarmonicAmount;
+
+        [Range(0f, 1f)]
+        public float Warmth;
 
         // ---------------------------------------------------------
         // ADSR
         // ---------------------------------------------------------
 
-        /// <summary>
-        /// Indica si la ropa superior ha definido un ADSR propio.
-        /// Si es false, SimpleSynthRenderer utiliza el ADSR del InstrumentPreset.
-        /// </summary>
         public bool HasMappedEnvelope;
 
+        [Range(0f, 1f)]
         public float Attack;
+
+        [Range(0f, 1f)]
         public float Decay;
+
+        [Range(0f, 1f)]
         public float Sustain;
+
+        [Range(0f, 1f)]
         public float Release;
 
         // ---------------------------------------------------------
         // RITMO
         // ---------------------------------------------------------
 
-        /// <summary>
-        /// Patrón rítmico seleccionado por la ropa inferior.
-        /// </summary>
         public RhythmPattern Rhythm;
 
         // ---------------------------------------------------------
         // DINÁMICA
         // ---------------------------------------------------------
 
-        /// <summary>
-        /// Multiplicador general de dinámica.
-        /// Los accesorios determinan este valor.
-        /// </summary>
+        [Range(0.65f, 1.20f)]
         public float DynamicMultiplier;
+
+        // ---------------------------------------------------------
+        // CAPAS ADICIONALES
+        // ---------------------------------------------------------
+
+        [Range(0f, 1f)]
+        public float BassLevel;
+
+        [Range(0f, 1f)]
+        public float TextureLevel;
+
+        [Range(0f, 1f)]
+        public float PercussionLevel;
+
+        [Range(0f, 1f)]
+        public float Articulation;
     }
 }
