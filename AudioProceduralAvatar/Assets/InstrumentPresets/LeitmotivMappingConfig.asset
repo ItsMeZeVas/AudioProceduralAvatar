@@ -12,11 +12,181 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42481a93961d7e9498b5e9804160797f, type: 3}
   m_Name: LeitmotivMappingConfig
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivMappingConfig
-  ScaleRules: []
+  HeadLayerName: Head
+  HairLayerName: Hair
+  SkinToneAttributeName: SkinTone
+  UpperBodyLayerName: UpperBody
+  LowerBodyLayerName: LowerBody
+  AccessoriesLayerName: Accessories
+  MouthLayerName: SubBoca
+  BeardLayerName: SubBarba
+  RootRules:
+  - LayerName: Head
+    SpriteIndex: 0
+    SemitoneOffset: -5
+  - LayerName: Head
+    SpriteIndex: 1
+    SemitoneOffset: -3
+  - LayerName: Head
+    SpriteIndex: 2
+    SemitoneOffset: -1
+  - LayerName: Head
+    SpriteIndex: 3
+    SemitoneOffset: 2
+  - LayerName: Head
+    SpriteIndex: 4
+    SemitoneOffset: 4
+  - LayerName: Head
+    SpriteIndex: 5
+    SemitoneOffset: 7
+  ScaleRules:
+  - LayerName: Hair
+    SpriteIndex: 0
+    Scale: 0
+  - LayerName: Hair
+    SpriteIndex: 1
+    Scale: 2
+  - LayerName: Hair
+    SpriteIndex: 2
+    Scale: 3
+  - LayerName: Hair
+    SpriteIndex: 3
+    Scale: 4
+  - LayerName: Hair
+    SpriteIndex: 4
+    Scale: 1
+  - LayerName: Hair
+    SpriteIndex: 5
+    Scale: 0
   DefaultScale: 0
-  TempoRules: []
+  TempoRules:
+  - AttributeName: SkinTone
+    MinValue: 0
+    MaxValue: 0.2
+    TempoBpm: 82
+  - AttributeName: SkinTone
+    MinValue: 0.2
+    MaxValue: 0.4
+    TempoBpm: 92
+  - AttributeName: SkinTone
+    MinValue: 0.4
+    MaxValue: 0.6
+    TempoBpm: 102
+  - AttributeName: SkinTone
+    MinValue: 0.6
+    MaxValue: 0.8
+    TempoBpm: 112
+  - AttributeName: SkinTone
+    MinValue: 0.8
+    MaxValue: 1
+    TempoBpm: 124
   DefaultTempoBpm: 100
-  InstrumentRules: []
-  DefaultInstrumentPresetId: pluck
+  InstrumentRules:
+  - LayerName: Head
+    SpriteIndex: 0
+    InstrumentPresetId: sub_bass
+  - LayerName: Head
+    SpriteIndex: 1
+    InstrumentPresetId: soft_bell
+  - LayerName: Head
+    SpriteIndex: 2
+    InstrumentPresetId: warm_pad
+  - LayerName: Head
+    SpriteIndex: 3
+    InstrumentPresetId: glass_lead
+  - LayerName: Head
+    SpriteIndex: 4
+    InstrumentPresetId: bright_pluck
+  - LayerName: Head
+    SpriteIndex: 5
+    InstrumentPresetId: violin
+  - LayerName: Head
+    SpriteIndex: 6
+    InstrumentPresetId: harp
+  DefaultInstrumentPresetId: upright_bass
+  EnvelopeRules:
+  - LayerName: UpperBody
+    SpriteIndex: 0
+    Attack: 0.008
+    Decay: 0.08
+    Sustain: 0.75
+    Release: 0.12
+  - LayerName: UpperBody
+    SpriteIndex: 1
+    Attack: 0.02
+    Decay: 0.15
+    Sustain: 0.65
+    Release: 0.2
+  - LayerName: UpperBody
+    SpriteIndex: 2
+    Attack: 0.05
+    Decay: 0.2
+    Sustain: 0.8
+    Release: 0.35
+  - LayerName: UpperBody
+    SpriteIndex: 3
+    Attack: 0.01
+    Decay: 0.1
+    Sustain: 0.55
+    Release: 0.1
+  - LayerName: UpperBody
+    SpriteIndex: 4
+    Attack: 0.08
+    Decay: 0.25
+    Sustain: 0.85
+    Release: 0.45
+  - LayerName: UpperBody
+    SpriteIndex: 5
+    Attack: 0.015
+    Decay: 0.12
+    Sustain: 0.7
+    Release: 0.25
+  DefaultAttack: 0.015
+  DefaultDecay: 0.12
+  DefaultSustain: 0.65
+  DefaultRelease: 0.18
+  RhythmRules:
+  - LayerName: LowerBody
+    SpriteIndex: 0
+    Rhythm: 0
+  - LayerName: LowerBody
+    SpriteIndex: 1
+    Rhythm: 1
+  - LayerName: LowerBody
+    SpriteIndex: 2
+    Rhythm: 2
+  - LayerName: LowerBody
+    SpriteIndex: 3
+    Rhythm: 3
+  - LayerName: LowerBody
+    SpriteIndex: 4
+    Rhythm: 1
+  - LayerName: LowerBody
+    SpriteIndex: 5
+    Rhythm: 0
+  DefaultRhythm: 0
+  DynamicsRules:
+  - LayerName: Accessories
+    SpriteIndex: 0
+    DynamicMultiplier: 0.78
+  - LayerName: Accessories
+    SpriteIndex: 1
+    DynamicMultiplier: 0.88
+  - LayerName: Accessories
+    SpriteIndex: 2
+    DynamicMultiplier: 0.98
+  - LayerName: Accessories
+    SpriteIndex: 3
+    DynamicMultiplier: 1.05
+  - LayerName: Accessories
+    SpriteIndex: 4
+    DynamicMultiplier: 1.12
+  - LayerName: Accessories
+    SpriteIndex: 5
+    DynamicMultiplier: 1.18
+  DefaultDynamicMultiplier: 1
   MinRootMidi: 48
   MaxRootMidi: 60
+  DefaultBassInstrumentId: deep_bass
+  DefaultTextureInstrumentId: air_texture
+  DefaultPercussionInstrumentId: soft_percussion

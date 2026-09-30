@@ -5,7 +5,8 @@ using AudioProceduralAvatar.Avatar;
 
 namespace AudioProceduralAvatar.Audio
 {
-    public class LeitmotivGenerator : MonoBehaviour
+    public class LeitmotivGenerator
+        : MonoBehaviour
     {
         [SerializeField]
         private LeitmotivMappingConfig mappingConfig;
@@ -25,10 +26,6 @@ namespace AudioProceduralAvatar.Audio
         public LeitmotivData Generate(
             AvatarProfile profile)
         {
-            // ----------------------------------------------------
-            // FALLBACK COMPLETAMENTE VÁLIDO
-            // ----------------------------------------------------
-
             if (profile == null)
             {
                 return CreateFallbackData();
@@ -44,18 +41,10 @@ namespace AudioProceduralAvatar.Audio
                     ? mappingConfig.MaxRootMidi
                     : 60;
 
-            // ----------------------------------------------------
-            // ESCALA
-            // ----------------------------------------------------
-
             MusicalScale scale =
                 mappingConfig != null
                     ? mappingConfig.GetScale(profile)
                     : MusicalScale.Mayor;
-
-            // ----------------------------------------------------
-            // TEMPO
-            // ----------------------------------------------------
 
             float tempo =
                 mappingConfig != null
@@ -69,15 +58,19 @@ namespace AudioProceduralAvatar.Audio
                     132f
                 );
 
-            // ----------------------------------------------------
-            // INSTRUMENTOS
-            // ----------------------------------------------------
+            // ====================================================
+            // INSTRUMENTO PRINCIPAL
+            // ====================================================
 
             string instrument =
                 mappingConfig != null
                     ? mappingConfig.GetInstrumentPresetId(
                         profile)
                     : "warm_pluck";
+
+            // ====================================================
+            // CAPAS SECUNDARIAS
+            // ====================================================
 
             string bass =
                 mappingConfig != null
@@ -94,18 +87,18 @@ namespace AudioProceduralAvatar.Audio
                     ? mappingConfig.DefaultPercussionInstrumentId
                     : "soft_percussion";
 
-            // ----------------------------------------------------
+            // ====================================================
             // RITMO
-            // ----------------------------------------------------
+            // ====================================================
 
             RhythmPattern rhythm =
                 mappingConfig != null
                     ? mappingConfig.GetRhythm(profile)
                     : RhythmPattern.Balanced;
 
-            // ----------------------------------------------------
+            // ====================================================
             // DINÁMICA
-            // ----------------------------------------------------
+            // ====================================================
 
             float dynamics =
                 mappingConfig != null
@@ -119,9 +112,9 @@ namespace AudioProceduralAvatar.Audio
                     1.18f
                 );
 
-            // ----------------------------------------------------
+            // ====================================================
             // ADSR
-            // ----------------------------------------------------
+            // ====================================================
 
             float attack = 0.015f;
             float decay = 0.12f;
@@ -168,14 +161,16 @@ namespace AudioProceduralAvatar.Audio
                     0.8f
                 );
 
-            // ----------------------------------------------------
+            // ====================================================
             // TÓNICA
-            // ----------------------------------------------------
+            // ====================================================
 
             int rootNote;
 
-            if (preferMappingConfigRoot &&
-                mappingConfig != null)
+            if (
+                preferMappingConfigRoot &&
+                mappingConfig != null
+            )
             {
                 rootNote =
                     mappingConfig.GetRootMidi(
@@ -210,9 +205,9 @@ namespace AudioProceduralAvatar.Audio
                     maxRoot
                 );
 
-            // ----------------------------------------------------
+            // ====================================================
             // TIMBRE
-            // ----------------------------------------------------
+            // ====================================================
 
             float timbreVariation =
                 ComputeTimbreVariation(
@@ -261,9 +256,9 @@ namespace AudioProceduralAvatar.Audio
                     timbreVariation * 0.25f
                 );
 
-            // ----------------------------------------------------
-            // DATA
-            // ----------------------------------------------------
+            // ====================================================
+            // CREAR DATA
+            // ====================================================
 
             LeitmotivData data =
                 new LeitmotivData
@@ -274,7 +269,8 @@ namespace AudioProceduralAvatar.Audio
                             ? "Avatar"
                             : profile.AvatarName,
 
-                    Scale = scale,
+                    Scale =
+                        scale,
 
                     RootNoteMidi =
                         rootNote,
@@ -289,13 +285,22 @@ namespace AudioProceduralAvatar.Audio
                             : instrument,
 
                     BassInstrumentHint =
-                        bass,
+                        string.IsNullOrEmpty(
+                            bass)
+                            ? "deep_bass"
+                            : bass,
 
                     TextureInstrumentHint =
-                        texture,
+                        string.IsNullOrEmpty(
+                            texture)
+                            ? "air_texture"
+                            : texture,
 
                     PercussionInstrumentHint =
-                        percussion,
+                        string.IsNullOrEmpty(
+                            percussion)
+                            ? "soft_percussion"
+                            : percussion,
 
                     TimbreVariation =
                         timbreVariation,
@@ -351,7 +356,6 @@ namespace AudioProceduralAvatar.Audio
                         )
                 };
 
-            // Nunca dejamos Notes en null.
             if (data.Notes == null)
             {
                 data.Notes =
@@ -369,53 +373,74 @@ namespace AudioProceduralAvatar.Audio
         {
             return new LeitmotivData
             {
-                OwnerAvatarName = "Avatar",
+                OwnerAvatarName =
+                    "Avatar",
 
-                Scale = MusicalScale.Mayor,
+                Scale =
+                    MusicalScale.Mayor,
 
-                RootNoteMidi = 57,
+                RootNoteMidi =
+                    57,
 
-                TempoBpm = 100f,
+                TempoBpm =
+                    100f,
 
-                InstrumentHint = "warm_pluck",
+                InstrumentHint =
+                    "warm_pluck",
 
-                BassInstrumentHint = "deep_bass",
+                BassInstrumentHint =
+                    "deep_bass",
 
-                TextureInstrumentHint = "air_texture",
+                TextureInstrumentHint =
+                    "air_texture",
 
                 PercussionInstrumentHint =
                     "soft_percussion",
 
-                TimbreVariation = 0.5f,
+                TimbreVariation =
+                    0.5f,
 
-                TimbreBrightness = 0.5f,
+                TimbreBrightness =
+                    0.5f,
 
-                HarmonicAmount = 0.35f,
+                HarmonicAmount =
+                    0.35f,
 
-                Warmth = 0.5f,
+                Warmth =
+                    0.5f,
 
-                HasMappedEnvelope = false,
+                HasMappedEnvelope =
+                    false,
 
-                Attack = 0.015f,
+                Attack =
+                    0.015f,
 
-                Decay = 0.12f,
+                Decay =
+                    0.12f,
 
-                Sustain = 0.65f,
+                Sustain =
+                    0.65f,
 
-                Release = 0.18f,
+                Release =
+                    0.18f,
 
                 Rhythm =
                     RhythmPattern.Balanced,
 
-                DynamicMultiplier = 1f,
+                DynamicMultiplier =
+                    1f,
 
-                BassLevel = 0.4f,
+                BassLevel =
+                    0.4f,
 
-                TextureLevel = 0.25f,
+                TextureLevel =
+                    0.25f,
 
-                PercussionLevel = 0.25f,
+                PercussionLevel =
+                    0.25f,
 
-                Articulation = 0.7f,
+                Articulation =
+                    0.7f,
 
                 Notes =
                     new List<NoteEvent>
@@ -456,7 +481,7 @@ namespace AudioProceduralAvatar.Audio
         }
 
         // ========================================================
-        // TÓNICA FALLBACK
+        // ROOT FALLBACK
         // ========================================================
 
         private int FallbackHashRoot(
@@ -512,7 +537,10 @@ namespace AudioProceduralAvatar.Audio
                 }
             }
 
-            if (profile.ContinuousAttributes != null)
+            if (
+                profile.ContinuousAttributes !=
+                null
+            )
             {
                 foreach (
                     var attribute
@@ -527,7 +555,8 @@ namespace AudioProceduralAvatar.Audio
                     hash =
                         hash * 13 +
                         Mathf.RoundToInt(
-                            attribute.Value * 1000f
+                            attribute.Value *
+                            1000f
                         );
                 }
             }
@@ -536,11 +565,15 @@ namespace AudioProceduralAvatar.Audio
             {
                 hash =
                     hash * 23 +
-                    StableHash(profile.Id);
+                    StableHash(
+                        profile.Id
+                    );
             }
 
             uint value =
-                unchecked((uint)hash);
+                unchecked(
+                    (uint)hash
+                );
 
             return
                 (value % 1000u) /
@@ -571,7 +604,7 @@ namespace AudioProceduralAvatar.Audio
             int seed =
                 StableHash(seedSource);
 
-            var rnd =
+            System.Random rnd =
                 new System.Random(seed);
 
             int[] stepChoices =
@@ -613,8 +646,6 @@ namespace AudioProceduralAvatar.Audio
                         rhythm
                     );
 
-                // Algunas notas entran un poco antes
-                // para evitar un patrón mecánico.
                 float microVariation =
                     articulation > 0.75f &&
                     !last &&
@@ -663,7 +694,8 @@ namespace AudioProceduralAvatar.Audio
                             degree,
 
                         StartBeat =
-                            beat + microVariation,
+                            beat +
+                            microVariation,
 
                         DurationBeats =
                             duration,
@@ -675,11 +707,11 @@ namespace AudioProceduralAvatar.Audio
 
                 beat += duration;
 
-                // Pequeñas respiraciones.
                 if (
                     rhythm ==
                     RhythmPattern.Syncopated &&
-                    rnd.Next(100) < 25)
+                    rnd.Next(100) < 25
+                )
                 {
                     beat += 0.125f;
                 }
@@ -695,7 +727,8 @@ namespace AudioProceduralAvatar.Audio
 
                     currentDegree =
                         Mathf.Clamp(
-                            currentDegree + step,
+                            currentDegree +
+                            step,
                             -2,
                             7
                         );
@@ -764,7 +797,7 @@ namespace AudioProceduralAvatar.Audio
         }
 
         // ========================================================
-        // HASH DETERMINISTA
+        // HASH
         // ========================================================
 
         private static int StableHash(
@@ -777,7 +810,10 @@ namespace AudioProceduralAvatar.Audio
                 if (string.IsNullOrEmpty(text))
                     return hash;
 
-                for (int i = 0; i < text.Length; i++)
+                for (
+                    int i = 0;
+                    i < text.Length;
+                    i++)
                 {
                     hash =
                         hash * 31 +

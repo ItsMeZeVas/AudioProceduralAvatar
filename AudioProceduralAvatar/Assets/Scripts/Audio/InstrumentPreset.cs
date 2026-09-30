@@ -23,14 +23,16 @@ namespace AudioProceduralAvatar.Audio
 
         [Header("OSCILADOR PRINCIPAL")]
 
-        public WaveformType Waveform = WaveformType.Sine;
+        public WaveformType Waveform =
+            WaveformType.Sine;
 
         [Range(0f, 1f)]
         public float Volume = 0.68f;
 
         [Header("SEGUNDO OSCILADOR")]
 
-        public WaveformType SecondaryWaveform = WaveformType.Sine;
+        public WaveformType SecondaryWaveform =
+            WaveformType.Sine;
 
         [Range(0f, 1f)]
         public float SecondaryMix = 0.20f;
@@ -65,10 +67,6 @@ namespace AudioProceduralAvatar.Audio
         [Range(0f, 1f)]
         public float Release = 0.15f;
 
-        /// <summary>
-        /// Crea un preset procedural en memoria.
-        /// No necesita existir como asset.
-        /// </summary>
         public static InstrumentPreset CreateRuntime(
             string id,
             WaveformType waveform,
@@ -87,18 +85,23 @@ namespace AudioProceduralAvatar.Audio
             InstrumentPreset preset =
                 CreateInstance<InstrumentPreset>();
 
-            preset.name = "Runtime_" + id;
+            preset.name =
+                "Runtime_" + id;
 
-            preset.PresetId = id;
+            preset.PresetId =
+                id;
 
-            preset.Waveform = waveform;
-            preset.SecondaryWaveform = secondary;
+            preset.Waveform =
+                waveform;
+
+            preset.SecondaryWaveform =
+                secondary;
 
             preset.Volume =
                 Mathf.Clamp(
                     volume,
-                    0.50f,
-                    0.82f
+                    0.20f,
+                    0.90f
                 );
 
             preset.SecondaryMix =
@@ -133,16 +136,24 @@ namespace AudioProceduralAvatar.Audio
                 );
 
             preset.Attack =
-                Mathf.Clamp01(attack);
+                Mathf.Clamp01(
+                    attack
+                );
 
             preset.Decay =
-                Mathf.Clamp01(decay);
+                Mathf.Clamp01(
+                    decay
+                );
 
             preset.Sustain =
-                Mathf.Clamp01(sustain);
+                Mathf.Clamp01(
+                    sustain
+                );
 
             preset.Release =
-                Mathf.Clamp01(release);
+                Mathf.Clamp01(
+                    release
+                );
 
             preset.hideFlags =
                 HideFlags.HideAndDontSave;

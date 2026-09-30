@@ -129,132 +129,376 @@ namespace AudioProceduralAvatar.Audio
 
         private void BuildBuiltInPresets()
         {
+            // ========================================================
+            // PLUCKS
+            // ========================================================
+
             CreateBuiltIn(
                 "warm_pluck",
                 WaveformType.Triangle,
                 WaveformType.Sine,
-                0.72f,
-                0.22f,
-                5f,
-                0.38f,
-                0.12f,
-                7600f,
-                0.012f,
-                0.16f,
-                0.50f,
-                0.18f
+                0.72f, 0.22f, 5f,
+                0.38f, 0.12f, 7600f,
+                0.012f, 0.16f, 0.50f, 0.18f
             );
 
             CreateBuiltIn(
                 "bright_pluck",
                 WaveformType.Triangle,
                 WaveformType.Sine,
-                0.70f,
-                0.30f,
-                7f,
-                0.45f,
-                0.16f,
-                10500f,
-                0.008f,
-                0.13f,
-                0.42f,
-                0.16f
+                0.70f, 0.30f, 7f,
+                0.45f, 0.16f, 10500f,
+                0.008f, 0.13f, 0.42f, 0.16f
             );
+
+            // ========================================================
+            // CAMPANAS / CAJAS
+            // ========================================================
 
             CreateBuiltIn(
                 "soft_bell",
                 WaveformType.Sine,
                 WaveformType.Sine,
-                0.68f,
-                0.40f,
-                9f,
-                0.60f,
-                0.20f,
-                12000f,
-                0.005f,
-                0.30f,
-                0.22f,
-                0.40f
+                0.68f, 0.40f, 9f,
+                0.60f, 0.20f, 12000f,
+                0.005f, 0.30f, 0.22f, 0.40f
             );
+
+            CreateBuiltIn(
+                "bell_low",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.62f, 0.30f, -5f,
+                0.52f, 0.16f, 7000f,
+                0.008f, 0.35f, 0.20f, 0.55f
+            );
+
+            CreateBuiltIn(
+                "chime",
+                WaveformType.Sine,
+                WaveformType.Sine,
+                0.58f, 0.55f, 14f,
+                0.72f, 0.12f, 15000f,
+                0.002f, 0.35f, 0.18f, 0.65f
+            );
+
+            CreateBuiltIn(
+                "music_box",
+                WaveformType.Triangle,
+                WaveformType.Sine,
+                0.64f, 0.42f, 12f,
+                0.65f, 0.12f, 11500f,
+                0.004f, 0.16f, 0.30f, 0.35f
+            );
+
+            CreateBuiltIn(
+                "kalimba",
+                WaveformType.Triangle,
+                WaveformType.Sine,
+                0.65f, 0.32f, 8f,
+                0.58f, 0.15f, 9800f,
+                0.003f, 0.12f, 0.30f, 0.30f
+            );
+
+            CreateBuiltIn(
+                "marimba",
+                WaveformType.Triangle,
+                WaveformType.Sine,
+                0.70f, 0.25f, -2f,
+                0.48f, 0.18f, 6500f,
+                0.004f, 0.11f, 0.35f, 0.22f
+            );
+
+            CreateBuiltIn(
+                "celesta",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.62f, 0.45f, 10f,
+                0.64f, 0.10f, 14000f,
+                0.004f, 0.22f, 0.28f, 0.48f
+            );
+
+            // ========================================================
+            // ARPA
+            // ========================================================
+
+            CreateBuiltIn(
+                "harp",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.68f, 0.20f, -3f,
+                0.35f, 0.08f, 9200f,
+                0.006f, 0.20f, 0.32f, 0.38f
+            );
+
+            // ========================================================
+            // PIANOS
+            // ========================================================
+
+            CreateBuiltIn(
+                "acoustic_piano",
+                WaveformType.Triangle,
+                WaveformType.Sine,
+                0.74f, 0.28f, 3f,
+                0.50f, 0.18f, 6800f,
+                0.006f, 0.20f, 0.45f, 0.30f
+            );
+
+            CreateBuiltIn(
+                "electric_piano",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.70f, 0.35f, 5f,
+                0.44f, 0.10f, 7600f,
+                0.012f, 0.24f, 0.55f, 0.42f
+            );
+
+            // ========================================================
+            // CUERDAS
+            // ========================================================
+
+            CreateBuiltIn(
+                "violin",
+                WaveformType.Sawtooth,
+                WaveformType.Sine,
+                0.58f, 0.32f, 6f,
+                0.48f, 0.08f, 5200f,
+                0.08f, 0.25f, 0.78f, 0.45f
+            );
+
+            CreateBuiltIn(
+                "cello",
+                WaveformType.Sawtooth,
+                WaveformType.Triangle,
+                0.62f, 0.28f, -4f,
+                0.42f, 0.10f, 3900f,
+                0.10f, 0.28f, 0.82f, 0.50f
+            );
+
+            CreateBuiltIn(
+                "string_ensemble",
+                WaveformType.Sawtooth,
+                WaveformType.Sine,
+                0.55f, 0.38f, 4f,
+                0.52f, 0.06f, 4600f,
+                0.16f, 0.30f, 0.82f, 0.65f
+            );
+
+            // ========================================================
+            // VIENTOS
+            // ========================================================
+
+            CreateBuiltIn(
+                "flute",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.60f, 0.18f, 2f,
+                0.25f, 0.05f, 8200f,
+                0.08f, 0.18f, 0.75f, 0.35f
+            );
+
+            CreateBuiltIn(
+                "clarinet",
+                WaveformType.Square,
+                WaveformType.Sine,
+                0.56f, 0.25f, -2f,
+                0.38f, 0.12f, 4800f,
+                0.04f, 0.18f, 0.72f, 0.32f
+            );
+
+            // ========================================================
+            // ÓRGANO
+            // ========================================================
+
+            CreateBuiltIn(
+                "organ",
+                WaveformType.Sine,
+                WaveformType.Square,
+                0.58f, 0.30f, 0f,
+                0.50f, 0.04f, 6200f,
+                0.08f, 0.15f, 0.90f, 0.25f
+            );
+
+            // ========================================================
+            // PADS
+            // ========================================================
 
             CreateBuiltIn(
                 "warm_pad",
                 WaveformType.Sine,
                 WaveformType.Triangle,
-                0.62f,
-                0.34f,
-                -4f,
-                0.30f,
-                0.08f,
-                5200f,
-                0.12f,
-                0.30f,
-                0.80f,
-                0.55f
+                0.62f, 0.34f, -4f,
+                0.30f, 0.08f, 5200f,
+                0.12f, 0.30f, 0.80f, 0.55f
             );
 
             CreateBuiltIn(
-                "glass_lead",
+                "choir_pad",
                 WaveformType.Sine,
-                WaveformType.Triangle,
-                0.68f,
-                0.28f,
-                11f,
-                0.50f,
-                0.15f,
-                9800f,
-                0.015f,
-                0.20f,
-                0.50f,
-                0.25f
+                WaveformType.Sawtooth,
+                0.48f, 0.20f, 5f,
+                0.34f, 0.06f, 4300f,
+                0.20f, 0.35f, 0.82f, 0.75f
             );
+
+            CreateBuiltIn(
+                "dream_pad",
+                WaveformType.Sine,
+                WaveformType.Sine,
+                0.50f, 0.55f, 8f,
+                0.42f, 0.05f, 7000f,
+                0.22f, 0.40f, 0.78f, 0.90f
+            );
+
+            // ========================================================
+            // SYNTH
+            // ========================================================
+
+            CreateBuiltIn(
+                "synth_lead",
+                WaveformType.Sawtooth,
+                WaveformType.Sine,
+                0.62f, 0.25f, 7f,
+                0.62f, 0.18f, 7600f,
+                0.015f, 0.16f, 0.55f, 0.22f
+            );
+
+            CreateBuiltIn(
+                "soft_synth",
+                WaveformType.Triangle,
+                WaveformType.Sine,
+                0.60f, 0.35f, 4f,
+                0.42f, 0.10f, 6800f,
+                0.02f, 0.18f, 0.65f, 0.30f
+            );
+
+            // ========================================================
+            // BAJOS
+            // ========================================================
 
             CreateBuiltIn(
                 "deep_bass",
                 WaveformType.Triangle,
                 WaveformType.Sine,
-                0.76f,
-                0.18f,
-                -3f,
-                0.25f,
-                0.10f,
-                4200f,
-                0.015f,
-                0.18f,
-                0.72f,
-                0.20f
+                0.76f, 0.18f, -3f,
+                0.25f, 0.10f, 4200f,
+                0.015f, 0.18f, 0.72f, 0.20f
             );
+
+            CreateBuiltIn(
+                "sub_bass",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.78f, 0.15f, -5f,
+                0.18f, 0.06f, 2500f,
+                0.012f, 0.15f, 0.80f, 0.18f
+            );
+
+            CreateBuiltIn(
+                "upright_bass",
+                WaveformType.Triangle,
+                WaveformType.Sine,
+                0.68f, 0.20f, -2f,
+                0.28f, 0.08f, 3500f,
+                0.025f, 0.20f, 0.68f, 0.25f
+            );
+
+            CreateBuiltIn(
+                "pluck_bass",
+                WaveformType.Square,
+                WaveformType.Triangle,
+                0.68f, 0.28f, -4f,
+                0.38f, 0.12f, 3900f,
+                0.008f, 0.14f, 0.50f, 0.18f
+            );
+
+            // ========================================================
+            // TEXTURAS
+            // ========================================================
 
             CreateBuiltIn(
                 "air_texture",
                 WaveformType.Sine,
                 WaveformType.Sawtooth,
-                0.48f,
-                0.12f,
-                4f,
-                0.30f,
-                0.08f,
-                6800f,
-                0.18f,
-                0.30f,
-                0.72f,
-                0.70f
+                0.48f, 0.12f, 4f,
+                0.30f, 0.08f, 6800f,
+                0.18f, 0.30f, 0.72f, 0.70f
             );
+
+            CreateBuiltIn(
+                "warm_texture",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.44f, 0.32f, -3f,
+                0.24f, 0.06f, 4300f,
+                0.20f, 0.35f, 0.72f, 0.65f
+            );
+
+            CreateBuiltIn(
+                "dark_texture",
+                WaveformType.Sawtooth,
+                WaveformType.Sine,
+                0.40f, 0.18f, -6f,
+                0.45f, 0.15f, 2800f,
+                0.22f, 0.30f, 0.70f, 0.70f
+            );
+
+            CreateBuiltIn(
+                "shimmer",
+                WaveformType.Sine,
+                WaveformType.Sine,
+                0.42f, 0.65f, 16f,
+                0.72f, 0.06f, 15000f,
+                0.16f, 0.35f, 0.65f, 0.80f
+            );
+
+            // ========================================================
+            // PERCUSIÓN
+            // ========================================================
 
             CreateBuiltIn(
                 "soft_percussion",
                 WaveformType.Sine,
                 WaveformType.Triangle,
-                0.58f,
-                0.18f,
-                0f,
-                0.20f,
-                0.18f,
-                8500f,
-                0.001f,
-                0.045f,
-                0.05f,
-                0.09f
+                0.58f, 0.18f, 0f,
+                0.20f, 0.18f, 8500f,
+                0.001f, 0.045f, 0.05f, 0.09f
+            );
+
+            CreateBuiltIn(
+                "kick_soft",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.70f, 0.10f, -8f,
+                0.10f, 0.20f, 3000f,
+                0.001f, 0.06f, 0.03f, 0.08f
+            );
+
+            CreateBuiltIn(
+                "snare_soft",
+                WaveformType.Sawtooth,
+                WaveformType.Sine,
+                0.42f, 0.30f, 3f,
+                0.50f, 0.22f, 9000f,
+                0.001f, 0.04f, 0.03f, 0.08f
+            );
+
+            CreateBuiltIn(
+                "shaker",
+                WaveformType.Sawtooth,
+                WaveformType.Square,
+                0.30f, 0.25f, 12f,
+                0.60f, 0.25f, 12000f,
+                0.001f, 0.025f, 0.02f, 0.05f
+            );
+
+            CreateBuiltIn(
+                "timpani",
+                WaveformType.Sine,
+                WaveformType.Triangle,
+                0.62f, 0.20f, -6f,
+                0.22f, 0.16f, 3200f,
+                0.008f, 0.16f, 0.35f, 0.35f
             );
         }
 
