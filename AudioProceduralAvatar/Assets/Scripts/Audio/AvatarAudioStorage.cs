@@ -7,16 +7,24 @@ namespace AudioProceduralAvatar.Persistence
 {
     /// <summary>
     /// Guarda y carga el leitmotiv de cada avatar como WAV en disco, junto a
-    /// su JSON (avatars/{id}.wav, mismo folder que AvatarJsonStorage). Se
+    /// su JSON (avatars/{id}_vN.wav, mismo folder que AvatarJsonStorage). Se
     /// genera UNA sola vez -- en creación, o como fallback perezoso la
-    /// primera vez que el álbum lo necesita y no lo encuentra -- nunca se
-    /// regenera después de eso.
+    /// primera vez que el álbum lo necesita y no lo encuentra.
+    ///
+    /// WavVersion: súbelo cada vez que cambies el sintetizador
+    /// (SimpleSynthRenderer). Los WAV con otra versión se ignoran y se
+    /// regeneran solos la próxima vez que se abra el avatar. Sin esto, los
+    /// avatares viejos siguen sonando con el audio renderizado por la
+    /// versión anterior del sintetizador.
     /// </summary>
     public static class AvatarAudioStorage
     {
+        private const int WavVersion = 2;
+
         private static string FolderPath => Path.Combine(Application.persistentDataPath, "avatars");
 
-        public static string GetWavPath(string avatarId) => Path.Combine(FolderPath, $"{avatarId}.wav");
+        public static string GetWavPath(string avatarId) =>
+            Path.Combine(FolderPath, $"{avatarId}_v{WavVersion}.wav");
 
         public static bool Exists(string avatarId) => File.Exists(GetWavPath(avatarId));
 
@@ -38,9 +46,17 @@ namespace AudioProceduralAvatar.Persistence
             }
 
             string path = GetWavPath(profile.Id);
-            WavUtility.Save(path, samples, sampleRate: 44100, channels: 1);
+
+            // Mismo sample rate con el que se renderizó (antes estaba fijo en
+            // 44100: si el dispositivo usaba 48000, el WAV sonaba más lento
+            // y grave).
+            WavUtility.Save(path, samples, renderer.RenderSampleRate, channels: 1);
 
             profile.LeitmotivPath = path;
+
+            // El WAV cambió: la URL subida antes (QR) apunta al audio viejo.
+            profile.WavPublicUrl = null;
+
             AvatarJsonStorage.Save(profile);
 
             Debug.Log($"[AvatarAudioStorage] Leitmotiv exportado: {path}");

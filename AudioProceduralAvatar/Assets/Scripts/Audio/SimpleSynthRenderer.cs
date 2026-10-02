@@ -23,27 +23,46 @@ namespace AudioProceduralAvatar.Audio
 
         [Range(0.65f, 1.15f)]
         [SerializeField]
-        private float masterVolume = 0.92f;
+        private float masterVolume = 0.70f;
 
         [Range(0.7f, 1.5f)]
         [SerializeField]
-        private float limiterStrength = 1.10f;
+        private float limiterStrength = 0.85f;
 
         [Header("CAPAS AUTOMÁTICAS")]
 
         [Range(0f, 1f)]
         [SerializeField]
-        private float bassMasterLevel = 0.42f;
+        private float bassMasterLevel = 0f; //0.42f;
 
         [Range(0f, 1f)]
         [SerializeField]
-        private float textureMasterLevel = 0.24f;
+        private float textureMasterLevel = 0f; //0.24f;
 
         [Range(0f, 1f)]
         [SerializeField]
-        private float percussionMasterLevel = 0.20f;
+        private float percussionMasterLevel = 0f; //0.20f;
 
-        private const int SampleRate = 44100;
+        // Se cachea: AudioSettings solo es seguro desde el hilo principal,
+        // y OnAudioFilterRead corre en el hilo de audio.
+        private int _sampleRate = 48000;
+
+        private float _gainSmoothCoef = 0.0004f;
+
+        private int SampleRate => _sampleRate;
+
+        // Sample rate con el que se renderiza (para escribir el WAV con el mismo).
+        public int RenderSampleRate => _sampleRate;
+
+        // Protege el estado compartido entre hilo principal y hilo de audio.
+        private readonly object _lock = new object();
+
+        // Pool de voces: evita crear objetos (GC) dentro del hilo de audio.
+        private readonly Stack<VoiceState> _voicePool =
+            new Stack<VoiceState>();
+
+        // Ganancia suavizada de la normalización (evita escalones = clicks).
+        private float _normGain = 1f;
 
         private LeitmotivData _current;
 
@@ -66,6 +85,9 @@ namespace AudioProceduralAvatar.Audio
             public float Level;
 
             public int MidiOverride = -1;
+
+            // Se resuelve en el hilo principal, no en el de audio.
+            public InstrumentPreset Preset;
         }
 
         private class VoiceState
@@ -87,6 +109,8 @@ namespace AudioProceduralAvatar.Audio
             public double Phase2;
 
             public float FilterState;
+
+            public double LifeEndSeconds;
         }
 
         private readonly List<ScheduledEvent>
@@ -118,9 +142,37 @@ namespace AudioProceduralAvatar.Audio
 
             source.playOnAwake = false;
 
+            RefreshAudioConfig();
+
+            AudioSettings.OnAudioConfigurationChanged +=
+                OnAudioConfigurationChanged;
+
+            for (int i = 0; i < 48; i++)
+                _voicePool.Push(new VoiceState());
+
             BuildBuiltInPresets();
 
             source.Play();
+        }
+
+        private void OnDestroy()
+        {
+            AudioSettings.OnAudioConfigurationChanged -=
+                OnAudioConfigurationChanged;
+        }
+
+        private void OnAudioConfigurationChanged(bool deviceWasChanged)
+        {
+            RefreshAudioConfig();
+        }
+
+        private void RefreshAudioConfig()
+        {
+            _sampleRate = AudioSettings.outputSampleRate;
+
+            // Suavizado de ~50 ms para la ganancia de normalización.
+            _gainSmoothCoef =
+                1f - Mathf.Exp(-1f / (0.05f * _sampleRate));
         }
 
         // ========================================================
@@ -550,6 +602,13 @@ namespace AudioProceduralAvatar.Audio
         public float[] RenderOffline(
             LeitmotivData data)
         {
+            // Puede llamarse antes de Awake (objeto inactivo) o tras un cambio
+            // de dispositivo: asegurar sample rate y presets internos.
+            RefreshAudioConfig();
+
+            if (_builtInPresets.Count == 0)
+                BuildBuiltInPresets();
+
             List<ScheduledEvent> events =
                 BuildScheduledEvents(data);
 
@@ -583,9 +642,7 @@ namespace AudioProceduralAvatar.Audio
                     FindPreset(e.PresetId);
 
                 float release =
-                    preset != null
-                        ? preset.Release
-                        : 0.2f;
+                    GetReleaseSeconds(data, preset) + 0.01f;
 
                 totalSeconds =
                     Math.Max(
@@ -621,6 +678,16 @@ namespace AudioProceduralAvatar.Audio
                 new float[
                     events.Count
                 ];
+
+            float offlineGain = 1f;
+
+            // Resolver el preset de cada evento UNA vez (antes se buscaba
+            // por cada muestra y por cada evento: millones de búsquedas).
+            InstrumentPreset[] presetCache =
+                new InstrumentPreset[events.Count];
+
+            for (int k = 0; k < events.Count; k++)
+                presetCache[k] = FindPreset(events[k].PresetId);
 
             for (
                 int i = 0;
@@ -661,19 +728,15 @@ namespace AudioProceduralAvatar.Audio
                         continue;
 
                     InstrumentPreset preset =
-                        FindPreset(
-                            e.PresetId
-                        );
+                        presetCache[v];
 
                     if (preset == null)
                         continue;
 
                     double life =
-                        (
-                            end -
-                            start
-                        ) +
-                        preset.Release;
+                        (end - start) +
+                        GetReleaseSeconds(data, preset) +
+                        0.01;
 
                     if (elapsed > life)
                         continue;
@@ -698,7 +761,8 @@ namespace AudioProceduralAvatar.Audio
                 mixed =
                     NormalizeMix(
                         mixed,
-                        activeCount
+                        activeCount,
+                        ref offlineGain
                     );
 
                 buffer[i] =
@@ -724,28 +788,32 @@ namespace AudioProceduralAvatar.Audio
                     new List<NoteEvent>();
             }
 
-            _current = data;
-
-            _hasCurrent = true;
-
-            _secondsPerBeat =
+            double secondsPerBeat =
                 60.0 /
-                Mathf.Max(
-                    1f,
-                    data.TempoBpm
-                );
+                Mathf.Max(1f, data.TempoBpm);
 
-            _clockSeconds = 0.0;
+            // Todo lo pesado se hace fuera del lock y fuera del hilo de audio.
+            List<ScheduledEvent> events =
+                BuildScheduledEvents(data);
 
-            _nextEventIndex = 0;
+            foreach (ScheduledEvent e in events)
+                e.Preset = FindPreset(e.PresetId);
 
-            _activeVoices.Clear();
+            lock (_lock)
+            {
+                ReleaseAllVoices();
 
-            _scheduledEvents.Clear();
+                _current = data;
+                _secondsPerBeat = secondsPerBeat;
+                _clockSeconds = 0.0;
+                _nextEventIndex = 0;
+                _normGain = 1f;
 
-            _scheduledEvents.AddRange(
-                BuildScheduledEvents(data)
-            );
+                _scheduledEvents.Clear();
+                _scheduledEvents.AddRange(events);
+
+                _hasCurrent = true;
+            }
         }
 
         // ========================================================
@@ -754,13 +822,25 @@ namespace AudioProceduralAvatar.Audio
 
         public void Stop()
         {
-            _hasCurrent = false;
+            lock (_lock)
+            {
+                _hasCurrent = false;
+
+                ReleaseAllVoices();
+
+                _scheduledEvents.Clear();
+
+                _nextEventIndex = 0;
+            }
+        }
+
+        // Debe llamarse dentro del lock.
+        private void ReleaseAllVoices()
+        {
+            for (int i = 0; i < _activeVoices.Count; i++)
+                _voicePool.Push(_activeVoices[i]);
 
             _activeVoices.Clear();
-
-            _scheduledEvents.Clear();
-
-            _nextEventIndex = 0;
         }
 
         // ========================================================
@@ -1012,167 +1092,145 @@ namespace AudioProceduralAvatar.Audio
             float[] data,
             int channels)
         {
-            if (!_hasCurrent ||
-                _scheduledEvents.Count == 0)
+            // Este AudioSource no tiene clip: Unity NO garantiza que "data"
+            // venga en silencio. Si salimos sin escribir (antes de la primera
+            // reproducción, tras Stop(), etc.) el buffer puede conservar
+            // contenido viejo y repetirse en bucle = zumbido/crackling de
+            // fondo. Siempre partimos de silencio.
+            Array.Clear(data, 0, data.Length);
+
+            lock (_lock)
             {
-                return;
-            }
-
-            LeitmotivData leitmotiv =
-                _current;
-
-            for (
-                int i = 0;
-                i < data.Length;
-                i += channels)
-            {
-                double sampleTime =
-                    _clockSeconds +
-                    (
-                        double)(i / channels) /
-                        SampleRate;
-
-                // ------------------------------------------------
-                // ACTIVAR EVENTOS
-                // ------------------------------------------------
-
-                while (
-                    _nextEventIndex <
-                    _scheduledEvents.Count &&
-                    _scheduledEvents[
-                        _nextEventIndex
-                    ].Note.StartBeat *
-                    _secondsPerBeat
-                    <= sampleTime)
+                if (!_hasCurrent ||
+                    _scheduledEvents.Count == 0)
                 {
-                    ScheduledEvent scheduled =
-                        _scheduledEvents[
-                            _nextEventIndex
-                        ];
+                    return;
+                }
 
-                    InstrumentPreset preset =
-                        FindPreset(
-                            scheduled.PresetId
-                        );
+                LeitmotivData leitmotiv = _current;
 
-                    if (preset != null)
+                int sampleRate = _sampleRate;
+
+                int frames = data.Length / channels;
+
+                for (int frame = 0; frame < frames; frame++)
+                {
+                    int i = frame * channels;
+
+                    double sampleTime =
+                        _clockSeconds +
+                        (double)frame / sampleRate;
+
+                    // --------------------------------------------
+                    // ACTIVAR EVENTOS
+                    // --------------------------------------------
+
+                    while (
+                        _nextEventIndex < _scheduledEvents.Count &&
+                        _scheduledEvents[_nextEventIndex].Note.StartBeat *
+                        _secondsPerBeat <= sampleTime)
                     {
-                        _activeVoices.Add(
-                            new VoiceState
-                            {
-                                Note =
-                                    scheduled.Note,
+                        ScheduledEvent scheduled =
+                            _scheduledEvents[_nextEventIndex];
 
-                                Preset =
-                                    preset,
+                        _nextEventIndex++;
 
-                                Level =
-                                    scheduled.Level,
+                        if (scheduled.Preset == null)
+                            continue;
 
-                                MidiOverride =
-                                    scheduled.MidiOverride,
+                        VoiceState voice =
+                            _voicePool.Count > 0
+                                ? _voicePool.Pop()
+                                : new VoiceState();
 
-                                StartSeconds =
-                                    scheduled.Note.StartBeat *
-                                    _secondsPerBeat,
+                        voice.Note = scheduled.Note;
+                        voice.Preset = scheduled.Preset;
+                        voice.Level = scheduled.Level;
+                        voice.MidiOverride = scheduled.MidiOverride;
 
-                                EndSeconds =
-                                    (
-                                        scheduled.Note.StartBeat +
-                                        scheduled.Note.DurationBeats
-                                    ) *
-                                    _secondsPerBeat,
+                        voice.StartSeconds =
+                            scheduled.Note.StartBeat *
+                            _secondsPerBeat;
 
-                                Phase1 = 0.0,
+                        voice.EndSeconds =
+                            (scheduled.Note.StartBeat +
+                             scheduled.Note.DurationBeats) *
+                            _secondsPerBeat;
 
-                                Phase2 = 0.0,
+                        // El release real (el mismo que usa el envelope).
+                        voice.LifeEndSeconds =
+                            voice.EndSeconds +
+                            GetReleaseSeconds(leitmotiv, voice.Preset) +
+                            0.01;
 
-                                FilterState = 0f
-                            }
-                        );
+                        voice.Phase1 = 0.0;
+                        voice.Phase2 = 0.0;
+                        voice.FilterState = 0f;
+
+                        _activeVoices.Add(voice);
                     }
 
-                    _nextEventIndex++;
-                }
+                    float mixed = 0f;
 
-                float mixed = 0f;
+                    int activeCount = 0;
 
-                int activeCount = 0;
+                    // --------------------------------------------
+                    // VOCES
+                    // --------------------------------------------
 
-                // ------------------------------------------------
-                // VOCES
-                // ------------------------------------------------
-
-                for (
-                    int v =
-                        _activeVoices.Count - 1;
-                    v >= 0;
-                    v--)
-                {
-                    VoiceState voice =
-                        _activeVoices[v];
-
-                    double elapsed =
-                        sampleTime -
-                        voice.StartSeconds;
-
-                    double duration =
-                        voice.EndSeconds -
-                        voice.StartSeconds;
-
-                    double life =
-                        duration +
-                        voice.Preset.Release;
-
-                    if (elapsed > life)
+                    for (int v = _activeVoices.Count - 1; v >= 0; v--)
                     {
-                        _activeVoices.RemoveAt(v);
+                        VoiceState voice = _activeVoices[v];
 
-                        continue;
+                        if (sampleTime > voice.LifeEndSeconds)
+                        {
+                            _activeVoices.RemoveAt(v);
+                            _voicePool.Push(voice);
+                            continue;
+                        }
+
+                        double elapsed =
+                            sampleTime - voice.StartSeconds;
+
+                        double duration =
+                            voice.EndSeconds - voice.StartSeconds;
+
+                        activeCount++;
+
+                        mixed +=
+                            RenderVoice(
+                                leitmotiv,
+                                voice.Note,
+                                voice.Preset,
+                                voice.Level,
+                                voice.MidiOverride,
+                                elapsed,
+                                duration,
+                                ref voice.Phase1,
+                                ref voice.Phase2,
+                                ref voice.FilterState
+                            );
                     }
 
-                    activeCount++;
-
-                    mixed +=
-                        RenderVoice(
-                            leitmotiv,
-                            voice.Note,
-                            voice.Preset,
-                            voice.Level,
-                            voice.MidiOverride,
-                            elapsed,
-                            duration,
-                            ref voice.Phase1,
-                            ref voice.Phase2,
-                            ref voice.FilterState
+                    mixed =
+                        NormalizeMix(
+                            mixed,
+                            activeCount,
+                            ref _normGain
                         );
+
+                    mixed = ApplyMasterLimiter(mixed);
+
+                    // Una sola muestra NaN/Inf suena como un chasquido fuerte.
+                    if (float.IsNaN(mixed) || float.IsInfinity(mixed))
+                        mixed = 0f;
+
+                    for (int c = 0; c < channels; c++)
+                        data[i + c] = mixed;
                 }
 
-                mixed =
-                    NormalizeMix(
-                        mixed,
-                        activeCount
-                    );
-
-                mixed =
-                    ApplyMasterLimiter(
-                        mixed
-                    );
-
-                for (
-                    int c = 0;
-                    c < channels;
-                    c++)
-                {
-                    data[i + c] =
-                        mixed;
-                }
+                _clockSeconds += (double)frames / sampleRate;
             }
-
-            _clockSeconds +=
-                (double)data.Length /
-                channels /
-                SampleRate;
         }
 
         // ========================================================
@@ -1299,16 +1357,10 @@ namespace AudioProceduralAvatar.Audio
                 );
 
             float osc1 =
-                Oscillate(
-                    preset.Waveform,
-                    phase1
-                );
+                Mathf.Sin((float)phase1);
 
             float osc2 =
-                Oscillate(
-                    preset.SecondaryWaveform,
-                    phase2
-                );
+                Mathf.Sin((float)phase2);
 
             float secondaryMix =
                 Mathf.Clamp01(
@@ -1377,7 +1429,7 @@ namespace AudioProceduralAvatar.Audio
             // SATURACIÓN SUAVE
             // ----------------------------------------------------
 
-            float drive =
+            /*float drive =
                 1f +
                 preset.Saturation *
                 2f;
@@ -1386,7 +1438,7 @@ namespace AudioProceduralAvatar.Audio
                 SoftClip(
                     raw *
                     drive
-                );
+                );*/
 
             // ----------------------------------------------------
             // DINÁMICA
@@ -1421,57 +1473,37 @@ namespace AudioProceduralAvatar.Audio
         // NORMALIZACIÓN
         // ========================================================
 
+        // La ganancia se suaviza: antes cambiaba de golpe cada vez que
+        // entraba o salía una voz, creando escalones audibles (clicks).
         private float NormalizeMix(
             float mixed,
-            int activeVoices)
+            int activeVoices,
+            ref float gainState)
         {
-            if (activeVoices <= 1)
-                return mixed;
+            float target =
+                1f / Mathf.Max(1f, Mathf.Sqrt(activeVoices));
 
-            float divisor =
-                Mathf.Sqrt(
-                    activeVoices
-                );
+            gainState +=
+                (target - gainState) * _gainSmoothCoef;
 
-            return
-                mixed /
-                Mathf.Max(
-                    1f,
-                    divisor
-                );
+            return mixed * gainState;
         }
 
         // ========================================================
         // LIMITADOR
         // ========================================================
 
-        private float ApplyMasterLimiter(
-            float sample)
+        // Limitador suave (tanh): ganancia ~masterVolume en señal baja y
+        // techo de 0.9. El Clamp anterior recortaba la onda = distorsión.
+        private float ApplyMasterLimiter(float sample)
         {
-            sample *=
-                masterVolume;
+            const float ceiling = 0.9f;
 
-            float strength =
-                Mathf.Max(
-                    0.7f,
-                    limiterStrength
+            return
+                ceiling *
+                (float)Math.Tanh(
+                    sample * masterVolume / ceiling
                 );
-
-            float normalized =
-                SoftClip(
-                    sample *
-                    strength
-                );
-
-            // Máximo real.
-            normalized =
-                Mathf.Clamp(
-                    normalized,
-                    -0.94f,
-                    0.94f
-                );
-
-            return normalized;
         }
 
         private static float SoftClip(
@@ -1600,6 +1632,43 @@ namespace AudioProceduralAvatar.Audio
         // ADSR
         // ========================================================
 
+        // Release efectivo en segundos. TIENE que ser el mismo valor que usa
+        // ComputeEnvelope, si no la voz se corta antes de llegar a 0 (click).
+        private static float GetReleaseSeconds(
+            LeitmotivData data,
+            InstrumentPreset preset)
+        {
+            float release =
+                data.HasMappedEnvelope
+                    ? data.Release
+                    : (preset != null ? preset.Release : 0.2f);
+
+            return Mathf.Clamp(release, 0.03f, 1f);
+        }
+
+        private static float EnvelopeBody(
+            double t,
+            float attack,
+            float decay,
+            float sustain)
+        {
+            if (t < attack)
+                return (float)(t / attack);
+
+            double afterAttack = t - attack;
+
+            if (afterAttack < decay)
+            {
+                return Mathf.Lerp(
+                    1f,
+                    sustain,
+                    (float)(afterAttack / decay)
+                );
+            }
+
+            return sustain;
+        }
+
         private static float ComputeEnvelope(
             double elapsed,
             double duration,
@@ -1608,96 +1677,28 @@ namespace AudioProceduralAvatar.Audio
             float sustain,
             float release)
         {
-            attack =
-                Mathf.Clamp(
-                    attack,
-                    0.005f,
-                    1f
-                );
+            attack = Mathf.Clamp(attack, 0.005f, 1f);
+            decay = Mathf.Clamp(decay, 0.01f, 1f);
+            sustain = Mathf.Clamp(sustain, 0.08f, 1f);
+            release = Mathf.Clamp(release, 0.03f, 1f);
 
-            decay =
-                Mathf.Clamp(
-                    decay,
-                    0.01f,
-                    1f
-                );
-
-            release =
-                Mathf.Clamp(
-                    release,
-                    0.03f,
-                    1f
-                );
-
-            sustain =
-                Mathf.Clamp(
-                    sustain,
-                    0.08f,
-                    1f
-                );
-
-            // ATTACK
-            if (elapsed < attack)
-            {
-                return Mathf.Clamp01(
-                    (float)(
-                        elapsed /
-                        attack
-                    )
-                );
-            }
-
-            // DECAY
-            double afterAttack =
-                elapsed -
-                attack;
-
-            if (afterAttack < decay)
-            {
-                float t =
-                    Mathf.Clamp01(
-                        (float)(
-                            afterAttack /
-                            decay
-                        )
-                    );
-
-                return Mathf.Lerp(
-                    1f,
-                    sustain,
-                    t
-                );
-            }
-
-            // SUSTAIN
+            // ATTACK / DECAY / SUSTAIN
             if (elapsed < duration)
-            {
-                return sustain;
-            }
+                return EnvelopeBody(elapsed, attack, decay, sustain);
 
-            // RELEASE
-            double afterNote =
-                elapsed -
-                duration;
+            // RELEASE: parte del nivel REAL que tenía la nota al soltarse.
+            // Antes, si la nota era más corta que attack+decay, el release
+            // arrancaba desde "sustain" y el volumen daba un salto.
+            double afterNote = elapsed - duration;
 
-            if (afterNote < release)
-            {
-                float t =
-                    Mathf.Clamp01(
-                        (float)(
-                            afterNote /
-                            release
-                        )
-                    );
+            if (afterNote >= release)
+                return 0f;
 
-                return Mathf.Lerp(
-                    sustain,
-                    0f,
-                    t
-                );
-            }
+            float levelAtNoteOff =
+                EnvelopeBody(duration, attack, decay, sustain);
 
-            return 0f;
+            return levelAtNoteOff *
+                   (1f - (float)(afterNote / release));
         }
     }
 }
