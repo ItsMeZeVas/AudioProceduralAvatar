@@ -317,7 +317,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 856795415}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
-        m_MethodName: PlayKeyClick
+        m_MethodName: PlayRemove
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2915,7 +2915,7 @@ MonoBehaviour:
   undoVolume: 0.267
   keyBaseFrequency: 220
   keyPitchVariation: 0.8
-  keyVariants: 8
+  keyVariants: 20
   keyDuration: 0.065
   backspaceSemitones: -4
   backspaceBaseFrequency: 220

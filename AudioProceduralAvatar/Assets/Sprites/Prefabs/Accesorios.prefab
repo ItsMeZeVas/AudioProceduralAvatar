@@ -120,9 +120,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3556457289369186303, guid: f3d918f1cf3966f4b8558c66adf99bfe, type: 3}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: AvatarAudioManager, Assembly-CSharp
-        m_MethodName: PlaySelect
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
