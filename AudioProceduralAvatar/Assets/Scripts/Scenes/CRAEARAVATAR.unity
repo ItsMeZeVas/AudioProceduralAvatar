@@ -13645,7 +13645,7 @@ MonoBehaviour:
   tiempoFadeEntrada: 2
   tiempoFadeSalida: 1.5
   tiempoTransicionEscena: 1.5
-  conservarEntreEscenas: 1
+  conservarEntreEscenas: 0
 --- !u!1 &1903083202
 GameObject:
   m_ObjectHideFlags: 0
