@@ -17,14 +17,14 @@ MonoBehaviour:
   layers:
   - layerName: Hair
     noPiece: 1
-    spriteIndex: -8
+    spriteIndex: -13
     previewSprite: {fileID: 0}
   - layerName: Head
     noPiece: 0
     spriteIndex: -8
     previewSprite: {fileID: 21300000, guid: cafb6f678a9500c4ead625a275d89f9e, type: 3}
   - layerName: Body
-    noPiece: 0
+    noPiece: 1
     spriteIndex: -8
     previewSprite: {fileID: 0}
   - layerName: UpperBody

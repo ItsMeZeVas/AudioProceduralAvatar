@@ -16,36 +16,36 @@ MonoBehaviour:
   fixedAvatarName: Nataly
   layers:
   - layerName: Hair
-    noPiece: 0
-    spriteIndex: -9
-    previewSprite: {fileID: 21300000, guid: 9a24a1974f7bd7e4391eed2e3197e5e0, type: 3}
-  - layerName: Head
     noPiece: 1
-    spriteIndex: -9
+    spriteIndex: -10
     previewSprite: {fileID: 0}
+  - layerName: Head
+    noPiece: 0
+    spriteIndex: -10
+    previewSprite: {fileID: 21300000, guid: 9a24a1974f7bd7e4391eed2e3197e5e0, type: 3}
   - layerName: Body
     noPiece: 1
-    spriteIndex: -9
+    spriteIndex: -10
     previewSprite: {fileID: 0}
   - layerName: UpperBody
     noPiece: 0
-    spriteIndex: -9
+    spriteIndex: -10
     previewSprite: {fileID: 21300000, guid: da068780f77dae84b9b5e669d87c312b, type: 3}
   - layerName: LowerBody
     noPiece: 0
-    spriteIndex: -9
+    spriteIndex: -10
     previewSprite: {fileID: 21300000, guid: fdb396f24afc3864ca5bcbb4d0bc4de6, type: 3}
   - layerName: SubBoca
     noPiece: 1
-    spriteIndex: -9
+    spriteIndex: -10
     previewSprite: {fileID: 0}
   - layerName: SubBarba
     noPiece: 1
-    spriteIndex: -9
+    spriteIndex: -10
     previewSprite: {fileID: 0}
   - layerName: Accessories
     noPiece: 1
-    spriteIndex: -9
+    spriteIndex: -10
     previewSprite: {fileID: 0}
   continuousAttributes:
   - Name: SkinTone

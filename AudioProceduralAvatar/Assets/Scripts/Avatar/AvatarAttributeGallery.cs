@@ -28,6 +28,7 @@ public class AvatarAttributeGallery : MonoBehaviour
 
         for (int i = 0; i < layer.sprites.Length; i++)
         {
+            if (layer.IsLocked(i)) continue;
             int index = i; // captura local — evita el bug clásico de closures en loops de C#
 
             GameObject btnObj = Instantiate(optionButtonPrefab, content);
