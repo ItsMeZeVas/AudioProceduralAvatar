@@ -22,7 +22,7 @@ MonoBehaviour:
   - layerName: Head
     noPiece: 0
     spriteIndex: -4
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 5479f2679fbf67648ac0eeda2035c3c0, type: 3}
   - layerName: Body
     noPiece: 0
     spriteIndex: -4
@@ -30,11 +30,11 @@ MonoBehaviour:
   - layerName: UpperBody
     noPiece: 0
     spriteIndex: -4
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: 827dab0b5f7851240ae9e5b208ab3618, type: 3}
   - layerName: LowerBody
     noPiece: 0
     spriteIndex: -4
-    previewSprite: {fileID: 0}
+    previewSprite: {fileID: 21300000, guid: aa7d964aa5cc8d54f965a45d1a8a0795, type: 3}
   - layerName: SubBoca
     noPiece: 1
     spriteIndex: -4

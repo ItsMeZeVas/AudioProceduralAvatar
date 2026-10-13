@@ -3309,7 +3309,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 5c2a766decab49e499c01897739275be, type: 3}
+  m_Resource: {fileID: 8300000, guid: 3abd8af5636fa934faa4c0f1587a06d2, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -5006,7 +5006,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: be12bfee6cd3e83488b34e5c62cbdbce, type: 3}
+  m_Resource: {fileID: 8300000, guid: 752a46533fe22e745b90e60bdfe13604, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -6725,6 +6725,20 @@ MonoBehaviour:
     - {fileID: 21300000, guid: e4cabcf3c65787449868eddd6ab55018, type: 3}
     - {fileID: 21300000, guid: 9855156e336cd714d8f0f2e084f8bb44, type: 3}
     - {fileID: 21300000, guid: 26bc14dc97058824681198a9c5be8872, type: 3}
+    - {fileID: 21300000, guid: 06ed43dbfb621094595be8d41aec795b, type: 3}
+    - {fileID: 21300000, guid: bcb03744cb370eb4b9e7f3e6b8c8fd95, type: 3}
+    - {fileID: 21300000, guid: 4194987a1c70dc743b872a17bb5dd4d6, type: 3}
+    - {fileID: 21300000, guid: 8be4ea1e15cdee04e94eaab84dae640f, type: 3}
+    - {fileID: 21300000, guid: 92f07beae8a65144281f56e007a6c088, type: 3}
+    - {fileID: 21300000, guid: cf8e9d30a49781d44ae7cdaa61f0f452, type: 3}
+    - {fileID: 21300000, guid: 985f4fa36c8522a4d9c0f5455c80c700, type: 3}
+    - {fileID: 21300000, guid: 9624f178c80881648905c235f1554e03, type: 3}
+    - {fileID: 21300000, guid: 26bed3316266ed044b4004eefd8ad0cf, type: 3}
+    - {fileID: 21300000, guid: 66f3f00d3fadca24994edae897c42cf8, type: 3}
+    - {fileID: 21300000, guid: 1b9b6fd7a8bcc2b479ddf0f98b4e9d38, type: 3}
+    - {fileID: 21300000, guid: a8b117160b45d0040ac741116fa84df4, type: 3}
+    - {fileID: 21300000, guid: 816a6655501565a4785a3699a5a460ce, type: 3}
+    - {fileID: 21300000, guid: 6a483807937621b4dbaf72e2d69a44dd, type: 3}
     currentIndex: 0
   - layerName: LowerBody
     image: {fileID: 2006702089}
@@ -6732,6 +6746,23 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 1f20dea2e22daff43a3aa7ec05ae6ea8, type: 3}
     - {fileID: 21300000, guid: ff7d279f40e2d6f4fbb70a892c0f6ed4, type: 3}
     - {fileID: 21300000, guid: 832b8d7826fd5bf44992fe3f0b194855, type: 3}
+    - {fileID: 21300000, guid: d06828c024f899c429421a9b09e4aef4, type: 3}
+    - {fileID: 21300000, guid: 539760a02dc10f040a057bbb6ec60e7b, type: 3}
+    - {fileID: 21300000, guid: c42d3e4327f3c1643a590acf0e0a7639, type: 3}
+    - {fileID: 21300000, guid: 9f6fed27d2829ae44be7a17803616659, type: 3}
+    - {fileID: 21300000, guid: 02415faa12896f44ca749e921d4ddcab, type: 3}
+    - {fileID: 21300000, guid: ed365763b87feab448c82c9c307a670c, type: 3}
+    - {fileID: 21300000, guid: 1f96cda0d5f479d4fb2a196d4ef662fd, type: 3}
+    - {fileID: 21300000, guid: 4a853b29509ea0543960fdcdec37ec39, type: 3}
+    - {fileID: 21300000, guid: 22db2c2eab4057346aa7d17301f0bca4, type: 3}
+    - {fileID: 21300000, guid: a6a8135f134fd034cb90a418366e79a9, type: 3}
+    - {fileID: 21300000, guid: e5cbc3c3cf9674148a798d6d612cdf3a, type: 3}
+    - {fileID: 21300000, guid: b3f007bca87e908428856f64a269f1fd, type: 3}
+    - {fileID: 21300000, guid: 0f026e78fef13114b96586dfe004a22f, type: 3}
+    - {fileID: 21300000, guid: ed41957861fde19428e7d3dbf1e5e645, type: 3}
+    - {fileID: 21300000, guid: e94ba3ffe855d294d9f137e54e447f7c, type: 3}
+    - {fileID: 21300000, guid: e78c874bb1274374c820f2e2304105e9, type: 3}
+    - {fileID: 21300000, guid: 045c2601781f0954589734a60327ff8f, type: 3}
     currentIndex: 0
   - layerName: SubBoca
     image: {fileID: 760828168}
@@ -8190,7 +8221,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 66b18927a2017ee4f96e1b81c151b31d, type: 3}
+  m_Resource: {fileID: 8300000, guid: 3dda40380915170459280ce987ab974e, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -12331,7 +12362,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: ab0337fbe28b6ee47936b9786b1364db, type: 3}
+  m_Resource: {fileID: 8300000, guid: 01d97c3b2b4511f4c8ceb7e50e48c216, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -13613,28 +13644,28 @@ MonoBehaviour:
   bajo:
     nombre: Bajo
     fuente: {fileID: 1157573467}
-    clip: {fileID: 8300000, guid: 66b18927a2017ee4f96e1b81c151b31d, type: 3}
+    clip: {fileID: 8300000, guid: 3dda40380915170459280ce987ab974e, type: 3}
     volumen: 0.469
     activaAlIniciar: 1
     volumenActual: 0
   voces:
     nombre: Voces
     fuente: {fileID: 1683915540}
-    clip: {fileID: 8300000, guid: ab0337fbe28b6ee47936b9786b1364db, type: 3}
+    clip: {fileID: 8300000, guid: 01d97c3b2b4511f4c8ceb7e50e48c216, type: 3}
     volumen: 0.375
     activaAlIniciar: 1
     volumenActual: 0
   otros:
     nombre: Otros
     fuente: {fileID: 532013595}
-    clip: {fileID: 8300000, guid: 5c2a766decab49e499c01897739275be, type: 3}
+    clip: {fileID: 8300000, guid: 3dda40380915170459280ce987ab974e, type: 3}
     volumen: 0.165
     activaAlIniciar: 1
     volumenActual: 0
   drums:
     nombre: Drums
     fuente: {fileID: 896868969}
-    clip: {fileID: 8300000, guid: be12bfee6cd3e83488b34e5c62cbdbce, type: 3}
+    clip: {fileID: 8300000, guid: 752a46533fe22e745b90e60bdfe13604, type: 3}
     volumen: 0.504
     activaAlIniciar: 1
     volumenActual: 0
@@ -15887,5 +15918,5 @@ SceneRoots:
   - {fileID: 1447848968}
   - {fileID: 2044671541}
   - {fileID: 2135327120}
-  - {fileID: 1773197734}
   - {fileID: 1894391158}
+  - {fileID: 1773197734}
