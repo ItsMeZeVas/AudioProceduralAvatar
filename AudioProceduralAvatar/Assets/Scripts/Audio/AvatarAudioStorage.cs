@@ -12,14 +12,21 @@ namespace AudioProceduralAvatar.Persistence
     /// primera vez que el álbum lo necesita y no lo encuentra.
     ///
     /// WavVersion: súbelo cada vez que cambies el sintetizador
-    /// (SimpleSynthRenderer). Los WAV con otra versión se ignoran y se
-    /// regeneran solos la próxima vez que se abra el avatar. Sin esto, los
-    /// avatares viejos siguen sonando con el audio renderizado por la
-    /// versión anterior del sintetizador.
+    /// (SimpleSynthRenderer) o el post-proceso del WAV (normalización). Los
+    /// WAV con otra versión se ignoran y se regeneran solos la próxima vez
+    /// que se abra el avatar. Sin esto, los avatares viejos siguen sonando
+    /// con el audio renderizado por la versión anterior.
+    ///
+    /// v3: normalización de pico a NormalizeTargetPeak (antes el WAV salía
+    /// con volumen muy bajo, pico ~0.3).
     /// </summary>
     public static class AvatarAudioStorage
     {
-        private const int WavVersion = 2;
+        private const int WavVersion = 3;
+
+        // Pico objetivo del WAV exportado (1.0 = máximo digital). 0.92 deja
+        // un pequeño margen para que no sature al convertir a 16 bits.
+        private const float NormalizeTargetPeak = 0.92f;
 
         private static string FolderPath => Path.Combine(Application.persistentDataPath, "avatars");
 
@@ -30,9 +37,10 @@ namespace AudioProceduralAvatar.Persistence
 
         /// <summary>
         /// Renderiza el leitmotiv fuera de tiempo real (SimpleSynthRenderer.RenderOffline),
-        /// lo guarda como WAV, actualiza profile.LeitmotivPath y persiste el
-        /// JSON del avatar con esa referencia. Devuelve la ruta guardada, o
-        /// null si no se pudo renderizar (por ejemplo, sin InstrumentPreset).
+        /// lo normaliza, lo guarda como WAV, actualiza profile.LeitmotivPath y
+        /// persiste el JSON del avatar con esa referencia. Devuelve la ruta
+        /// guardada, o null si no se pudo renderizar (por ejemplo, sin
+        /// InstrumentPreset).
         /// </summary>
         public static string ExportAndLink(AvatarProfile profile, LeitmotivData data, SimpleSynthRenderer renderer)
         {
@@ -44,6 +52,10 @@ namespace AudioProceduralAvatar.Persistence
                 Debug.LogWarning($"[AvatarAudioStorage] No se pudo renderizar el leitmotiv de '{profile.Id}' (sin InstrumentPreset).");
                 return null;
             }
+
+            // Sube el volumen del WAV: el sintetizador deja el pico muy por
+            // debajo de 1.0 (preset.Volume * velocity * masterVolume + tanh).
+            NormalizePeak(samples, NormalizeTargetPeak);
 
             string path = GetWavPath(profile.Id);
 
@@ -61,6 +73,26 @@ namespace AudioProceduralAvatar.Persistence
 
             Debug.Log($"[AvatarAudioStorage] Leitmotiv exportado: {path}");
             return path;
+        }
+
+        /// <summary>
+        /// Escala todo el buffer para que su pico absoluto quede en
+        /// targetPeak. No hace nada si el audio es (casi) silencio.
+        /// </summary>
+        private static void NormalizePeak(float[] samples, float targetPeak)
+        {
+            float peak = 0f;
+            for (int i = 0; i < samples.Length; i++)
+            {
+                float a = Mathf.Abs(samples[i]);
+                if (a > peak) peak = a;
+            }
+
+            if (peak < 0.0001f) return; // silencio, no dividir
+
+            float gain = targetPeak / peak;
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] *= gain;
         }
     }
 }

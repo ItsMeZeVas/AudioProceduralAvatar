@@ -15,7 +15,7 @@ MonoBehaviour:
   autoSync: 0
   syncSecrets: 1
   layers:
-  - layerName: Head_PAUSA
+  - layerName: Head
     defaultRigPieces: {fileID: 0}
     options:
     - label: Ojos1
@@ -38,17 +38,21 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: 44811313eccd83a43ac637596b6e44f0, type: 3}
       rigPieces: {fileID: 11400000, guid: 6cafbb63413660b48a0c4bebbcb63eb8, type: 2}
       locked: 0
+    - label: Ojos6
+      previewSprite: {fileID: 21300000, guid: db1c35576a7268d41a1d6f3872538780, type: 3}
+      rigPieces: {fileID: 11400000, guid: af4cd53749cd9fd4eac3d504441a55de, type: 2}
+      locked: 0
     - label: Ojos7
       previewSprite: {fileID: 21300000, guid: 9c5975ce6eeec2f499147fdc50dac6ee, type: 3}
-      rigPieces: {fileID: 11400000, guid: af4cd53749cd9fd4eac3d504441a55de, type: 2}
+      rigPieces: {fileID: 11400000, guid: b6751c6a46b86f042b28dd81ab8d21c1, type: 2}
       locked: 0
     - label: Ojos8
       previewSprite: {fileID: 21300000, guid: 022fac163888f0a4489ad185598bfd80, type: 3}
-      rigPieces: {fileID: 11400000, guid: b6751c6a46b86f042b28dd81ab8d21c1, type: 2}
+      rigPieces: {fileID: 11400000, guid: 12ab97e179116614dbdf6a21ac1201d0, type: 2}
       locked: 0
     - label: Ojos9
       previewSprite: {fileID: 21300000, guid: 8474fa2d95edc0441b6b2d7196cbb993, type: 3}
-      rigPieces: {fileID: 11400000, guid: 12ab97e179116614dbdf6a21ac1201d0, type: 2}
+      rigPieces: {fileID: 11400000, guid: 84d525e36fd9bb24db387e233fca3f0e, type: 2}
       locked: 0
     - label: Ojos10
       previewSprite: {fileID: 21300000, guid: e9d661bf454a3e1499e00aa420362bf7, type: 3}
@@ -67,39 +71,39 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: 1a2939639d9f42746871e9caa8c64878, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Head secreta -4
-      previewSprite: {fileID: 0}
+    - label: "Avatares_u\u0301nicos-1"
+      previewSprite: {fileID: 21300000, guid: 5479f2679fbf67648ac0eeda2035c3c0, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: CaraE
       previewSprite: {fileID: 21300000, guid: e37ed3ff90016a34a97654a320deff42, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Head secreta -6
-      previewSprite: {fileID: 0}
+    - label: CaraFE
+      previewSprite: {fileID: 21300000, guid: 9db955b1892a8f74c8eb168bc6ba4295, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: CaraI
       previewSprite: {fileID: 21300000, guid: 6e0b04161fcfc8945917417888c3b7b3, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Head secreta -8
-      previewSprite: {fileID: 0}
+    - label: CaraM2
+      previewSprite: {fileID: 21300000, guid: cafb6f678a9500c4ead625a275d89f9e, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Cara V
       previewSprite: {fileID: 21300000, guid: ca52b05d665232440b8322e73424b07c, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Cara NA
+    - label: CaraNA
       previewSprite: {fileID: 21300000, guid: 9a24a1974f7bd7e4391eed2e3197e5e0, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Cara R
+    - label: CaraR
       previewSprite: {fileID: 21300000, guid: 864f5128d49719947939c20a2eaf2fd0, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Cara F
+    - label: CaraF
       previewSprite: {fileID: 21300000, guid: 20cea9aabc3366942a83698037be1b95, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
@@ -167,39 +171,39 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: 1a2939639d9f42746871e9caa8c64878, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Hair secreta -4
-      previewSprite: {fileID: 0}
+    - label: "Avatares_u\u0301nicos-1"
+      previewSprite: {fileID: 21300000, guid: 5479f2679fbf67648ac0eeda2035c3c0, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: CaraE
       previewSprite: {fileID: 21300000, guid: e37ed3ff90016a34a97654a320deff42, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Hair secreta -6
-      previewSprite: {fileID: 0}
+    - label: CaraFE
+      previewSprite: {fileID: 21300000, guid: 9db955b1892a8f74c8eb168bc6ba4295, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: CaraI
       previewSprite: {fileID: 21300000, guid: 6e0b04161fcfc8945917417888c3b7b3, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Hair secreta -8
-      previewSprite: {fileID: 0}
+    - label: CaraM2
+      previewSprite: {fileID: 21300000, guid: cafb6f678a9500c4ead625a275d89f9e, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Cara V
       previewSprite: {fileID: 21300000, guid: ca52b05d665232440b8322e73424b07c, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Superior NA
+    - label: CaraNA
       previewSprite: {fileID: 21300000, guid: 9a24a1974f7bd7e4391eed2e3197e5e0, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Superior R
+    - label: CaraR
       previewSprite: {fileID: 21300000, guid: 864f5128d49719947939c20a2eaf2fd0, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Superior F
+    - label: CaraF
       previewSprite: {fileID: 21300000, guid: 20cea9aabc3366942a83698037be1b95, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
@@ -244,6 +248,10 @@ MonoBehaviour:
       locked: 0
     - label: Superior10
       previewSprite: {fileID: 21300000, guid: 4194987a1c70dc743b872a17bb5dd4d6, type: 3}
+      rigPieces: {fileID: 0}
+      locked: 0
+    - label: Superior11
+      previewSprite: {fileID: 21300000, guid: 8e00cff992aa5df4a8a81a664e8394f9, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Superior12
@@ -303,7 +311,7 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: aadf8420e94146c48a3e0fb1b040791b, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: UpperBody secreta -4
+    - label: "Avatares_u\u0301nicos-3"
       previewSprite: {fileID: 21300000, guid: 827dab0b5f7851240ae9e5b208ab3618, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
@@ -311,16 +319,16 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: 7ce9340d1b230614798d21d3bb4f3cd4, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: UpperBody secreta -6
-      previewSprite: {fileID: 0}
+    - label: Superior FE
+      previewSprite: {fileID: 21300000, guid: c7641a84158046641a170053c2e572db, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Superior I
       previewSprite: {fileID: 21300000, guid: d6d5c0c5fe15c7f499e3326f3ee7f091, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: UpperBody secreta -8
-      previewSprite: {fileID: 0}
+    - label: InferiorM
+      previewSprite: {fileID: 21300000, guid: 7d3edf2cfc395fb4c8b83582d07ce382, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Superior V
@@ -331,7 +339,7 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: da068780f77dae84b9b5e669d87c312b, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Superior R
+    - label: SuperiorR
       previewSprite: {fileID: 21300000, guid: ed08ece3bebb3fb4090077eed80abb0d, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
@@ -435,24 +443,24 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: 2a596600da63e0e4eb9c1e2e31454269, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: LowerBody secreta -4
-      previewSprite: {fileID: 0}
+    - label: "Avatares_u\u0301nicos-2"
+      previewSprite: {fileID: 21300000, guid: aa7d964aa5cc8d54f965a45d1a8a0795, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Inferior E
       previewSprite: {fileID: 21300000, guid: 2663612172f111b408b8d05ba41e6a42, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: LowerBody secreta -6
-      previewSprite: {fileID: 0}
+    - label: Inferior FE
+      previewSprite: {fileID: 21300000, guid: 570215eefdd3d0a4ba02b05f4346f82f, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Inferior I
       previewSprite: {fileID: 21300000, guid: eb221f012f6b5b04884c7b8195b9a516, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: LowerBody secreta -8
-      previewSprite: {fileID: 0}
+    - label: SuperiorM
+      previewSprite: {fileID: 21300000, guid: a7932fbaf1d9cb84c88a2a9b01809653, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
     - label: Inferior V
@@ -463,7 +471,7 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: fdb396f24afc3864ca5bcbb4d0bc4de6, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-    - label: Inferior R
+    - label: InferiorR
       previewSprite: {fileID: 21300000, guid: 3b3ab2f9bc5a43d49b9545c82c6c09b2, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
@@ -471,7 +479,7 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: 1ce047bca2e71cd418c6d3c41ced774c, type: 3}
       rigPieces: {fileID: 0}
       locked: 0
-  - layerName: SubBoca_PAUSA
+  - layerName: SubBoca
     defaultRigPieces: {fileID: 0}
     options:
     - label: Boca1
@@ -498,37 +506,33 @@ MonoBehaviour:
       previewSprite: {fileID: 21300000, guid: 0bc98618d02ed5a41a8db5b3de0ee4db, type: 3}
       rigPieces: {fileID: 11400000, guid: fa6a7d3c6b34cd349a699afaaf2d1e5f, type: 2}
       locked: 0
-    - label: Boca9
-      previewSprite: {fileID: 21300000, guid: 22f992c6d1776234cacc2a997dee0158, type: 3}
-      rigPieces: {fileID: 11400000, guid: 6022e09b54ba9a74583abb1b35b03edf, type: 2}
-      locked: 0
     - label: Boca7
       previewSprite: {fileID: 21300000, guid: 8a8141a55f5633c4e86824c7eb964924, type: 3}
-      rigPieces: {fileID: 11400000, guid: ba50d1471740810439f84e6c64a433df, type: 2}
+      rigPieces: {fileID: 11400000, guid: 6022e09b54ba9a74583abb1b35b03edf, type: 2}
       locked: 0
     - label: Boca8
       previewSprite: {fileID: 21300000, guid: af4e5ceb734b65e479577bf7fdfb2a88, type: 3}
-      rigPieces: {fileID: 11400000, guid: 9b126baabeb217e49b995b029d5da2c6, type: 2}
+      rigPieces: {fileID: 11400000, guid: ba50d1471740810439f84e6c64a433df, type: 2}
       locked: 0
     - label: Boca9
       previewSprite: {fileID: 21300000, guid: 22f992c6d1776234cacc2a997dee0158, type: 3}
-      rigPieces: {fileID: 11400000, guid: 9e627e6484bb25c4da59f763a2ae10cb, type: 2}
+      rigPieces: {fileID: 11400000, guid: 9b126baabeb217e49b995b029d5da2c6, type: 2}
       locked: 0
     - label: Boca10
       previewSprite: {fileID: 21300000, guid: 7d4c71fa6a6049c458b0c86b65c8ae46, type: 3}
-      rigPieces: {fileID: 11400000, guid: 563a7696b3ddfc44fa7cadc657d22489, type: 2}
+      rigPieces: {fileID: 11400000, guid: 9e627e6484bb25c4da59f763a2ae10cb, type: 2}
       locked: 0
     - label: Boca11
       previewSprite: {fileID: 21300000, guid: bc39cd34972b09d459306aab87c30c53, type: 3}
-      rigPieces: {fileID: 11400000, guid: 64e5bc54227696a469068abf180f6d31, type: 2}
+      rigPieces: {fileID: 11400000, guid: 563a7696b3ddfc44fa7cadc657d22489, type: 2}
       locked: 0
     - label: Boca12
       previewSprite: {fileID: 21300000, guid: 0cd52adb31b1ef84ea9f7cdad17c0c5d, type: 3}
-      rigPieces: {fileID: 11400000, guid: 7225c3805978403479b20f77295b5bd9, type: 2}
+      rigPieces: {fileID: 11400000, guid: 64e5bc54227696a469068abf180f6d31, type: 2}
       locked: 0
     - label: Boca13
       previewSprite: {fileID: 21300000, guid: 5e7f83eb17d2edf4985b260434e93689, type: 3}
-      rigPieces: {fileID: 0}
+      rigPieces: {fileID: 11400000, guid: 7225c3805978403479b20f77295b5bd9, type: 2}
       locked: 0
     secretOptions: []
   - layerName: SubBarba

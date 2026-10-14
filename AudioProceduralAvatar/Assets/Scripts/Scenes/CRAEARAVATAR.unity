@@ -6694,10 +6694,12 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 6cfb0377e7addc24582ba6ea7f528765, type: 3}
     - {fileID: 21300000, guid: dbb845e88c292a2439a2332e9dc691a0, type: 3}
     - {fileID: 21300000, guid: 44811313eccd83a43ac637596b6e44f0, type: 3}
+    - {fileID: 21300000, guid: eb6427716187c224d82ec4ebe5d0df21, type: 3}
     - {fileID: 21300000, guid: 9c5975ce6eeec2f499147fdc50dac6ee, type: 3}
     - {fileID: 21300000, guid: 022fac163888f0a4489ad185598bfd80, type: 3}
     - {fileID: 21300000, guid: 8474fa2d95edc0441b6b2d7196cbb993, type: 3}
     - {fileID: 21300000, guid: e9d661bf454a3e1499e00aa420362bf7, type: 3}
+    locked: 
     currentIndex: 0
   - layerName: Hair
     image: {fileID: 1415901155}
@@ -6714,6 +6716,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 04fca22951aa42549b451c31c2b59b75, type: 3}
     - {fileID: 21300000, guid: 4c6e4b749dd66da4b884ee0353441d5a, type: 3}
     - {fileID: 21300000, guid: 7cfa2e389a5ed7346b93b3856c44c536, type: 3}
+    locked: 
     currentIndex: 0
   - layerName: UpperBody
     image: {fileID: 1523626754}
@@ -6728,6 +6731,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 06ed43dbfb621094595be8d41aec795b, type: 3}
     - {fileID: 21300000, guid: bcb03744cb370eb4b9e7f3e6b8c8fd95, type: 3}
     - {fileID: 21300000, guid: 4194987a1c70dc743b872a17bb5dd4d6, type: 3}
+    - {fileID: 21300000, guid: 8e00cff992aa5df4a8a81a664e8394f9, type: 3}
     - {fileID: 21300000, guid: 8be4ea1e15cdee04e94eaab84dae640f, type: 3}
     - {fileID: 21300000, guid: 92f07beae8a65144281f56e007a6c088, type: 3}
     - {fileID: 21300000, guid: cf8e9d30a49781d44ae7cdaa61f0f452, type: 3}
@@ -6739,6 +6743,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: a8b117160b45d0040ac741116fa84df4, type: 3}
     - {fileID: 21300000, guid: 816a6655501565a4785a3699a5a460ce, type: 3}
     - {fileID: 21300000, guid: 6a483807937621b4dbaf72e2d69a44dd, type: 3}
+    locked: 
     currentIndex: 0
   - layerName: LowerBody
     image: {fileID: 2006702089}
@@ -6763,6 +6768,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: e94ba3ffe855d294d9f137e54e447f7c, type: 3}
     - {fileID: 21300000, guid: e78c874bb1274374c820f2e2304105e9, type: 3}
     - {fileID: 21300000, guid: 045c2601781f0954589734a60327ff8f, type: 3}
+    locked: 
     currentIndex: 0
   - layerName: SubBoca
     image: {fileID: 760828168}
@@ -6773,7 +6779,6 @@ MonoBehaviour:
     - {fileID: 21300000, guid: d26f62acf0666b048bba422663509d0f, type: 3}
     - {fileID: 21300000, guid: 0c6e0d41b1b2e9243aaa1276541ea7c8, type: 3}
     - {fileID: 21300000, guid: 0bc98618d02ed5a41a8db5b3de0ee4db, type: 3}
-    - {fileID: 21300000, guid: 22f992c6d1776234cacc2a997dee0158, type: 3}
     - {fileID: 21300000, guid: 8a8141a55f5633c4e86824c7eb964924, type: 3}
     - {fileID: 21300000, guid: af4e5ceb734b65e479577bf7fdfb2a88, type: 3}
     - {fileID: 21300000, guid: 22f992c6d1776234cacc2a997dee0158, type: 3}
@@ -6781,6 +6786,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: bc39cd34972b09d459306aab87c30c53, type: 3}
     - {fileID: 21300000, guid: 0cd52adb31b1ef84ea9f7cdad17c0c5d, type: 3}
     - {fileID: 21300000, guid: 5e7f83eb17d2edf4985b260434e93689, type: 3}
+    locked: 
     currentIndex: 0
   - layerName: SubBarba
     image: {fileID: 1496244130}
@@ -6793,6 +6799,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 9ec6f0afcc6f945449d81c875a7a6bd2, type: 3}
     - {fileID: 21300000, guid: 15ec8c27dd03d964993770aa871ac65e, type: 3}
     - {fileID: 21300000, guid: 9bca2d3e78ea5fd46b72cef8823fdb47, type: 3}
+    locked: 
     currentIndex: 0
   - layerName: Accessories
     image: {fileID: 1589243342}
@@ -6805,6 +6812,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 3813e3c75b63f5d40b5a00a7d593500b, type: 3}
     - {fileID: 21300000, guid: 3f34bc4b8d461e646ba2cd2eabcfabb9, type: 3}
     - {fileID: 21300000, guid: 6f18b2a82b440324f9488bddafe463e6, type: 3}
+    locked: 
     currentIndex: 0
 --- !u!1 &1040238842
 GameObject:
@@ -11773,7 +11781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DevAlbumSceneSwitcher
   albumSceneName: AVATARBOOK
-  openKey: 108
+  openKey: 308
   closeKey: 32
 --- !u!1 &1640131408
 GameObject:
