@@ -17,7 +17,7 @@ namespace AudioProceduralAvatar.Audio
         [Header("Generación")]
 
         [SerializeField]
-        [Range(6, 16)]
+        [Range(6, 30)]
         private int noteCount = 10;
 
         [SerializeField]

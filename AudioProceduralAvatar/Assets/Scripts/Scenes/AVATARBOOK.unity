@@ -437,7 +437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivGenerator
   mappingConfig: {fileID: 11400000, guid: baebe2b582bc7ed478d14fc5cd017061, type: 2}
   rootNoteStrategy: {fileID: 11400000, guid: 3bc93bf97d2693d4f860129bd6569d88, type: 2}
-  noteCount: 10
+  noteCount: 25
   preferMappingConfigRoot: 1
 --- !u!1 &169579079
 GameObject:
@@ -1049,6 +1049,8 @@ MonoBehaviour:
   qrImage: {fileID: 937233229}
   qrLoadingIndicator: {fileID: 0}
   qrStatusText: {fileID: 169579081}
+  downloadPageUrl: https://itsmezevas.github.io/AvatarDownloadPage/
+  pngExporter: {fileID: 0}
 --- !u!1 &379642995
 GameObject:
   m_ObjectHideFlags: 0

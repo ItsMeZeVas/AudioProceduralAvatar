@@ -79,6 +79,8 @@ namespace AudioProceduralAvatar.Avatar
         [SerializeField]
         private TMP_Text feedbackText;
 
+        [SerializeField] private AvatarFullBodyPngSaver pngSaver;
+
 
         // ========================================================
         // ESTADO DEL PREVIEW EN VIVO
@@ -403,7 +405,14 @@ namespace AudioProceduralAvatar.Avatar
             AvatarJsonStorage.Save(
                 profile,
                 capturedTexture
+
             );
+
+
+            // NUEVO: foto de cuerpo completo con fondo predeterminado, para la
+            // página de descargas. Va DESPUÉS de guardar y no toca nada de lo anterior.
+            if (pngSaver != null)
+                pngSaver.SaveFor(profile.Id);
 
 
             // Una vez guardado, el preview ya no debe revertirse si la

@@ -57,6 +57,13 @@ public class AvatarDetailPanel : MonoBehaviour
     public GameObject qrLoadingIndicator;
     public TMP_Text qrStatusText;
 
+
+    [Header("Página de descargas (NUEVO)")]
+    [Tooltip("URL base de la página en GitHub Pages, ej: https://usuario.github.io/avatar-descargas . Si queda VACÍO, el QR sigue apuntando al .wav como antes.")]
+    public string downloadPageUrl;
+    [Tooltip("OPCIONAL, plan B: toma el PNG desde la cámara de vista previa del rig 3D si el avatar no tiene imagen guardada. Puede quedar vacío.")]
+    public AvatarPreviewPngExporter pngExporter;
+
     private AvatarSkeletonBuilder _rigInstance;
     private Coroutine _fadeRoutine;
     private AvatarProfile _currentProfile;
@@ -283,7 +290,12 @@ public class AvatarDetailPanel : MonoBehaviour
     {
         if (_currentProfile == null) return;
         if (_qrRoutine != null) StopCoroutine(_qrRoutine);
-        _qrRoutine = StartCoroutine(EnsureWavUrlAndShowQr(_currentProfile));
+        // NUEVO: con downloadPageUrl configurado se usa la página de descargas;
+        // si no, el flujo original (QR directo al .wav) queda intacto.
+        _qrRoutine = StartCoroutine(
+            UseDownloadPage()
+                ? ShowDownloadPageQr(_currentProfile)
+                : EnsureWavUrlAndShowQr(_currentProfile));
     }
 
     private IEnumerator EnsureWavUrlAndShowQr(AvatarProfile profile)
@@ -348,5 +360,112 @@ public class AvatarDetailPanel : MonoBehaviour
             qrImage.gameObject.SetActive(true);
         }
         if (qrStatusText != null) qrStatusText.text = "";
+    }
+
+    // ================= DESCARGA POR PÁGINA WEB (NUEVO) =================
+    // Solo se usa si downloadPageUrl está configurado. El método original
+    // EnsureWavUrlAndShowQr no se toca.
+
+    private const int UploadAttempts = 3;
+    private const float UploadRetrySeconds = 5f;
+
+    private Texture2D _qrTexture;
+
+    private bool UseDownloadPage()
+    {
+        return !string.IsNullOrWhiteSpace(downloadPageUrl);
+    }
+
+    private IEnumerator ShowDownloadPageQr(AvatarProfile profile)
+    {
+        if (qrButton != null) qrButton.interactable = false;
+        if (qrStatusText != null) qrStatusText.text = "";
+
+        // 1) Imagen: la que se guardó al darle "Crear" (cuerpo completo, escena de
+        //    personalización). Plan B: si no existe y hay rig en pantalla, se toma del rig.
+        byte[] png = AvatarImageStorage.Load(profile.Id);
+        if ((png == null || png.Length == 0) && pngExporter != null && _rigInstance != null)
+            png = pngExporter.CapturePng();
+        bool hasImage = png != null && png.Length > 0;
+        if (!hasImage)
+            Debug.Log("[AvatarDetailPanel] Este avatar no tiene imagen guardada: el enlace pedirá solo el audio.");
+
+        // 2) Enlace + QR generado en local: no necesita internet.
+        string shareUrl = AvatarShareLink.Build(downloadPageUrl, profile.Id, profile.AvatarName, hasImage);
+        Texture2D qr = string.IsNullOrEmpty(shareUrl) ? null : AvatarQrTexture.Create(shareUrl);
+        if (qr == null)
+        {
+            Debug.LogWarning("[AvatarDetailPanel] No se pudo generar el QR (revisa downloadPageUrl: ¿demasiado larga?).");
+            if (qrStatusText != null) qrStatusText.text = "No se pudo generar el QR.";
+            if (qrButton != null) qrButton.interactable = true;
+            yield break;
+        }
+
+        if (_qrTexture != null) Destroy(_qrTexture);
+        _qrTexture = qr;
+        if (qrImage != null)
+        {
+            qrImage.texture = qr;
+            qrImage.gameObject.SetActive(true);
+        }
+
+        // 3) Subidas en segundo plano, con reintentos. No bloquean nada: la página
+        //    de descargas espera sola hasta que los archivos aparezcan.
+        StartCoroutine(UploadAssetsInBackground(profile, png));
+
+        if (qrButton != null) qrButton.interactable = true;
+        yield break;
+    }
+
+    private IEnumerator UploadAssetsInBackground(AvatarProfile profile, byte[] png)
+    {
+        // Audio: solo si no se había subido antes (igual que el flujo original).
+        if (string.IsNullOrEmpty(profile.WavPublicUrl))
+        {
+            string wavPath = AvatarAudioStorage.GetWavPath(profile.Id);
+            string wavUrl = null;
+
+            for (int attempt = 1; attempt <= UploadAttempts && wavUrl == null; attempt++)
+            {
+                string error = null;
+                yield return AvatarWavUploader.Upload(
+                    wavPath, profile.Id, uploadConfig,
+                    url => wavUrl = url,
+                    err => error = err);
+
+                if (wavUrl == null)
+                {
+                    Debug.LogWarning($"[AvatarDetailPanel] Audio, intento {attempt}/{UploadAttempts}: {error}");
+                    if (attempt < UploadAttempts) yield return new WaitForSeconds(UploadRetrySeconds);
+                }
+            }
+
+            if (wavUrl != null)
+            {
+                profile.WavPublicUrl = wavUrl;
+                AvatarJsonStorage.Save(profile);
+            }
+        }
+
+        // Imagen: se sube siempre que se haya podido capturar (x-upsert la reemplaza).
+        if (png != null && png.Length > 0)
+        {
+            string imageUrl = null;
+
+            for (int attempt = 1; attempt <= UploadAttempts && imageUrl == null; attempt++)
+            {
+                string error = null;
+                yield return AvatarImageUploader.UploadBytes(
+                    png, profile.Id, uploadConfig,
+                    url => imageUrl = url,
+                    err => error = err);
+
+                if (imageUrl == null)
+                {
+                    Debug.LogWarning($"[AvatarDetailPanel] Imagen, intento {attempt}/{UploadAttempts}: {error}");
+                    if (attempt < UploadAttempts) yield return new WaitForSeconds(UploadRetrySeconds);
+                }
+            }
+        }
     }
 }

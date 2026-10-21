@@ -223,6 +223,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NONE
       objectReference: {fileID: 0}
+    - target: {fileID: 3721168637555452578, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860642844375589537, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
@@ -369,7 +377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Audio.LeitmotivGenerator
   mappingConfig: {fileID: 11400000, guid: baebe2b582bc7ed478d14fc5cd017061, type: 2}
   rootNoteStrategy: {fileID: 11400000, guid: 3bc93bf97d2693d4f860129bd6569d88, type: 2}
-  noteCount: 16
+  noteCount: 25
   preferMappingConfigRoot: 1
 --- !u!1 &71233570
 GameObject:
@@ -620,7 +628,7 @@ GameObject:
   - component: {fileID: 144485135}
   - component: {fileID: 144485137}
   - component: {fileID: 144485136}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -974,6 +982,143 @@ MonoBehaviour:
   onFinished:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &221525189
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 221525193}
+  - component: {fileID: 221525192}
+  - component: {fileID: 221525191}
+  - component: {fileID: 221525190}
+  m_Layer: 0
+  m_Name: Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &221525190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221525189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: 0
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
+--- !u!81 &221525191
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221525189}
+  m_Enabled: 0
+--- !u!20 &221525192
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221525189}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 4
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 824.7
+  field of view: 17
+  orthographic: 1
+  orthographic size: 267.5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &221525193
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221525189}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 520, y: 323, z: -767}
+  m_LocalScale: {x: 1, y: 1.6022, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &234472733
 GameObject:
   m_ObjectHideFlags: 0
@@ -1427,7 +1572,7 @@ GameObject:
   - component: {fileID: 315363744}
   - component: {fileID: 315363743}
   - component: {fileID: 315363742}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CanvasPersonaje
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2688,7 +2833,7 @@ GameObject:
   - component: {fileID: 415224140}
   - component: {fileID: 415224141}
   - component: {fileID: 415224142}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2761,7 +2906,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 431217114}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CANVAS OPCIONES
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2964,6 +3109,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!1 &501901348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 501901349}
+  - component: {fileID: 501901351}
+  - component: {fileID: 501901350}
+  m_Layer: 0
+  m_Name: AvatarCapture
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &501901349
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501901348}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2135327120}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &501901350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501901348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e4b76282e7a9ca45801f1dbd3694990, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarCapture
+  avatarCamera: {fileID: 221525192}
+  renderTexture: {fileID: 8400000, guid: fec947401205e0f4e820bd26375a8e0f, type: 2}
+  width: 800
+  height: 1000
+--- !u!114 &501901351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501901348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b1422d8df257fd4bb0ce5ccd3461b1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AvatarFullBodyPngSaver
+  capture: {fileID: 501901350}
+  backgroundImage: {fileID: 0}
+  topColor: {r: 0.93333334, g: 0.94509804, b: 0.972549, a: 1}
+  bottomColor: {r: 0.78431374, g: 0.8235294, b: 1, a: 1}
 --- !u!1 &509094121
 GameObject:
   m_ObjectHideFlags: 0
@@ -3243,7 +3453,7 @@ Canvas:
   m_GameObject: {fileID: 527275329}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -3491,7 +3701,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 620843157}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SUB CANVAS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3846,7 +4056,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 686230169}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4718,7 +4928,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 883895665}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5750,7 +5960,7 @@ GameObject:
   - component: {fileID: 951023396}
   - component: {fileID: 951023398}
   - component: {fileID: 951023397}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7653,7 +7863,7 @@ GameObject:
   - component: {fileID: 1090541759}
   - component: {fileID: 1090541758}
   - component: {fileID: 1090541761}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SubBoca
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7769,7 +7979,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1114354190}
   - component: {fileID: 1114354189}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SkinSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7874,7 +8084,7 @@ GameObject:
   - component: {fileID: 1122545970}
   - component: {fileID: 1122545969}
   - component: {fileID: 1122545972}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SubBarba
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9559,7 +9769,7 @@ GameObject:
   - component: {fileID: 1309709733}
   - component: {fileID: 1309709735}
   - component: {fileID: 1309709734}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10020,7 +10230,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1406624574}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Buttoms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10482,6 +10692,14 @@ PrefabInstance:
     - target: {fileID: 3721168637555452578, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_Name
       value: NONE
+      objectReference: {fileID: 0}
+    - target: {fileID: 3721168637555452578, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860642844375589537, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -12220,6 +12438,7 @@ MonoBehaviour:
   profanityFilter: {fileID: 11400000, guid: 234fbbe549a330d4b9fdc6e056cb03b9, type: 2}
   requireUniqueStudentCode: 1
   feedbackText: {fileID: 2005413392}
+  pngSaver: {fileID: 501901351}
 --- !u!1 &1667708430
 GameObject:
   m_ObjectHideFlags: 0
@@ -13018,6 +13237,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NONE
       objectReference: {fileID: 0}
+    - target: {fileID: 3721168637555452578, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3860642844375589537, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 9134274517523889528, guid: 6d3d1cbaa46f0974388af84963da24c5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 2
@@ -13405,7 +13632,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1811125240}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14148,7 +14375,7 @@ GameObject:
   - component: {fileID: 1984180774}
   - component: {fileID: 1984180773}
   - component: {fileID: 1984180772}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SubOjos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14418,7 +14645,7 @@ GameObject:
   - component: {fileID: 2005413391}
   - component: {fileID: 2005413393}
   - component: {fileID: 2005413392}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ErrorMessage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14861,7 +15088,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2044671541}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Canvas Global
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15509,6 +15736,7 @@ Transform:
   - {fileID: 71233571}
   - {fileID: 3266706239534966866}
   - {fileID: 1627538514}
+  - {fileID: 501901349}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2139802644
@@ -15660,7 +15888,7 @@ GameObject:
   - component: {fileID: 2145800611}
   - component: {fileID: 2145800610}
   - component: {fileID: 2145800609}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CreateAvatar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15996,3 +16224,4 @@ SceneRoots:
   - {fileID: 2135327120}
   - {fileID: 1894391158}
   - {fileID: 1773197734}
+  - {fileID: 221525193}
