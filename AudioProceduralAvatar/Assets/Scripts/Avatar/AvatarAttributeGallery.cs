@@ -26,16 +26,31 @@ public class AvatarAttributeGallery : MonoBehaviour
             return;
         }
 
+        AvatarAudioManager audioManager = FindAnyObjectByType<AvatarAudioManager>();
+
         for (int i = 0; i < layer.sprites.Length; i++)
         {
             if (layer.IsLocked(i)) continue;
-            int index = i; // captura local — evita el bug clásico de closures en loops de C#
+            int index = i;
 
             GameObject btnObj = Instantiate(optionButtonPrefab, content);
             btnObj.GetComponent<Image>().sprite = layer.sprites[i];
 
             Button btn = btnObj.GetComponent<Button>();
-            btn.onClick.AddListener(() => avatarCreator.SetIndex(layerName, index));
+
+            // Limpiamos cualquier evento previo que el prefab arrastre por defecto
+            btn.onClick.RemoveAllListeners();
+
+            // Añadimos la acción limpia
+            btn.onClick.AddListener(() =>
+            {
+                avatarCreator.SetIndex(layerName, index);
+
+                if (audioManager != null)
+                {
+                    audioManager.PlaySelect();
+                }
+            });
         }
     }
 
