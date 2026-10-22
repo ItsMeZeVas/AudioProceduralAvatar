@@ -7,7 +7,8 @@ namespace AudioProceduralAvatar.Persistence
 {
     // Panel de administracion que se abre con Ctrl + Shift + F12 en CUALQUIER escena
     // (no hace falta armar una escena ni arrastrar nada: se crea solo al iniciar).
-    // Hoy: exportar el roster unificado, sincronizar ahora y abrir la carpeta de exports.
+    // Hoy: exportar el roster unificado, sincronizar ahora, abrir la carpeta de exports y
+    // FORMATEAR el evento (borra nube + los 6 PCs; pide clave de administracion y confirmacion).
     // Archivo NUEVO. Usa IMGUI a proposito: cero setup en el editor.
     public class AvatarAdminOverlay : MonoBehaviour
     {
@@ -18,6 +19,10 @@ namespace AudioProceduralAvatar.Persistence
         private string _status = "";
         private string _lastFolder;
         private int _localCount;
+        private string _password = "";
+        private string _confirm = "";
+
+        private const string ConfirmWord = "FORMATEAR";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Bootstrap()
@@ -62,7 +67,7 @@ namespace AudioProceduralAvatar.Persistence
             float scale = Mathf.Max(1f, Screen.height / 1080f);
             GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
 
-            const float w = 560f, h = 380f;
+            const float w = 600f, h = 640f;
             var area = new Rect((Screen.width / scale - w) / 2f, (Screen.height / scale - h) / 2f, w, h);
 
             GUI.Box(area, "Administración  (Ctrl+Shift+F12 para cerrar)");
@@ -71,7 +76,7 @@ namespace AudioProceduralAvatar.Persistence
             string pc = AvatarCloudSync.Instance != null ? AvatarCloudSync.PcId : SystemInfo.deviceName;
             GUILayout.Label($"PC: {pc}   |   avatares guardados en este PC: {_localCount}");
             GUILayout.Label(AvatarCloudSync.Instance != null
-                ? "Sincronización con la nube: activa."
+                ? "Sincronización con la nube: activa.   Evento: " + ShortId(AvatarCloudSync.CurrentEventId)
                 : "Sincronización con la nube: DESACTIVADA (falta AvatarUploadConfig en una carpeta Resources).");
             GUILayout.Space(8f);
 
@@ -89,6 +94,21 @@ namespace AudioProceduralAvatar.Persistence
             if (GUILayout.Button("Abrir carpeta de exportaciones", GUILayout.Height(40f)))
                 OpenExportFolder();
             GUI.enabled = true;
+
+            GUILayout.Space(14f);
+            GUILayout.Label("FORMATEAR PARA EL EVENTO: borra TODOS los avatares de la nube y de los PCs. No se puede deshacer.");
+            GUILayout.Label("Clave de administración:");
+            _password = GUILayout.PasswordField(_password, '*');
+            GUILayout.Label($"Escribe {ConfirmWord} para confirmar:");
+            _confirm = GUILayout.TextField(_confirm);
+
+            Color previousBackground = GUI.backgroundColor;
+            GUI.backgroundColor = Color.red;
+            GUI.enabled = !_busy && _confirm == ConfirmWord && !string.IsNullOrEmpty(_password);
+            if (GUILayout.Button("FORMATEAR TODO (nube + todos los PCs)", GUILayout.Height(44f)))
+                StartCoroutine(DoFormat());
+            GUI.enabled = true;
+            GUI.backgroundColor = previousBackground;
 
             GUILayout.Space(8f);
             GUILayout.Label(_status);
@@ -111,6 +131,30 @@ namespace AudioProceduralAvatar.Persistence
             if (result != null && !string.IsNullOrEmpty(result.Folder)) _lastFolder = result.Folder;
             RefreshCounts();
             _busy = false;
+        }
+
+        private IEnumerator DoFormat()
+        {
+            _busy = true;
+            _status = "Formateando…";
+
+            AvatarCloudSync.FormatResult result = null;
+            yield return AvatarCloudSync.FormatEvent(_password, r => result = r);
+
+            _status = result != null ? result.Message : "Error inesperado al formatear.";
+            if (result != null && result.Ok)
+            {
+                _password = "";
+                _confirm = "";
+            }
+            RefreshCounts();
+            _busy = false;
+        }
+
+        private static string ShortId(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return "(aún no conocido)";
+            return id.Length > 8 ? id.Substring(0, 8) : id;
         }
 
         private void OpenExportFolder()

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Gabriel
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 3002263501
-  fixedAvatarName: Gabriel
+  fixedAvatarName: 'Gabriel Rodriguez '
   layers:
   - layerName: Hair
     noPiece: 1

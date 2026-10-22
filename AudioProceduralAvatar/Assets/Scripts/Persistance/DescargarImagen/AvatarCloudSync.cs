@@ -40,6 +40,24 @@ namespace AudioProceduralAvatar.Persistence
         public List<AvatarCloudRow> rows = new();
     }
 
+    [Serializable]
+    public class AvatarCloudEventRow
+    {
+        public string event_id;
+    }
+
+    [Serializable]
+    public class AvatarCloudEventRows
+    {
+        public List<AvatarCloudEventRow> rows = new();
+    }
+
+    [Serializable]
+    public class AvatarCloudResetRequest
+    {
+        public string p_password;
+    }
+
     // Lo que este PC ya sabe de la nube (se guarda en cloud_sync_state.json).
     [Serializable]
     public class AvatarCloudState
@@ -49,6 +67,7 @@ namespace AudioProceduralAvatar.Persistence
         public List<string> ImageInCloudIds = new();  // avatares con imagen en el bucket
         public List<string> DuplicateIds = new();     // avatares locales que perdieron contra otro PC (mismo codigo)
         public string Cursor = "";                    // created_at de la ultima fila bajada
+        public string EventId = "";                   // "edicion" del evento que este PC conoce (cambia al formatear)
     }
 
     // Sincroniza los avatares entre los PCs a traves de Supabase. Archivo NUEVO.
@@ -157,6 +176,7 @@ namespace AudioProceduralAvatar.Persistence
             _busy = true;
             _networkDown = false;
 
+            yield return CheckEventChange();
             yield return UploadNewAvatars();
             yield return UploadPendingWavs();
             yield return DownloadNewAvatars();
@@ -176,6 +196,68 @@ namespace AudioProceduralAvatar.Persistence
         public static bool HasCloudImage(string avatarId)
         {
             return Instance != null && Instance._state.ImageInCloudIds.Contains(avatarId);
+        }
+
+        // Id de la "edicion" actual del evento (vacio si aun no se conoce). Solo para mostrar.
+        public static string CurrentEventId => Instance != null ? Instance._state.EventId : "";
+
+        public class FormatResult
+        {
+            public bool Ok;
+            public string Message;
+        }
+
+        // FORMATEAR: borra los avatares de la nube (con la clave de administracion) y deja este PC
+        // en cero. Los demas PCs se limpian solos en su proximo ciclo. Primero va la nube: si falla
+        // (sin red, clave mala), NO se borra nada local.
+        public static IEnumerator FormatEvent(string password, Action<FormatResult> done)
+        {
+            AvatarCloudSync inst = Instance;
+            if (inst == null || inst._config == null)
+            {
+                done(new FormatResult { Ok = false, Message = "La sincronizacion esta desactivada (falta AvatarUploadConfig en una carpeta Resources)." });
+                yield break;
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                done(new FormatResult { Ok = false, Message = "Falta la clave de administracion." });
+                yield break;
+            }
+
+            while (inst._busy) yield return null; // espera a que termine el ciclo en curso
+            inst._busy = true;
+            inst._networkDown = false;
+
+            byte[] body = Encoding.UTF8.GetBytes(JsonUtility.ToJson(new AvatarCloudResetRequest { p_password = password }));
+            HttpResult r = default;
+            yield return inst.Send("POST", inst.RestUrl("rpc/admin_reset_event"), body, "application/json", null, null, x => r = x);
+
+            if (r.Code == 0)
+            {
+                inst._busy = false;
+                done(new FormatResult { Ok = false, Message = "Sin conexion: NO se formateo nada." });
+                yield break;
+            }
+            if (!IsSuccess(r))
+            {
+                inst._busy = false;
+                string msg = (r.Body ?? "").Contains("clave incorrecta")
+                    ? "Clave incorrecta. No se borro nada."
+                    : $"La nube respondio con error (HTTP {r.Code}). ¿Ya ejecutaste el SQL de administracion? No se borro nada. {Trim(r.Body)}";
+                done(new FormatResult { Ok = false, Message = msg });
+                yield break;
+            }
+
+            string newEventId = (r.Body ?? "").Trim().Trim('"');
+            WipeLocalData();
+            inst._state = new AvatarCloudState { EventId = newEventId };
+            inst._failedAttempts.Clear();
+            inst.SaveState();
+            inst._busy = false;
+
+            OnAvatarsDownloaded?.Invoke(); // el album se repinta (queda vacio)
+            Debug.LogWarning("[AvatarCloudSync] EVENTO FORMATEADO: nube y este PC en cero.");
+            done(new FormatResult { Ok = true, Message = "Listo: la nube y este PC quedaron en cero. Los demas PCs se limpian solos en menos de 30 s (si estan encendidos y con internet)." });
         }
 
         // Baja el .wav de un avatar creado en otro PC y lo deja donde el panel lo busca.
@@ -203,6 +285,71 @@ namespace AudioProceduralAvatar.Persistence
             catch (Exception e)
             {
                 Debug.LogWarning($"[AvatarCloudSync] No se pudo guardar el audio bajado: {e.Message}");
+            }
+        }
+
+        // ================= FORMATEO DEL EVENTO =================
+
+        // Si otro PC formateo, el id de evento en la nube cambia: este PC borra sus datos locales
+        // ANTES de subir nada (para no resucitar avatares viejos). La primera vez que un PC conoce
+        // el evento solo lo "adopta": nunca borra por eso.
+        private IEnumerator CheckEventChange()
+        {
+            if (_networkDown) yield break;
+
+            HttpResult res = default;
+            yield return Send("GET", RestUrl("event_state?select=event_id&limit=1"), null, null, null, null, r => res = r);
+            if (!IsSuccess(res)) yield break; // sin red, o el SQL de administracion aun no se ejecuto: se sigue como antes
+
+            string cloudEvent = ParseEventId(res.Body);
+            if (string.IsNullOrEmpty(cloudEvent)) yield break;
+
+            if (string.IsNullOrEmpty(_state.EventId))
+            {
+                _state.EventId = cloudEvent;
+                SaveState();
+                yield break;
+            }
+
+            if (_state.EventId == cloudEvent) yield break;
+
+            Debug.LogWarning("[AvatarCloudSync] El evento fue formateado desde otro PC: se borran los datos locales.");
+            WipeLocalData();
+            _state = new AvatarCloudState { EventId = cloudEvent };
+            _failedAttempts.Clear();
+            SaveState();
+            OnAvatarsDownloaded?.Invoke();
+        }
+
+        private static string ParseEventId(string body)
+        {
+            try
+            {
+                var wrapper = JsonUtility.FromJson<AvatarCloudEventRows>("{\"rows\":" + body + "}");
+                return wrapper != null && wrapper.rows != null && wrapper.rows.Count > 0 ? wrapper.rows[0].event_id : null;
+            }
+            catch (Exception) { return null; }
+        }
+
+        // Borra los avatares de ESTE PC (JSON, imagenes, audios, duplicados) y el roster.
+        // No toca la carpeta exports ni nada fuera de avatars/ y roster.json.
+        private static void WipeLocalData()
+        {
+            try
+            {
+                string folder = Path.Combine(Application.persistentDataPath, "avatars");
+                if (Directory.Exists(folder))
+                {
+                    foreach (string f in Directory.GetFiles(folder)) File.Delete(f);
+                    foreach (string d in Directory.GetDirectories(folder)) Directory.Delete(d, true);
+                }
+
+                string roster = Path.Combine(Application.persistentDataPath, "roster.json");
+                if (File.Exists(roster)) File.Delete(roster);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[AvatarCloudSync] No se pudo borrar todo lo local: {e.Message}");
             }
         }
 
@@ -516,6 +663,7 @@ namespace AudioProceduralAvatar.Persistence
             _state.ImageInCloudIds ??= new List<string>();
             _state.DuplicateIds ??= new List<string>();
             _state.Cursor ??= "";
+            _state.EventId ??= "";
         }
 
         private void SaveState()

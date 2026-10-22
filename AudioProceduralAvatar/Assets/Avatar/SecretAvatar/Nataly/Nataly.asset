@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558f3db23d573c34aba8bec210a8d6de, type: 3}
   m_Name: Nataly
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
-  secretCode: 4444
-  fixedAvatarName: Nataly
+  secretCode: 3177017313
+  fixedAvatarName: Natalie Higuera
   layers:
   - layerName: Hair
     noPiece: 1

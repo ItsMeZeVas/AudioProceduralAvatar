@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558f3db23d573c34aba8bec210a8d6de, type: 3}
   m_Name: Rocha
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
-  secretCode: 22222
-  fixedAvatarName: Rocha
+  secretCode: 3014451504
+  fixedAvatarName: Carlos Rocha
   layers:
   - layerName: Hair
     noPiece: 1
