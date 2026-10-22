@@ -12047,12 +12047,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1627538513}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 91.65856, y: 0, z: 6983.013}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2135327120}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1627538515
 MonoBehaviour:
@@ -12068,7 +12068,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DevAlbumSceneSwitcher
   albumSceneName: AVATARBOOK
   openKey: 308
-  closeKey: 32
+  closeKey: 307
 --- !u!1 &1640131408
 GameObject:
   m_ObjectHideFlags: 0
@@ -15735,7 +15735,6 @@ Transform:
   - {fileID: 40972088}
   - {fileID: 71233571}
   - {fileID: 3266706239534966866}
-  - {fileID: 1627538514}
   - {fileID: 501901349}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16225,3 +16224,4 @@ SceneRoots:
   - {fileID: 1894391158}
   - {fileID: 1773197734}
   - {fileID: 221525193}
+  - {fileID: 1627538514}

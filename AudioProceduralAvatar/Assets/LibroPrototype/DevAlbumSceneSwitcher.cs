@@ -14,7 +14,6 @@ public class DevAlbumSceneSwitcher : MonoBehaviour
 
     private void Awake()
     {
-        
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -22,6 +21,13 @@ public class DevAlbumSceneSwitcher : MonoBehaviour
         }
 
         _instance = this;
+
+        // DontDestroyOnLoad solo funciona con objetos RAÍZ de la jerarquía.
+        // Si este script está en un hijo de otro objeto, Unity lo destruye
+        // al cambiar de escena y por eso no se puede volver.
+        if (transform.parent != null)
+            transform.SetParent(null);
+
         DontDestroyOnLoad(gameObject);
     }
 
@@ -32,11 +38,21 @@ public class DevAlbumSceneSwitcher : MonoBehaviour
         if (Input.GetKeyDown(openKey) && activeScene != albumSceneName)
         {
             _previousSceneName = activeScene;
+            Debug.Log($"[DevAlbumSceneSwitcher] Abriendo '{albumSceneName}' desde '{activeScene}'");
             SceneManager.LoadScene(albumSceneName);
         }
         else if (Input.GetKeyDown(closeKey) && activeScene == albumSceneName)
         {
-            if (!string.IsNullOrEmpty(_previousSceneName))
+            // Si por alguna razón no hay escena previa guardada, vuelve a la primera del build.
+            string target = string.IsNullOrEmpty(_previousSceneName)
+                ? SceneUtility.GetScenePathByBuildIndex(0)
+                : _previousSceneName;
+
+            Debug.Log($"[DevAlbumSceneSwitcher] Volviendo a '{target}'");
+
+            if (string.IsNullOrEmpty(_previousSceneName))
+                SceneManager.LoadScene(0);
+            else
                 SceneManager.LoadScene(_previousSceneName);
         }
     }

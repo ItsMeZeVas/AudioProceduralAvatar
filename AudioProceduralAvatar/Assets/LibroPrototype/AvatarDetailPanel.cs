@@ -57,7 +57,6 @@ public class AvatarDetailPanel : MonoBehaviour
     public GameObject qrLoadingIndicator;
     public TMP_Text qrStatusText;
 
-
     [Header("Página de descargas (NUEVO)")]
     [Tooltip("URL base de la página en GitHub Pages, ej: https://usuario.github.io/avatar-descargas . Si queda VACÍO, el QR sigue apuntando al .wav como antes.")]
     public string downloadPageUrl;
@@ -208,6 +207,11 @@ public class AvatarDetailPanel : MonoBehaviour
     private IEnumerator LoadAndPrepareAudio(AvatarProfile profile)
     {
         string path = AvatarAudioStorage.GetWavPath(profile.Id);
+
+        // NUEVO: si el avatar es de otro PC y su audio ya está en la nube, se baja
+        // (así suena idéntico) en vez de generarlo de nuevo.
+        if (!AvatarAudioStorage.Exists(profile.Id))
+            yield return AvatarCloudSync.TryDownloadWav(profile.Id, path);
 
         if (!AvatarAudioStorage.Exists(profile.Id))
         {
@@ -386,7 +390,8 @@ public class AvatarDetailPanel : MonoBehaviour
         byte[] png = AvatarImageStorage.Load(profile.Id);
         if ((png == null || png.Length == 0) && pngExporter != null && _rigInstance != null)
             png = pngExporter.CapturePng();
-        bool hasImage = png != null && png.Length > 0;
+        // La imagen también cuenta si la subió otro PC (ya está en el bucket).
+        bool hasImage = (png != null && png.Length > 0) || AvatarCloudSync.HasCloudImage(profile.Id);
         if (!hasImage)
             Debug.Log("[AvatarDetailPanel] Este avatar no tiene imagen guardada: el enlace pedirá solo el audio.");
 
