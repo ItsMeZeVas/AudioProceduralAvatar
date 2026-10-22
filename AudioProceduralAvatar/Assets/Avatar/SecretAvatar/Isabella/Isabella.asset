@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Isabella
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 1202598
-  fixedAvatarName: Isabella
+  fixedAvatarName: Isabella Gallego
   layers:
   - layerName: Hair
     noPiece: 1

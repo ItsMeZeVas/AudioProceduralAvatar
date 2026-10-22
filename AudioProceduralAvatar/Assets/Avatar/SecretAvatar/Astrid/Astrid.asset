@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Astrid
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 1202590
-  fixedAvatarName: Astrid
+  fixedAvatarName: Astrid Melo
   layers:
   - layerName: Hair
     noPiece: 1

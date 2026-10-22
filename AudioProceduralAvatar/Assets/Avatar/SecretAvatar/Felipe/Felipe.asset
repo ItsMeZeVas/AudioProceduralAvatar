@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Felipe
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 1202589
-  fixedAvatarName: Felipe
+  fixedAvatarName: Felipe Salamanca
   layers:
   - layerName: Hair
     noPiece: 1

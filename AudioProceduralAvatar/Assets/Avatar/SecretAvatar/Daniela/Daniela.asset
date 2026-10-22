@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Daniela
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 1202639
-  fixedAvatarName: Daniela
+  fixedAvatarName: Daniela Beltran
   layers:
   - layerName: Hair
     noPiece: 1

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sebastian
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 1202577
-  fixedAvatarName: Sebastian
+  fixedAvatarName: Sebastian Vera
   layers:
   - layerName: Hair
     noPiece: 0

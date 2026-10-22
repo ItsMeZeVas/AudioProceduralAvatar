@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Danna
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 1202584
-  fixedAvatarName: Danna
+  fixedAvatarName: Danna Rojas
   layers:
   - layerName: Hair
     noPiece: 1

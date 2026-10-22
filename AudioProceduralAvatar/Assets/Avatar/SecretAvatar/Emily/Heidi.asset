@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Heidi
   m_EditorClassIdentifier: Assembly-CSharp::AudioProceduralAvatar.Avatar.SecretAvatarPreset
   secretCode: 1202565
-  fixedAvatarName: Heidi
+  fixedAvatarName: Emily Mora
   layers:
   - layerName: Hair
     noPiece: 1
