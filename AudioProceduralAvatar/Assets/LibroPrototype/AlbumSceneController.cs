@@ -39,12 +39,42 @@ public class AlbumSceneController : MonoBehaviour
     private readonly List<AvatarProfile> _avatars = new();
     private readonly HashSet<string> _highlightedIds = new();
     private int _spreadIndex;
+    private bool _started;
 
     private void Start()
     {
         LoadAllAvatars();
         WireUi();
         ShowSpread(0);
+        _started = true;
+    }
+
+    // NUEVO: cuando la sincronización baja avatares de otros PCs, el álbum se refresca solo.
+    private void OnEnable()  { AvatarCloudSync.OnAvatarsDownloaded += ReloadNewAvatars; }
+    private void OnDisable() { AvatarCloudSync.OnAvatarsDownloaded -= ReloadNewAvatars; }
+
+    // Agrega al FINAL los avatares nuevos (las páginas que ya estás viendo no se barajan),
+    // quita los que ya no existen (p. ej. apartados como duplicados) y repinta la apertura actual.
+    public void ReloadNewAvatars()
+    {
+        if (!_started) return;
+
+        string[] ids = AvatarJsonStorage.GetAllAvatarIds();
+        var onDisk = new HashSet<string>(ids);
+        var known = new HashSet<string>(_avatars.Select(a => a.Id));
+
+        bool changed = _avatars.RemoveAll(a => !onDisk.Contains(a.Id)) > 0;
+
+        foreach (string id in ids)
+        {
+            if (known.Contains(id)) continue;
+            var profile = AvatarJsonStorage.Load(id);
+            if (profile == null) continue;
+            _avatars.Add(profile);
+            changed = true;
+        }
+
+        if (changed) ShowSpread(_spreadIndex);
     }
 
     private void LoadAllAvatars()
